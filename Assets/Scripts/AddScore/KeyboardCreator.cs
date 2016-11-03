@@ -17,9 +17,11 @@ class KeyboardCreator: KeyboardComponent {
     public float rotation;
     public float spaceXRotation; // Specialy for space (increase to rotate it around x Axis)
     public bool flat;
+    public bool buildInEdition;
     public Camera cam;
     public GameObject keyboard;
     //-----------SET IN UNITY --------------
+    
 
 
     private float row;
