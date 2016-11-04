@@ -38,8 +38,12 @@ class KeyboardCreator: KeyboardComponent {
         CheckExistance();
         keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
         FillAndPlaceKeys();
+        SetComponents();
+    }
+
+    private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
-        rayCaster.SetRayLength(radious+1f);
+        rayCaster.SetRayLength(radious + 1f);
         rayCaster.SetCamera(cam);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
@@ -75,17 +79,33 @@ class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        keyTrnsform.position = CalculatePosition(rowLetters[(int)row], iteration - keysPlaced);
-        keyTrnsform.LookAt(cam.transform);
-        
+        keyTrnsform.position = flat?
+            CalculatePositionFlat(rowLetters[(int)row], iteration - keysPlaced):
+            CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
+        if(!flat) {
+            keyTrnsform.LookAt(cam.transform);
+        }
+        else {
+            keyTrnsform.RotateAround(cam.transform.position, Vector3.up, -rotation + 90);
+            keyTrnsform.eulerAngles = new Vector3(0, -rotation -90, 0);
+        }
+
+
     }
 
-    
-    private Vector3 CalculatePosition ( float rowSize, float offset ) {
+    private Vector3 CalculatePositionFlat( float rowSize, float offset ) {
+        float degree = Mathf.Deg2Rad * ( 90 + rowSize * ( degreesStep / 2 ) - offset * degreesStep );
+        float x = Mathf.Cos(degree) * radious;
+        float z;
+        z = radious;
+        return new Vector3(x, yPos - row * rowHeight, z);
+    }
+
+    private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
         float degree = Mathf.Deg2Rad * ( rotation + rowSize * ( degreesStep / 2 ) - offset * degreesStep );
         float x = Mathf.Cos(degree) * radious;
         float z;
-        z = flat ? radious : Mathf.Sin(degree) * radious;
+        z =  Mathf.Sin(degree) * radious;
         return new Vector3(x, yPos - row * rowHeight, z);
     }
 

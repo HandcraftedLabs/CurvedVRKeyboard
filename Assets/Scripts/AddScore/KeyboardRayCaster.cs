@@ -49,13 +49,10 @@ public class KeyboardRayCaster: KeyboardComponent {
             }
 
             kitemCurrent.hovering();
-            Debug.Log("error3?");
             //if clicked
-            if(Input.GetKey("r")) {
-                Debug.Log("error5");
+            if(Input.GetMouseButtonDown(0)) {
                 kitemCurrent.click();
                 keyboardStatus.HandleClick(kitemCurrent);
-                Debug.Log("error6");
             }
 
 

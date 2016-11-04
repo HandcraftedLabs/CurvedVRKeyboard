@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 
 
-[ExecuteInEditMode]
 public class KeyboardItem: KeyboardComponent {
 
     private Text letter;
@@ -12,7 +11,6 @@ public class KeyboardItem: KeyboardComponent {
     private float transitionTime = 0.01f;
     private float clickTimer = 0f;
     private bool clicked = false;
-    private Animator animator;
     private Material keyDefaultMaterial;
     private Material keyHoldMaterial;
     private Material keyPressedMaterial;
@@ -25,9 +23,8 @@ public class KeyboardItem: KeyboardComponent {
 
     public void Init () {
         //check if was not destroyed
-        if(letter == null || animator == null) {
+        if(letter == null || renderer == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            animator = gameObject.GetComponent<Animator>();
             renderer = gameObject.GetComponent<Renderer>();
         }
     }
@@ -36,7 +33,6 @@ public class KeyboardItem: KeyboardComponent {
     public void hovering () {
         if(!clicked) {
            changeMaterial(keyHoldMaterial);
-            Debug.Log("error2?");
         } else {//wait for some time 
             HoldClick();
         }
@@ -71,7 +67,6 @@ public class KeyboardItem: KeyboardComponent {
 
     private void changeMaterial(Material material ) {
         renderer.material = material;
-        Debug.Log("error?");
     }
 
     public void setMaterials (Material keyDefaultMaterial, Material keyHoldMaterial, Material keyPressedMaterial ) {
