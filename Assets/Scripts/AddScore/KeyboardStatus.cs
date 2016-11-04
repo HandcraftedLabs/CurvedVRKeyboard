@@ -8,22 +8,21 @@ using UnityEngine.UI;
 public class KeyboardStatus: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
-    public GameObject keyboard;
-    public Text name;
+    public Text Output;
     //-----------SET IN UNITY --------------
 
     private KeyboardItem[] keys;
-    private bool latters = true;
-    private bool lower = true;
+    private bool areLettersActive = true;
+    private bool isLowercase = true;
 
     private static readonly string BLANKSPACE = " ";
-    private static readonly int MAXLETTERS = 8;
 
+    private int maxLetters;
     private int currentLetter = -1;
 
     public void HandleClick ( KeyboardItem clicked ) {
         string value = clicked.getValue();
-
+    
         if(value.Equals(QEH) || value.Equals(ABC)) {//if special signs
             ChangeSpecialLetters();
         } else if(value.Equals(UP) || value.Equals(LOW)) {//if upper/lower
@@ -37,58 +36,48 @@ public class KeyboardStatus: KeyboardComponent {
         }
     }
 
-    public int GetCurrentLetter () {
-        return currentLetter;
-    }
 
-    public void Start () {
-
-    }
 
     private void ChangeSpecialLetters () {
-        latters = !latters;
-        int i = 0;
-        if(latters) {
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLetters[i];
-                i++;
-            }
-        } else {// special signs
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allSpecials[i];
-                i++;
-            }
+        areLettersActive = !areLettersActive;
+        string[] ToDisplay = areLettersActive ? allLetters : allSpecials;
+        for(int i = 0;i < keys.Length;i++) {
+            keys[i].letter.text = ToDisplay[i];
         }
     }
 
     private void LowerUpperKeys () {
-        lower = !lower;
-        int i = 0;
-        if(lower) {
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLetters[i];
-                i++;
-            }
-        } else {// special signs
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLettersUpper[i];
-                i++;
-            }
+        isLowercase = !isLowercase;
+        string[] ToDisplay = isLowercase ? allLetters : allLettersUpper;
+        ChangeKeysDisplayied(ToDisplay);
+    }
+
+    private void ChangeKeysDisplayied ( string[] ToDisplay ) {
+        for(int i = 0;i < keys.Length;i++) {
+            keys[i].letter.text = ToDisplay[i];
         }
     }
 
     private void BackspaceKey () {
         if(currentLetter >= 0) {
-            name.text = name.text.Remove(currentLetter, 1).Insert(currentLetter, BLANKSPACE);
+            Output.text = Output.text.Remove(currentLetter, 1);
             currentLetter--;
         }
     }
 
     private void TypeKey ( char key ) {
-        if(currentLetter < MAXLETTERS - 1) {//starts from -1
+        if(currentLetter < maxLetters - 1) {//starts from -1
             currentLetter++;
-            name.text = name.text.Remove(currentLetter, 1).Insert(currentLetter, key.ToString());
+            Output.text = Output.text.Insert(currentLetter, key.ToString());
         }
+    }
+
+    public void SetKeys ( KeyboardItem[] keys ) {
+        this.keys = keys;
+    }
+
+    public void SetMaxLetters ( int maxLetters ) {
+        this.maxLetters = maxLetters;
     }
 }
 

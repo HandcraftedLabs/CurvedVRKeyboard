@@ -19,12 +19,11 @@ public class KeyboardItem: KeyboardComponent {
 
     public void Awake () {
         Init();
-
     }
 
     public void Init () {
-        //check if was not destoied
-        if(letter == null) {
+        //check if was not destroyed
+        if(letter == null || animator == null) {
             letter = gameObject.GetComponentInChildren<Text>();
             animator = gameObject.GetComponent<Animator>();
         }
@@ -36,27 +35,22 @@ public class KeyboardItem: KeyboardComponent {
         CLICKED
     }
 
-
-
-
-
-    void Update () {
-
-    }
-
     public void hovering () {
         if(!clicked) {
             animator.CrossFade(EnumToString(STATE.CHOSEN), transitionTime);
         } else {//wait for some time 
-            clickTimer += Time.deltaTime;
-            animator.CrossFade(EnumToString(STATE.CLICKED), transitionTime);
-            if(clickTimer >= clickPlayLimit) {
-                clicked = false;
-                clickTimer = 0f;
-            }
+            HoldClick();
         }
     }
 
+    private void HoldClick () {
+        clickTimer += Time.deltaTime;
+        animator.CrossFade(EnumToString(STATE.CLICKED), transitionTime);
+        if(clickTimer >= clickPlayLimit) {
+            clicked = false;
+            clickTimer = 0f;
+        }
+    }
 
     public void stopHovering () {
         animator.CrossFade(EnumToString(STATE.NORMAL), transitionTime);

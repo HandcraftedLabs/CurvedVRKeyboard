@@ -9,17 +9,16 @@ class KeyboardCreator: KeyboardComponent {
 
 
     //-----------SET IN UNITY --------------
-
-    public float r;
+    
+    public float radious;
     public float yPos;
     public float degreesStep;
     public float rowHeight;
     public float rotation;
-    public float spaceXRotation; // Specialy for space (increase to rotate it around x Axis)
     public bool flat;
-    public bool buildInEdition;
+    public bool buildInEditorMode;
     public Camera cam;
-    public GameObject keyboard;
+    public int maxLetters;
     //-----------SET IN UNITY --------------
 
 
@@ -34,7 +33,13 @@ class KeyboardCreator: KeyboardComponent {
     public void Start () {
         CheckExistance();
         keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
-        FillKeysWithLetters();
+        FillAndPlaceKeys();
+        KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
+        rayCaster.SetRayLength(radious+1f);
+        rayCaster.SetCamera(cam);
+        KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
+        status.SetKeys(keys);
+        status.SetMaxLetters(maxLetters);
     }
 
     //gameobject can be destroyed when we are stoping gameplay
@@ -54,7 +59,7 @@ class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    private void FillKeysWithLetters () {
+    private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
             keys[i].Init();
             keys[i].letter.text = allLetters[i];
@@ -62,29 +67,27 @@ class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    private void PositionSingleLetter ( int iteration, Transform child ) {
+    private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        child.position = CalculateVector(rowLetters[(int)row], iteration - keysPlaced);
-        child.LookAt(cam.transform);
+        keyTrnsform.position = CalculatePosition(rowLetters[(int)row], iteration - keysPlaced);
+        keyTrnsform.LookAt(cam.transform);
+        
     }
 
-    private Vector3 CalculateVector ( float rowSize, float offset ) {
+    
+    private Vector3 CalculatePosition ( float rowSize, float offset ) {
         float degree = Mathf.Deg2Rad * ( rotation + rowSize * ( degreesStep / 2 ) - offset * degreesStep );
-        float x = Mathf.Cos(degree) * r;
+        float x = Mathf.Cos(degree) * radious;
         float z;
-        z = flat ? r : Mathf.Sin(degree) * r;
+        z = flat ? radious : Mathf.Sin(degree) * radious;
         return new Vector3(x, yPos - row * rowHeight, z);
-
     }
 
 
-    /// <summary>
-    /// After getting to new row we need to reset offset relative to iteration
-    /// so all keys spawn in front of user
-    /// </summary>
-    /// <param name="iteration"></param>
-    /// <returns></returns>
+
+    // After getting to new row we need to reset offset relative to iteration
+    // so all keys spawn in front of user
     private float CalculateKeysPlacedAndRow ( int iteration ) {
         float keysPlaced = 0;
         if(iteration < rowLetters[0]) {//if is in firstrow

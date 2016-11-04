@@ -10,7 +10,7 @@ public class KeyboardCreatorEditor: Editor {
 
    private void CallbackFucntion () {
         KeyboardCreator mTarget = target as KeyboardCreator;
-        if(mTarget.buildInEdition) {
+        if(mTarget.buildInEditorMode) {
             mTarget.Start();
         }
     } 

@@ -8,51 +8,67 @@ public class KeyboardRayCaster: KeyboardComponent {
 
 
 
-    //-----------SET IN UNITY --------------
-    public Camera cam;
-    public float rayLength;
-    public KeyboardStatus keyboardStatus;
-    //-----------SET IN UNITY --------------
+    
 
+
+    private Camera cam;
+
+    private float rayLength;
     private Ray ray;
     private RaycastHit hit;
     private LayerMask layer;
 
-
-    private GameObject keyboard;
-    private KeyboardItem kitemprevious;
+    private KeyboardStatus keyboardStatus;
     private KeyboardItem kitemCurrent;
 
     void Start () {
+        keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
         layer = 1 << LayerMask.NameToLayer(LAYER_TO_CAST);
-        keyboard = GameObject.Find(KEYBOARD);
     }
 
     void Update () {
         RayCastKeyboard();
     }
 
+    
     private void RayCastKeyboard () {
         ray = new Ray(cam.transform.position, cam.transform.forward);
+        //if somthing was hit
         if(Physics.Raycast(ray, out hit, rayLength, layer)) {
             KeyboardItem focusedKitem = hit.transform.gameObject.GetComponent<KeyboardItem>();
-
-            if(kitemCurrent == null) {//if there is none selected
+            
+            //if there is none current
+            if(kitemCurrent == null) {
                 kitemCurrent = focusedKitem;
             }
-            if(focusedKitem != kitemCurrent) {//if previous is different
+
+            //if previous is different
+            if(focusedKitem != kitemCurrent) {
                 kitemCurrent.stopHovering();
                 kitemCurrent = focusedKitem;
             }
+
             kitemCurrent.hovering();
-            if(Input.GetMouseButtonDown(1)) {//if clicked
+
+            //if clicked
+            if(Input.GetMouseButtonDown(1)) {
                 kitemCurrent.click();
                 keyboardStatus.HandleClick(kitemCurrent);
             }
 
-        } else if(kitemCurrent != null) {//if no target hit and lost focus on item
+        }
+        //if no target hit and lost focus on item
+        else if(kitemCurrent != null) {
             kitemCurrent.stopHovering();
             kitemCurrent = null;
         }
+    }
+
+    public void SetRayLength (float rayLength) {
+        this.rayLength = rayLength;
+    }
+
+    public void SetCamera(Camera cam ) {
+        this.cam = cam;
     }
 }
