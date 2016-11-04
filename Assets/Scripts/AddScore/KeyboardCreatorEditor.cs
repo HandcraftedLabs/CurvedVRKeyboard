@@ -13,8 +13,6 @@ public class KeyboardCreatorEditor: Editor {
         if(mTarget.buildInEdition) {
             mTarget.Start();
         }
-        
-        //   
     } 
 
     void OnEnable () {

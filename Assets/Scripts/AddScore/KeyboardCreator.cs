@@ -9,7 +9,7 @@ class KeyboardCreator: KeyboardComponent {
 
 
     //-----------SET IN UNITY --------------
-    public KeyboardItem[] keys;
+
     public float r;
     public float yPos;
     public float degreesStep;
@@ -21,38 +21,52 @@ class KeyboardCreator: KeyboardComponent {
     public Camera cam;
     public GameObject keyboard;
     //-----------SET IN UNITY --------------
-    
 
 
+    private KeyboardItem[] keys;
     private float row;
+    private static string name;
+
+
+    private static bool wasDisabled = false;
+    static GameObject gameobjectCopy;
 
     public void Start () {
-        //.Cast<Transform>().OrderBy(t => t.name)
-        int i = 0;
-        foreach(KeyboardItem keyItem in keys) {
-            if(i < allLetters.Length) {
-                keyItem.Init();
-                keyItem.letter.text = allLetters[i];
-                
-            }
-            PositionSingleLetter(i, keyItem.gameObject.transform);
-            i++;
+        CheckExistance();
+        keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
+        FillKeysWithLetters();
+    }
+
+    //gameobject can be destroyed when we are stoping gameplay
+    //(we are using gameobject out of gameplay also to manupulate it on scene)
+    //since the gameobject can't be set by "gameobject ==" we need a copy
+    //of gameobject. When gameobject is destroied we assign new copy
+    //if somone would refer to gameobject error would be thrown
+    private void CheckExistance () {
+        if(wasDisabled) {
+            wasDisabled = false;
+            gameobjectCopy = GameObject.Find(name);
+        }
+        //gameobject name changed or no name asigned yet
+        if(name == null || !name.Equals(gameobjectCopy.name)) { 
+            name = gameObject.name;
+            gameobjectCopy = gameObject;
         }
     }
 
-    private void PositionSingleLetter ( int iteration,Transform child) {
+    private void FillKeysWithLetters () {
+        for(int i = 0;i < keys.Length;i++) {
+            keys[i].Init();
+            keys[i].letter.text = allLetters[i];
+            PositionSingleLetter(i, keys[i].gameObject.transform);
+        }
+    }
+
+    private void PositionSingleLetter ( int iteration, Transform child ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-       
- 
         child.position = CalculateVector(rowLetters[(int)row], iteration - keysPlaced);
         child.LookAt(cam.transform);
-        //if(iteration != rowLetters[0] + rowLetters[1] + rowLetters[2] + 1) {// all expect space
-        //    child.LookAt(cam.tra)
-        //}else {
-        //    child.rotation = MyUtils.RotateToVector(-child.position + cam.transform.position + new Vector3(0, spaceXRotation, 0));
-        //}
-
     }
 
     private Vector3 CalculateVector ( float rowSize, float offset ) {
@@ -61,7 +75,7 @@ class KeyboardCreator: KeyboardComponent {
         float z;
         z = flat ? r : Mathf.Sin(degree) * r;
         return new Vector3(x, yPos - row * rowHeight, z);
-        
+
     }
 
 
@@ -98,6 +112,9 @@ class KeyboardCreator: KeyboardComponent {
         return keysPlaced;
     }
 
+    public void OnDisable () {
+        wasDisabled = true;
+    }
 }
 
 

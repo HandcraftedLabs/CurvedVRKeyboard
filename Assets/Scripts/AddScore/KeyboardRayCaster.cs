@@ -45,7 +45,7 @@ public class KeyboardRayCaster: KeyboardComponent {
                 kitemCurrent = focusedKitem;
             }
             kitemCurrent.hovering();
-            if(Input.GetButtonDown("fire1")) {//if clicked
+            if(Input.GetMouseButtonDown(1)) {//if clicked
                 kitemCurrent.click();
                 keyboardStatus.HandleClick(kitemCurrent);
             }

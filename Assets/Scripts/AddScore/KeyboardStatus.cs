@@ -8,15 +8,15 @@ using UnityEngine.UI;
 public class KeyboardStatus: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
-    public KeyboardItem[] keys;
     public GameObject keyboard;
     public Text name;
     //-----------SET IN UNITY --------------
 
+    private KeyboardItem[] keys;
     private bool latters = true;
     private bool lower = true;
 
-    private static readonly string BLANKSPACE = "_";
+    private static readonly string BLANKSPACE = " ";
     private static readonly int MAXLETTERS = 8;
 
     private int currentLetter = -1;
@@ -32,8 +32,7 @@ public class KeyboardStatus: KeyboardComponent {
             TypeKey(' ');
         } else if(value.Equals(BACK)) {// if backspace
             BackspaceKey();
-        }
-        else {//normalLetter
+        } else {//normalLetter
             TypeKey(value[0]);
         }
     }
@@ -42,6 +41,9 @@ public class KeyboardStatus: KeyboardComponent {
         return currentLetter;
     }
 
+    public void Start () {
+
+    }
 
     private void ChangeSpecialLetters () {
         latters = !latters;
@@ -52,7 +54,7 @@ public class KeyboardStatus: KeyboardComponent {
                 i++;
             }
         } else {// special signs
-            foreach( KeyboardItem keyItem in keys) {
+            foreach(KeyboardItem keyItem in keys) {
                 keyItem.letter.text = allSpecials[i];
                 i++;
             }

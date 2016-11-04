@@ -13,7 +13,7 @@ public abstract class KeyboardComponent: MonoBehaviour {
     public static readonly string LOW = "low";
 
 
-    public static readonly string LAYER_TO_CAST = "Keyboard";
+    public static readonly string LAYER_TO_CAST = "KeyboardItem";
     public static readonly string KEYBOARD = "Keyboard";
 
     public static readonly string[] allLetters = new string[]
@@ -31,8 +31,8 @@ public abstract class KeyboardComponent: MonoBehaviour {
     public static readonly string[] allSpecials = new string[]
     {
         "1","2","3","4","5","6","7","8","9","0",
-        "@","#","$","_","£","-","+","(",")",
-        "^","©","\"","'","=","~","!","§",
+        "@","#","£","_","&","-","+","(",")",
+        "*","\"","'",":",";","/","!","?",
         ABC,SPACE,BACK
     };
 

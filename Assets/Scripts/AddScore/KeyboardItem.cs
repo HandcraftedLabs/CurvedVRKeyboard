@@ -23,8 +23,11 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void Init () {
-        letter = gameObject.GetComponentInChildren<Text>();
-        animator = gameObject.GetComponent<Animator>();
+        //check if was not destoied
+        if(letter == null) {
+            letter = gameObject.GetComponentInChildren<Text>();
+            animator = gameObject.GetComponent<Animator>();
+        }
     }
 
     private enum STATE {
