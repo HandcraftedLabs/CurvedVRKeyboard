@@ -6,16 +6,18 @@ using UnityEngine.UI;
 
 [ExecuteInEditMode]
 public class KeyboardItem: KeyboardComponent {
-    //-----------SET IN UNITY --------------
-    public Text letter;
-    //-----------SET IN UNITY --------------
 
-
+    private Text letter;
     private float clickPlayLimit = 0.15f;
     private float transitionTime = 0.01f;
     private float clickTimer = 0f;
     private bool clicked = false;
     private Animator animator;
+    private Material keyDefaultMaterial;
+    private Material keyHoldMaterial;
+    private Material keyPressedMaterial;
+
+    private Renderer renderer;
 
     public void Awake () {
         Init();
@@ -26,18 +28,15 @@ public class KeyboardItem: KeyboardComponent {
         if(letter == null || animator == null) {
             letter = gameObject.GetComponentInChildren<Text>();
             animator = gameObject.GetComponent<Animator>();
+            renderer = gameObject.GetComponent<Renderer>();
         }
     }
 
-    private enum STATE {
-        NORMAL,
-        CHOSEN,
-        CLICKED
-    }
 
     public void hovering () {
         if(!clicked) {
-            animator.CrossFade(EnumToString(STATE.CHOSEN), transitionTime);
+           changeMaterial(keyHoldMaterial);
+            Debug.Log("error2?");
         } else {//wait for some time 
             HoldClick();
         }
@@ -45,7 +44,7 @@ public class KeyboardItem: KeyboardComponent {
 
     private void HoldClick () {
         clickTimer += Time.deltaTime;
-        animator.CrossFade(EnumToString(STATE.CLICKED), transitionTime);
+        changeMaterial(keyPressedMaterial);
         if(clickTimer >= clickPlayLimit) {
             clicked = false;
             clickTimer = 0f;
@@ -53,26 +52,31 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void stopHovering () {
-        animator.CrossFade(EnumToString(STATE.NORMAL), transitionTime);
+        changeMaterial(keyDefaultMaterial);
     }
 
     public void click () {
+        Debug.Log(letter);
         clicked = true;
-        animator.CrossFade(EnumToString(STATE.CLICKED), 0.01f);
+        changeMaterial(keyPressedMaterial);
     }
 
     public string getValue () {
         return letter.text;
     }
 
-    private string EnumToString ( STATE state ) {
-        switch(state) {
-            case STATE.NORMAL:
-                return "Normal";
-            case STATE.CLICKED:
-                return "Clicked";
-            default:
-                return "Chosen";
-        }
+    public void setLetterText (string value) {
+        letter.text = value;
+    }
+
+    private void changeMaterial(Material material ) {
+        renderer.material = material;
+        Debug.Log("error?");
+    }
+
+    public void setMaterials (Material keyDefaultMaterial, Material keyHoldMaterial, Material keyPressedMaterial ) {
+        this.keyDefaultMaterial = keyDefaultMaterial;
+        this.keyHoldMaterial = keyHoldMaterial;
+        this.keyPressedMaterial = keyPressedMaterial;
     }
 }

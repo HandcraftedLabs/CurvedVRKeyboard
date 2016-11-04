@@ -19,6 +19,10 @@ class KeyboardCreator: KeyboardComponent {
     public bool buildInEditorMode;
     public Camera cam;
     public int maxLetters;
+
+    public Material keyDefaultMaterial;
+    public Material keyHoldMaterial;
+    public Material keyPressedMaterial;
     //-----------SET IN UNITY --------------
 
 
@@ -62,7 +66,8 @@ class KeyboardCreator: KeyboardComponent {
     private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
             keys[i].Init();
-            keys[i].letter.text = allLetters[i];
+            keys[i].setMaterials(keyDefaultMaterial, keyHoldMaterial, keyPressedMaterial);
+            keys[i].setLetterText(allLetters[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
         }
     }

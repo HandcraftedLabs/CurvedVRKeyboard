@@ -42,7 +42,7 @@ public class KeyboardStatus: KeyboardComponent {
         areLettersActive = !areLettersActive;
         string[] ToDisplay = areLettersActive ? allLetters : allSpecials;
         for(int i = 0;i < keys.Length;i++) {
-            keys[i].letter.text = ToDisplay[i];
+            keys[i].setLetterText(ToDisplay[i]);
         }
     }
 
@@ -54,7 +54,7 @@ public class KeyboardStatus: KeyboardComponent {
 
     private void ChangeKeysDisplayied ( string[] ToDisplay ) {
         for(int i = 0;i < keys.Length;i++) {
-            keys[i].letter.text = ToDisplay[i];
+            keys[i].setLetterText(ToDisplay[i]);
         }
     }
 
