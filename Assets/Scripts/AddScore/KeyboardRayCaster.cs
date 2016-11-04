@@ -6,11 +6,6 @@ public class KeyboardRayCaster: KeyboardComponent {
 
 
 
-
-
-    
-
-
     private Camera cam;
 
     private float rayLength;

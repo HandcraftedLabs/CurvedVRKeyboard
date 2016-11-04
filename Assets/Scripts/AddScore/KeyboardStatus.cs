@@ -8,7 +8,10 @@ using UnityEngine.UI;
 public class KeyboardStatus: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
+    [Tooltip("Textfiled on which letters will be written")]
     public Text Output;
+    [Tooltip("Max letters aviable to Type")]
+    public int maxLetters;
     //-----------SET IN UNITY --------------
 
     private KeyboardItem[] keys;
@@ -17,12 +20,11 @@ public class KeyboardStatus: KeyboardComponent {
 
     private static readonly string BLANKSPACE = " ";
 
-    private int maxLetters;
     private int currentLetter = -1;
 
     public void HandleClick ( KeyboardItem clicked ) {
         string value = clicked.getValue();
-    
+
         if(value.Equals(QEH) || value.Equals(ABC)) {//if special signs
             ChangeSpecialLetters();
         } else if(value.Equals(UP) || value.Equals(LOW)) {//if upper/lower
@@ -76,8 +78,5 @@ public class KeyboardStatus: KeyboardComponent {
         this.keys = keys;
     }
 
-    public void SetMaxLetters ( int maxLetters ) {
-        this.maxLetters = maxLetters;
-    }
 }
 

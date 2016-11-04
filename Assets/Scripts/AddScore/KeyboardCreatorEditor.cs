@@ -8,19 +8,19 @@ public class KeyboardCreatorEditor: Editor {
 
    public bool reload = false; 
 
-   private void CallbackFucntion () {
-        KeyboardCreator mTarget = target as KeyboardCreator;
-        if(mTarget.buildInEditorMode) {
-            mTarget.Start();
+   private void UpdateKeyboard () {
+        KeyboardCreator creator = target as KeyboardCreator;
+        if(creator.buildInEditorMode) {
+            creator.Start();
         }
     } 
 
     void OnEnable () {
-        EditorApplication.update += CallbackFucntion;
+        EditorApplication.update += UpdateKeyboard;
     }
     
     void onDisable () {
-        EditorApplication.update -= CallbackFucntion;
+        EditorApplication.update -= UpdateKeyboard;
     }
 
 
