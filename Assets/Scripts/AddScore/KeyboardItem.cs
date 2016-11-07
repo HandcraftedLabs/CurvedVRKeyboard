@@ -52,7 +52,6 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void click () {
-        Debug.Log(letter);
         clicked = true;
         changeMaterial(keyPressedMaterial);
     }
@@ -74,4 +73,5 @@ public class KeyboardItem: KeyboardComponent {
         this.keyHoldMaterial = keyHoldMaterial;
         this.keyPressedMaterial = keyPressedMaterial;
     }
+
 }

@@ -16,6 +16,8 @@ public class KeyboardRayCaster: KeyboardComponent {
     private KeyboardStatus keyboardStatus;
     private KeyboardItem kitemCurrent;
 
+    private string clickHandle;
+
     void Start () {
         keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
         layer = 1 << LayerMask.NameToLayer(LAYER_TO_CAST);
@@ -45,7 +47,7 @@ public class KeyboardRayCaster: KeyboardComponent {
 
             kitemCurrent.hovering();
             //if clicked
-            if(Input.GetMouseButtonDown(0)) {
+            if(Input.GetButtonDown(clickHandle)) {
                 kitemCurrent.click();
                 keyboardStatus.HandleClick(kitemCurrent);
             }
@@ -66,5 +68,9 @@ public class KeyboardRayCaster: KeyboardComponent {
 
     public void SetCamera(Camera cam ) {
         this.cam = cam;
+    }
+
+    public void SetClickButton(string clickHandler ) {
+        this.clickHandle = clickHandler;
     }
 }

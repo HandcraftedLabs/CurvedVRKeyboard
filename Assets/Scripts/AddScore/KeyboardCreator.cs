@@ -21,14 +21,14 @@ class KeyboardCreator: KeyboardComponent {
     public float yPos;
     [Tooltip("shall keyboard be flat or rounded?")]
     public bool flat;
-    [Tooltip("shall changes be calculated in editor mode \n IMPORTANT TURN THIS OFF IF YOU ARE FINISHED WITH KEYBOARD IT POSITION ALL TIME")]
+    [Tooltip("shall changes be calculated in editor mode \n IMPORTANT TURN THIS OFF IF YOU ARE FINISHED WITH KEYBOARD IT CALCULATES ALL TIME")]
     public bool buildInEditorMode;
     [Tooltip("Camera object around which keybaord will orbit")]
     public Camera cam;
- 
-
-
-    public float spaceKeyOfsetRotation;
+    [Tooltip("String containing input exaple: \"fire1\" ")]
+    public string clickHandle;
+    [Tooltip("When in circle mode space rotation may be not apropiate")]
+    public float spaceKeyOffsetRotation;
 
 
     public Material keyDefaultMaterial;
@@ -48,15 +48,18 @@ class KeyboardCreator: KeyboardComponent {
     public void Start () {
         CheckExistance();
         keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
-        spaceOffset = new Vector3(0, spaceKeyOfsetRotation, 0);
+        spaceOffset = new Vector3(0, spaceKeyOffsetRotation, 0);
         FillAndPlaceKeys();
         SetComponents();
     }
+
+
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
         rayCaster.SetRayLength(radious + 1f);
         rayCaster.SetCamera(cam);
+        rayCaster.SetClickButton(clickHandle);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
     }
