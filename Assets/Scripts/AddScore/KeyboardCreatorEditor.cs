@@ -32,8 +32,8 @@ public class KeyboardCreatorEditor: Editor {
     public override void OnInspectorGUI () {
         keyboard = target as KeyboardCreator;
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
+
         if(keyboard.PivotTransform != null) {
-            SetParent();
             keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
             keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
             keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
@@ -57,11 +57,7 @@ public class KeyboardCreatorEditor: Editor {
             
     }
 
-    private void SetParent () {
-        if( keyboard.transform.parent == null && !Application.isPlaying ) {
-            keyboard.transform.parent = keyboard.PivotTransform;
-        }
-    }
+    
 
     private void CameraFinderGui () {
         if(GUILayout.Button(FIND_CAMERA)) {

@@ -54,7 +54,7 @@ class KeyboardCreator: KeyboardComponent {
 
 
 
-    private void ManageKeys () {
+    public void ManageKeys () {
         if(keys == null) {
             keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
         }
@@ -105,7 +105,7 @@ class KeyboardCreator: KeyboardComponent {
         keyTrnsform.position = Flat?
             CalculatePositionFlat(rowLetters[(int)row], iteration - keysPlaced):
             CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
-
+        keyTrnsform.position += pivotTransform.position;
         keyTrnsform.position += transform.position;
         if(!Flat) {
             //since space is kind of bigger than any other key and keys 
