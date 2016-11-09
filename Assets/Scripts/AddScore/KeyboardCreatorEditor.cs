@@ -19,14 +19,8 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string MATERIAL_CLICKED = "Material clicked";
 
 
-    public bool reload = false; 
+ 
 
-   private void UpdateKeyboard () {
-        KeyboardCreator creator = target as KeyboardCreator;
-        if(creator.BuildInEditorMode) {
-            creator.BuildInEditor();
-        }
-    }
 
 
     public override void OnInspectorGUI () {
@@ -36,7 +30,6 @@ public class KeyboardCreatorEditor: Editor {
         keybaord.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keybaord.SpacingBetweenKeys);
         keybaord.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keybaord.RowSpacing);
         keybaord.Rotation = EditorGUILayout.FloatField(ROTATION, keybaord.Rotation);
-        keybaord.YPos = 0f;
         keybaord.Flat = EditorGUILayout.Toggle(FLAT, keybaord.Flat);
         
         keybaord.PivotObject = EditorGUILayout.ObjectField(PIVOT, keybaord.PivotObject, typeof(GameObject), true) as GameObject;
@@ -56,13 +49,7 @@ public class KeyboardCreatorEditor: Editor {
             EditorUtility.SetDirty(keybaord);
     }
 
-    void OnEnable () {
-        EditorApplication.update += UpdateKeyboard;
-    }
-    
-    void onDisable () {
-        EditorApplication.update -= UpdateKeyboard;
-    }
+
 
 
 }

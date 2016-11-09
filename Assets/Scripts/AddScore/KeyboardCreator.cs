@@ -17,8 +17,7 @@ class KeyboardCreator: KeyboardComponent {
     private float rowSpacing;
     [SerializeField]
     private float rotation;
-    [SerializeField]
-    private float yPos;
+
     [SerializeField]
     private bool flat;
     [SerializeField]
@@ -45,7 +44,6 @@ class KeyboardCreator: KeyboardComponent {
     private KeyboardItem[] keys;
     private float row;
     private static string name;
-    private Vector3 spaceOffset;
 
     private static bool wasDisabled = false;
     static GameObject gameobjectCopy;
@@ -53,25 +51,24 @@ class KeyboardCreator: KeyboardComponent {
 
     public void Start () {
         CheckExistance();
-        keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
-        spaceOffset = new Vector3(0, SpaceKeyOffsetRotation, 0);
-        FillAndPlaceKeys();
+        ManageKeys();
         ChangeMaterialOnKeys();
-        SetComponents();
     }
 
     public void BuildInEditor () {
         if(wasChanged) {
             wasChanged = false;
             CheckExistance();
-            keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
-            spaceOffset = new Vector3(0, SpaceKeyOffsetRotation, 0);
-            FillAndPlaceKeys();
-            SetComponents();
         }
-        
+
     }
 
+    private void ManageKeys () {
+        if(keys == null) {
+            keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
+        }
+        FillAndPlaceKeys();
+    }
 
 
     private void SetComponents () {
@@ -92,6 +89,7 @@ class KeyboardCreator: KeyboardComponent {
         if(wasDisabled) {
             wasDisabled = false;
             gameobjectCopy = GameObject.Find(name);
+            SetComponents();
         }
         //gameobject name changed or no name asigned yet
         if(gameobjectCopy == null || name == null || !name.Equals(gameobjectCopy.name)) {
@@ -121,7 +119,7 @@ class KeyboardCreator: KeyboardComponent {
             //rotate acording to it center rotation of this key can be 
             //a bit more than any other so there is option to set it manualy 
             if(keyTrnsform.gameObject.GetComponent<KeyboardItem>().getValue().Equals(SPACE)) {
-                keyTrnsform.LookAt(PivotObject.transform.position + spaceOffset);
+                keyTrnsform.LookAt(PivotObject.transform.position);
             }else {
                 keyTrnsform.LookAt(PivotObject.transform);
             }
@@ -142,7 +140,7 @@ class KeyboardCreator: KeyboardComponent {
         float x = Mathf.Cos(degree) * Radious;
         float z;
         z = Radious;
-        return new Vector3(x, YPos - row * RowSpacing, z);
+        return new Vector3(x, 0f - row * RowSpacing, z);
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
@@ -150,7 +148,7 @@ class KeyboardCreator: KeyboardComponent {
         float x = Mathf.Cos(degree) * Radious;
         float z;
         z =  Mathf.Sin(degree) * Radious;
-        return new Vector3(x, YPos - row * RowSpacing, z);
+        return new Vector3(x, 0f - row * RowSpacing, z);
     }
 
 
@@ -209,8 +207,9 @@ class KeyboardCreator: KeyboardComponent {
             if(radious != value) {
                 radious = value;
                 wasChanged = true;
+                ManageKeys();
             }
-                
+
         }
     }
 
@@ -222,8 +221,9 @@ class KeyboardCreator: KeyboardComponent {
             if(spacingBetweenKeys != value) {
                 wasChanged = true;
                 spacingBetweenKeys = value;
+                ManageKeys();
             }
-                
+
         }
     }
 
@@ -235,6 +235,7 @@ class KeyboardCreator: KeyboardComponent {
             if(RowSpacing != value) {
                 rowSpacing = value;
                 wasChanged = true;
+                ManageKeys();
             }
                 
         }
@@ -248,19 +249,7 @@ class KeyboardCreator: KeyboardComponent {
             if(rotation != value) {
                 rotation = value;
                 wasChanged = true;
-            }
-                
-        }
-    }
-
-    public float YPos {
-        get {
-            return yPos;
-        }
-        set {
-            if(YPos != value) {
-                yPos = value;
-                wasChanged = true;
+                ManageKeys();
             }
                 
         }
@@ -274,6 +263,7 @@ class KeyboardCreator: KeyboardComponent {
             if(flat != value) {
                 flat = value;
                 wasChanged = true;
+                ManageKeys();
             }
                 
         }
@@ -302,6 +292,7 @@ class KeyboardCreator: KeyboardComponent {
             if(SpaceKeyOffsetRotation != value) {
                 spaceKeyOffsetRotation = value;
                 wasChanged = true;
+                ManageKeys();
             }
                 
         }

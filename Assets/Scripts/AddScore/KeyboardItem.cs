@@ -61,7 +61,10 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void setLetterText (string value) {
-        letter.text = value;
+        if(!letter.text.Equals(value)) {
+            letter.text = value;
+        }
+        
     }
 
     private void changeMaterial(Material material ) {
