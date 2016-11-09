@@ -17,36 +17,70 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string MATERIAL_DEFAULT = "Material default";
     private readonly string MATERIAL_HOLD = "Material hold";
     private readonly string MATERIAL_CLICKED = "Material clicked";
+    private readonly string FIND_CAMERA = "No camera found press to find";
+    private readonly string NO_CAMERA_ERROR = "Camera wasn'f found. Add camera to scene";
 
+    private KeyboardCreator keyboard;
+    private bool noCameraFound = false;
     public void Awake () {
-        KeyboardCreator keybaord = target as KeyboardCreator;
-        keybaord.CheckExistance();
+        keyboard = target as KeyboardCreator;
+        keyboard.CheckExistance();
     }
 
 
 
     public override void OnInspectorGUI () {
-        KeyboardCreator keybaord = target as KeyboardCreator;
+        keyboard = target as KeyboardCreator;
+        keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
+        if(keyboard.PivotTransform != null) {
+            SetParent();
+            keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
+            keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
+            keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
+            keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
+            keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
 
-        keybaord.Radious = EditorGUILayout.FloatField(DISTANCE, keybaord.Radious);
-        keybaord.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keybaord.SpacingBetweenKeys);
-        keybaord.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keybaord.RowSpacing);
-        keybaord.Rotation = EditorGUILayout.FloatField(ROTATION, keybaord.Rotation);
-        keybaord.Flat = EditorGUILayout.Toggle(FLAT, keybaord.Flat);
-        
-        keybaord.PivotObject = EditorGUILayout.ObjectField(PIVOT, keybaord.PivotObject, typeof(GameObject), true) as GameObject;
-                            
-        keybaord.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keybaord.ClickHandle);
-        keybaord.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keybaord.KeyDefaultMaterial, typeof(Material), true) as Material;
-        keybaord.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keybaord.KeyHoldMaterial, typeof(Material), true) as Material;
-        keybaord.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keybaord.KeyPressedMaterial, typeof(Material), true) as Material;
+            keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
+            keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
+            keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;
+            keyboard.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keyboard.KeyPressedMaterial, typeof(Material), true) as Material;
+
+
+        } else {
+            CameraFinderGui();
+        }
+            
 
         if(GUI.changed) {
-            EditorUtility.SetDirty(keybaord);
+            EditorUtility.SetDirty(keyboard);
         }
             
     }
 
+    private void SetParent () {
+        if( keyboard.transform.parent == null && !Application.isPlaying ) {
+            keyboard.transform.parent = keyboard.PivotTransform;
+        }
+    }
+
+    private void CameraFinderGui () {
+        if(GUILayout.Button(FIND_CAMERA)) {
+            SearchForCamera();
+        }
+        if(noCameraFound) {
+            GUILayout.Label(NO_CAMERA_ERROR);
+        }
+    }
+
+    private void SearchForCamera () {
+        if(Camera.allCameras.Length != 0) {
+            noCameraFound = false;
+            keyboard.PivotTransform = Camera.allCameras[0].transform;
+        }else {
+            noCameraFound = true;
+        }
+       
+    }
 
 
 

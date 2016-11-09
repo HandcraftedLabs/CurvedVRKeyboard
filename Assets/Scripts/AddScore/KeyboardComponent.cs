@@ -21,6 +21,8 @@ public abstract class KeyboardComponent: MonoBehaviour {
     public static readonly string UP = "UP";
     public static readonly string LOW = "low";
 
+    public static readonly int CENTERITEM = 15;
+
     //Name of layer to cast must be same as layer in editor
     public static readonly string LAYER_TO_CAST = "KeyboardItem";
 

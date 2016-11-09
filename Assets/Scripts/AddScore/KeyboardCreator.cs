@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 class KeyboardCreator: KeyboardComponent {
@@ -22,7 +18,7 @@ class KeyboardCreator: KeyboardComponent {
     private bool flat;
 
     [SerializeField]
-    private GameObject pivotObject;
+    private Transform pivotTransform;
     [SerializeField]
     private string clickHandle;
     [SerializeField]
@@ -36,9 +32,9 @@ class KeyboardCreator: KeyboardComponent {
     private Material keyPressedMaterial;
 
 
-    private bool wasChanged = false;
-    //-----------SET IN UNITY --------------
 
+
+    //-----------SET IN UNITY --------------
 
     private KeyboardItem[] keys;
     private float row;
@@ -50,7 +46,9 @@ class KeyboardCreator: KeyboardComponent {
 
     public void Start () {
         CheckExistance();
+        gameobjectCopy.transform.parent = null;
         ManageKeys();
+
         ChangeMaterialOnKeys();
     }
 
@@ -60,6 +58,8 @@ class KeyboardCreator: KeyboardComponent {
         if(keys == null) {
             keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
         }
+        if(PivotTransform == null) {
+        }
         FillAndPlaceKeys();
     }
 
@@ -67,7 +67,7 @@ class KeyboardCreator: KeyboardComponent {
     private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
         rayCaster.SetRayLength(Radious + 1f);
-        rayCaster.SetCamera(PivotObject);
+        rayCaster.SetCamera(PivotTransform);
         rayCaster.SetClickButton(ClickHandle);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
@@ -106,24 +106,19 @@ class KeyboardCreator: KeyboardComponent {
             CalculatePositionFlat(rowLetters[(int)row], iteration - keysPlaced):
             CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
 
-        keyTrnsform.position += PivotObject.transform.position;
+        keyTrnsform.position += transform.position;
         if(!Flat) {
             //since space is kind of bigger than any other key and keys 
             //rotate acording to it center rotation of this key can be 
             //a bit more than any other so there is option to set it manualy 
-            if(keyTrnsform.gameObject.GetComponent<KeyboardItem>().getValue().Equals(SPACE)) {
-                keyTrnsform.LookAt(PivotObject.transform.position);
-            }else {
-                keyTrnsform.LookAt(PivotObject.transform);
-            }
+            keyTrnsform.LookAt(PivotTransform.transform);
+            
             
         }
         else {
-            keyTrnsform.RotateAround(PivotObject.transform.position, Vector3.up, -Rotation + 90);
+            keyTrnsform.RotateAround(PivotTransform.transform.position, Vector3.up, -Rotation + 90);
             keyTrnsform.eulerAngles = new Vector3(0, -Rotation -90, 0);
         }
-
-
     }
 
 
@@ -131,16 +126,14 @@ class KeyboardCreator: KeyboardComponent {
     private Vector3 CalculatePositionFlat( float rowSize, float offset ) {
         float degree = Mathf.Deg2Rad * ( 90 + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
         float x = Mathf.Cos(degree) * Radious;
-        float z;
-        z = Radious;
+        float z = Radious;
         return new Vector3(x, 0f - row * RowSpacing, z);
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
         float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
         float x = Mathf.Cos(degree) * Radious;
-        float z;
-        z =  Mathf.Sin(degree) * Radious;
+        float z = Mathf.Sin(degree) * Radious;         
         return new Vector3(x, 0f - row * RowSpacing, z);
     }
 
@@ -199,7 +192,6 @@ class KeyboardCreator: KeyboardComponent {
         set {
             if(radious != value) {
                 radious = value;
-                wasChanged = true;
                 ManageKeys();
             }
 
@@ -212,7 +204,6 @@ class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(spacingBetweenKeys != value) {
-                wasChanged = true;
                 spacingBetweenKeys = value;
                 ManageKeys();
             }
@@ -227,7 +218,6 @@ class KeyboardCreator: KeyboardComponent {
         set {
             if(RowSpacing != value) {
                 rowSpacing = value;
-                wasChanged = true;
                 ManageKeys();
             }
                 
@@ -241,7 +231,6 @@ class KeyboardCreator: KeyboardComponent {
         set {
             if(rotation != value) {
                 rotation = value;
-                wasChanged = true;
                 ManageKeys();
             }
                 
@@ -255,7 +244,6 @@ class KeyboardCreator: KeyboardComponent {
         set {
             if(flat != value) {
                 flat = value;
-                wasChanged = true;
                 ManageKeys();
             }
                 
@@ -270,7 +258,6 @@ class KeyboardCreator: KeyboardComponent {
         set {
             if(SpaceKeyOffsetRotation != value) {
                 spaceKeyOffsetRotation = value;
-                wasChanged = true;
                 ManageKeys();
             }
                 
@@ -321,15 +308,14 @@ class KeyboardCreator: KeyboardComponent {
 
 
 
-    public GameObject PivotObject {
+    public Transform PivotTransform {
         get {
-            return pivotObject;
+            return pivotTransform;
         }
 
         set {
-            if (pivotObject != value) {
-                pivotObject = value;
-                wasChanged = true;
+            if (pivotTransform != value) {
+                pivotTransform = value;
             }
                 
         }

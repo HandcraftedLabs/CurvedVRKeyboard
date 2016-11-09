@@ -6,7 +6,7 @@ public class KeyboardRayCaster: KeyboardComponent {
 
 
 
-    private GameObject pivot;
+    private Transform pivot;
 
     private float rayLength;
     private Ray ray;
@@ -29,7 +29,7 @@ public class KeyboardRayCaster: KeyboardComponent {
 
     
     private void RayCastKeyboard () {
-        ray = new Ray(pivot.transform.position, pivot.transform.forward);
+        ray = new Ray(pivot.position, pivot.forward);
         //if somthing was hit
         if(Physics.Raycast(ray, out hit, rayLength, layer)) {
             KeyboardItem focusedKitem = hit.transform.gameObject.GetComponent<KeyboardItem>();
@@ -66,7 +66,7 @@ public class KeyboardRayCaster: KeyboardComponent {
         this.rayLength = rayLength;
     }
 
-    public void SetCamera(GameObject pivot ) {
+    public void SetCamera(Transform pivot ) {
         this.pivot = pivot;
     }
 
