@@ -18,8 +18,10 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string MATERIAL_HOLD = "Material hold";
     private readonly string MATERIAL_CLICKED = "Material clicked";
 
-
- 
+    public void Awake () {
+        KeyboardCreator keybaord = target as KeyboardCreator;
+        keybaord.CheckExistance();
+    }
 
 
 
@@ -33,20 +35,16 @@ public class KeyboardCreatorEditor: Editor {
         keybaord.Flat = EditorGUILayout.Toggle(FLAT, keybaord.Flat);
         
         keybaord.PivotObject = EditorGUILayout.ObjectField(PIVOT, keybaord.PivotObject, typeof(GameObject), true) as GameObject;
-
-        if(keybaord.PivotObject != null) {
-            keybaord.BuildInEditorMode = EditorGUILayout.Toggle(TEMPORARY_IN_EDIOTR_MODE, keybaord.BuildInEditorMode);
-        }else {
-            keybaord.BuildInEditorMode = false;
-        }
-                    
+                            
         keybaord.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keybaord.ClickHandle);
         keybaord.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keybaord.KeyDefaultMaterial, typeof(Material), true) as Material;
         keybaord.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keybaord.KeyHoldMaterial, typeof(Material), true) as Material;
         keybaord.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keybaord.KeyPressedMaterial, typeof(Material), true) as Material;
 
-        if(GUI.changed)
+        if(GUI.changed) {
             EditorUtility.SetDirty(keybaord);
+        }
+            
     }
 
 

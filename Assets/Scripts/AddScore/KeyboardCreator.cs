@@ -20,8 +20,7 @@ class KeyboardCreator: KeyboardComponent {
 
     [SerializeField]
     private bool flat;
-    [SerializeField]
-    private bool buildInEditorMode;
+
     [SerializeField]
     private GameObject pivotObject;
     [SerializeField]
@@ -55,13 +54,7 @@ class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
     }
 
-    public void BuildInEditor () {
-        if(wasChanged) {
-            wasChanged = false;
-            CheckExistance();
-        }
 
-    }
 
     private void ManageKeys () {
         if(keys == null) {
@@ -85,17 +78,17 @@ class KeyboardCreator: KeyboardComponent {
     //since the gameobject can't be set by "gameobject ==" we need a copy
     //of gameobject. When gameobject is destroied we assign new copy
     //if somone would refer to gameobject error would be thrown
-    private void CheckExistance () {
+    public void CheckExistance () {
         if(wasDisabled) {
             wasDisabled = false;
             gameobjectCopy = GameObject.Find(name);
-            SetComponents();
         }
         //gameobject name changed or no name asigned yet
         if(gameobjectCopy == null || name == null || !name.Equals(gameobjectCopy.name)) {
             gameobjectCopy = gameObject;
             name = gameObject.name;
         }
+        SetComponents();
     }
 
     private void FillAndPlaceKeys () {
@@ -264,20 +257,6 @@ class KeyboardCreator: KeyboardComponent {
                 flat = value;
                 wasChanged = true;
                 ManageKeys();
-            }
-                
-        }
-    }
-
-    public bool BuildInEditorMode {
-        get {
-            return buildInEditorMode;
-        }
-
-        set {
-            if(buildInEditorMode != value) {
-                buildInEditorMode = value;
-                wasChanged = true;
             }
                 
         }
