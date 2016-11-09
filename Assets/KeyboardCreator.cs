@@ -75,7 +75,7 @@ class KeyboardCreator: KeyboardComponent {
             gameobjectCopy = GameObject.Find(name);
         }
         //gameobject name changed or no name asigned yet
-        if(name == null || !name.Equals(gameobjectCopy.name)) { 
+        if(gameobjectCopy == null || name == null || !name.Equals(gameobjectCopy.name)) {
             name = gameObject.name;
             gameobjectCopy = gameObject;
         }
