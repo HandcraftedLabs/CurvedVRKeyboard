@@ -22,9 +22,14 @@ public class KeyboardCreatorEditor: Editor {
 
     private KeyboardCreator keyboard;
     private bool noCameraFound = false;
+
+
     public void Awake () {
         keyboard = target as KeyboardCreator;
         keyboard.CheckExistance();
+        keyboard.transform.position = Vector3.zero;
+        // comneted for debuging purpouse
+        //keyboard.transform.hideFlags = HideFlags.NotEditable;
     }
 
 
@@ -34,6 +39,8 @@ public class KeyboardCreatorEditor: Editor {
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
 
         if(keyboard.PivotTransform != null) {
+
+
             keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
             keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
             keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
@@ -74,9 +81,9 @@ public class KeyboardCreatorEditor: Editor {
             keyboard.PivotTransform = Camera.allCameras[0].transform;
         }else {
             noCameraFound = true;
-        }
-       
+        }  
     }
+
 
 
 

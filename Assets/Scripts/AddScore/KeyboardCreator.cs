@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-class KeyboardCreator: KeyboardComponent {
+[ExecuteInEditMode]
+public class KeyboardCreator: KeyboardComponent {
 
 
     //-----------SET IN UNITY --------------
@@ -13,10 +14,8 @@ class KeyboardCreator: KeyboardComponent {
     private float rowSpacing;
     [SerializeField]
     private float rotation;
-
     [SerializeField]
     private bool flat;
-
     [SerializeField]
     private Transform pivotTransform;
     [SerializeField]
@@ -52,6 +51,13 @@ class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
     }
 
+
+    public void Update () {
+        if(!Application.isPlaying && PivotTransform != null) {//editor isn't palying and pivot is set
+            transform.position = PivotTransform.transform.position;
+            transform.localRotation =  Quaternion.identity;
+        }
+    }
 
 
     public void ManageKeys () {
@@ -106,7 +112,7 @@ class KeyboardCreator: KeyboardComponent {
             CalculatePositionFlat(rowLetters[(int)row], iteration - keysPlaced):
             CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
         keyTrnsform.position += pivotTransform.position;
-        keyTrnsform.position += transform.position;
+
         if(!Flat) {
             //since space is kind of bigger than any other key and keys 
             //rotate acording to it center rotation of this key can be 
@@ -172,6 +178,7 @@ class KeyboardCreator: KeyboardComponent {
         wasDisabled = true;
     }
 
+    
 
     private void ChangeMaterialOnKeys () {
         foreach (KeyboardItem key in keys) {
