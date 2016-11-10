@@ -28,54 +28,52 @@ public class KeyboardCreatorEditor: Editor {
         keyboard = target as KeyboardCreator;
         keyboard.CheckExistance();
         keyboard.transform.position = Vector3.zero;
-        // comneted for debuging purpouse
-        //keyboard.transform.hideFlags = HideFlags.NotEditable;
     }
-
 
 
     public override void OnInspectorGUI () {
         keyboard = target as KeyboardCreator;
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
-
-        if(keyboard.PivotTransform != null) {
-
-
-            keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
-            keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
-            keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
-            keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
-            keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
-
-            keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
-            keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
-            keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;
-            keyboard.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keyboard.KeyPressedMaterial, typeof(Material), true) as Material;
-
-
+        // if there is a pivot object users are allowed to modify values
+        if(keyboard.PivotTransform != null) { 
+            DrawMemebers();
         } else {
             CameraFinderGui();
         }
             
-
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboard);
         }
-            
     }
 
-    
+
+    private void DrawMemebers () {
+        keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
+        keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
+        keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
+        keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
+        keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
+
+        keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
+        keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
+        keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;
+        keyboard.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keyboard.KeyPressedMaterial, typeof(Material), true) as Material;
+    }
+
 
     private void CameraFinderGui () {
         if(GUILayout.Button(FIND_CAMERA)) {
             SearchForCamera();
         }
+        //if after button press there is no camera show warning
         if(noCameraFound) {
             GUILayout.Label(NO_CAMERA_ERROR);
         }
     }
 
+
     private void SearchForCamera () {
+        //if there is camera
         if(Camera.allCameras.Length != 0) {
             noCameraFound = false;
             keyboard.PivotTransform = Camera.allCameras[0].transform;

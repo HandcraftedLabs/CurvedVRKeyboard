@@ -22,16 +22,12 @@ public class KeyboardCreator: KeyboardComponent {
     private string clickHandle;
     [SerializeField]
     private float spaceKeyOffsetRotation;
-
     [SerializeField]
     private Material keyDefaultMaterial;
     [SerializeField]
     private Material keyHoldMaterial;
     [SerializeField]
     private Material keyPressedMaterial;
-
-
-
 
     //-----------SET IN UNITY --------------
 
@@ -51,9 +47,11 @@ public class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
     }
 
-
+    //here update isn't called every frame in gameplay
+    //it is called only in editor to move keybaord 
+    //according to camera
     public void Update () {
-        if(!Application.isPlaying && PivotTransform != null) {//editor isn't palying and pivot is set
+        if(!Application.isPlaying && PivotTransform != null) {
             transform.position = PivotTransform.transform.position;
             transform.localRotation =  Quaternion.identity;
         }
@@ -63,8 +61,6 @@ public class KeyboardCreator: KeyboardComponent {
     public void ManageKeys () {
         if(keys == null) {
             keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
-        }
-        if(PivotTransform == null) {
         }
         FillAndPlaceKeys();
     }
@@ -114,12 +110,8 @@ public class KeyboardCreator: KeyboardComponent {
         keyTrnsform.position += pivotTransform.position;
 
         if(!Flat) {
-            //since space is kind of bigger than any other key and keys 
-            //rotate acording to it center rotation of this key can be 
-            //a bit more than any other so there is option to set it manualy 
             keyTrnsform.LookAt(PivotTransform.transform);
-            
-            
+            //TODO space will be handled otherway in Future
         }
         else {
             keyTrnsform.RotateAround(PivotTransform.transform.position, Vector3.up, -Rotation + 90);
@@ -312,8 +304,6 @@ public class KeyboardCreator: KeyboardComponent {
              
         }
     }
-
-
 
     public Transform PivotTransform {
         get {
