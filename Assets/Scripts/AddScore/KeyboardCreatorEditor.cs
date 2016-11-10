@@ -28,11 +28,13 @@ public class KeyboardCreatorEditor: Editor {
         keyboard = target as KeyboardCreator;
         keyboard.CheckExistance();
         keyboard.transform.position = Vector3.zero;
+        if(keyboard.PivotTransform != null) {
+            keyboard.ManageKeys();
+        }
     }
 
 
     public override void OnInspectorGUI () {
-        keyboard = target as KeyboardCreator;
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
         // if there is a pivot object users are allowed to modify values
         if(keyboard.PivotTransform != null) { 
