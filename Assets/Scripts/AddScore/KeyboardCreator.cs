@@ -36,7 +36,7 @@ public class KeyboardCreator: KeyboardComponent {
     private static string name;
 
     private static bool wasDisabled = false;
-    static GameObject gameobjectCopy;
+    public static GameObject gameobjectCopy;
 
 
     public void Start () {
@@ -104,35 +104,26 @@ public class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        keyTrnsform.position = Flat?
-            CalculatePositionFlat(rowLetters[(int)row], iteration - keysPlaced):
-            CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
-        keyTrnsform.position += pivotTransform.position;
+        Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
 
-        if(!Flat) {
-            keyTrnsform.LookAt(PivotTransform.transform);
-            //TODO space will be handled otherway in Future
-        }
-        else {
-            keyTrnsform.RotateAround(PivotTransform.transform.position, Vector3.up, -Rotation + 90);
-            keyTrnsform.eulerAngles = new Vector3(0, -Rotation -90, 0);
-        }
-    }
+        position += gameobjectCopy.transform.position;
+        keyTrnsform.position = position;
+        keyTrnsform.LookAt(new Vector3(gameobjectCopy.transform.position.x, position.y,gameobjectCopy.transform.position.z) );
+        position.z -= Radious;
+        position.x = position.x * gameobjectCopy.transform.localScale.x;
+        keyTrnsform.position = position;
 
+        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
+        keyTrnsform.RotateAround(gameobjectCopy.transform.position,Vector3.right,gameobjectCopy.transform.rotation.eulerAngles.x);
+        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.up, gameobjectCopy.transform.rotation.eulerAngles.y);
 
-
-    private Vector3 CalculatePositionFlat( float rowSize, float offset ) {
-        float degree = Mathf.Deg2Rad * ( 90 + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
-        float x = Mathf.Cos(degree) * Radious;
-        float z = Radious;
-        return new Vector3(x, 0f - row * RowSpacing, z);
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
         float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
         float x = Mathf.Cos(degree) * Radious;
         float z = Mathf.Sin(degree) * Radious;         
-        return new Vector3(x, 0f - row * RowSpacing, z);
+        return new Vector3(x, -row * RowSpacing, z);
     }
 
 
@@ -191,6 +182,8 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(radious != value) {
                 radious = value;
+                //spacingBetweenKeys = 22.0f / radious;
+                //rowSpacing = 0.18f * gameobjectCopy.transform.localScale.y;
                 ManageKeys();
             }
 
@@ -199,7 +192,8 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float SpacingBetweenKeys {
         get {
-            return spacingBetweenKeys;
+
+            return 22f/Radious;
         }
         set {
             if(spacingBetweenKeys != value) {
@@ -212,7 +206,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float RowSpacing {
         get {
-            return rowSpacing;
+            return 0.19f * gameobjectCopy.transform.localScale.y;
         }
         set {
             if(RowSpacing != value) {
@@ -327,6 +321,7 @@ public class KeyboardCreator: KeyboardComponent {
             clickHandle =  value ;
         }
     }
+
 }
 
 

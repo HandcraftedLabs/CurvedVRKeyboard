@@ -27,7 +27,6 @@ public class KeyboardCreatorEditor: Editor {
     public void Awake () {
         keyboard = target as KeyboardCreator;
         keyboard.CheckExistance();
-        keyboard.transform.position = Vector3.zero;
         if(keyboard.PivotTransform != null) {
             keyboard.ManageKeys();
         }
@@ -35,6 +34,7 @@ public class KeyboardCreatorEditor: Editor {
 
 
     public override void OnInspectorGUI () {
+        keyboard.CheckExistance();
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
         // if there is a pivot object users are allowed to modify values
         if(keyboard.PivotTransform != null) { 
@@ -46,15 +46,18 @@ public class KeyboardCreatorEditor: Editor {
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboard);
         }
+        //if(KeyboardCreator.gameobjectCopy.transform.hasChanged) {
+        //    keyboard.ManageKeys();
+        //}
     }
 
 
     private void DrawMemebers () {
         keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
-        keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
-        keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
-        keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
-        keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
+        //keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
+        //keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
+        //keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
+        //keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
 
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
