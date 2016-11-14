@@ -51,10 +51,10 @@ public class KeyboardCreator: KeyboardComponent {
     //it is called only in editor to move keybaord 
     //according to camera
     public void Update () {
-        if(!Application.isPlaying && PivotTransform != null) {
-            transform.position = PivotTransform.transform.position;
-            transform.localRotation =  Quaternion.identity;
-        }
+        //if(!Application.isPlaying && PivotTransform != null) {
+        //    transform.position = PivotTransform.transform.position;
+        //    transform.localRotation =  Quaternion.identity;
+        //}
     }
 
 
