@@ -105,22 +105,33 @@ public class KeyboardCreator: KeyboardComponent {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
         Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
+        position = AdditionalTransformations(keyTrnsform, position);
+        LookAtTransformations(keyTrnsform, position);
+        RotationTransformations(keyTrnsform);
 
-        position += gameobjectCopy.transform.position;
-        keyTrnsform.position = position;
+    }
 
-        position.z -= Radious;
-
-        position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
-        position.y = position.y / gameobjectCopy.transform.localScale.x;
-        keyTrnsform.position = position;
-        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Radious * gameobjectCopy.transform.localScale.x ));
-        keyTrnsform.LookAt(lookAT);
-        //Debug.Log(lookAT);
+    private static void RotationTransformations ( Transform keyTrnsform ) {
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.right, gameobjectCopy.transform.rotation.eulerAngles.x);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.up, gameobjectCopy.transform.rotation.eulerAngles.y);
+    }
 
+    private void LookAtTransformations ( Transform keyTrnsform, Vector3 position ) {
+        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Radious * gameobjectCopy.transform.localScale.x ));
+        keyTrnsform.LookAt(lookAT);
+    }
+
+    private Vector3 AdditionalTransformations ( Transform keyTrnsform, Vector3 position ) {
+        //radiousCalculations
+        position += gameobjectCopy.transform.position;
+        position.z -= Radious;
+        //scaleCalculations
+        position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
+        position.y = position.y / gameobjectCopy.transform.localScale.x;
+
+        keyTrnsform.position = position;
+        return position;
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
