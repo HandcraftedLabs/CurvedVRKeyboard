@@ -60,10 +60,11 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     //gameobject can be destroyed when we are stoping gameplay
-    //(we are using gameobject out of gameplay also to manupulate it on scene)
+    //(we are using gameobject out of gameplay also to manipulate it on scene)
     //since the gameobject can't be set by "gameobject ==" we need a copy
     //of gameobject. When gameobject is destroied we assign new copy
     //if somone would refer to gameobject error would be thrown
+    //WARINING NEVER REFER TO "gameobject" ALWAYS USE "gameobjectCopy"
     public void CheckExistance () {
         if(wasDisabled) {
             wasDisabled = false;
@@ -204,7 +205,6 @@ public class KeyboardCreator: KeyboardComponent {
                 curvature = 1f - value;                
                 ManageKeys();
             }
-
         }
     }
 
@@ -225,7 +225,6 @@ public class KeyboardCreator: KeyboardComponent {
         get {
             return keyDefaultMaterial;
         }
-
         set {
             if(KeyDefaultMaterial != value) {
                 keyDefaultMaterial = value;
@@ -239,7 +238,6 @@ public class KeyboardCreator: KeyboardComponent {
         get {
             return keyHoldMaterial;
         }
-
         set {
             if(keyHoldMaterial != value) {
                 keyHoldMaterial = value;
@@ -253,7 +251,6 @@ public class KeyboardCreator: KeyboardComponent {
         get {
             return keyPressedMaterial;
         }
-
         set {
             if(KeyPressedMaterial != value) {
                 keyPressedMaterial = value;
@@ -267,7 +264,6 @@ public class KeyboardCreator: KeyboardComponent {
         get {
             return raycastingCamera;
         }
-
         set {
             if(raycastingCamera != value) {
                 raycastingCamera = value;
@@ -280,7 +276,6 @@ public class KeyboardCreator: KeyboardComponent {
         get {
             return clickHandle;
         }
-
         set {
             clickHandle = value;
         }
