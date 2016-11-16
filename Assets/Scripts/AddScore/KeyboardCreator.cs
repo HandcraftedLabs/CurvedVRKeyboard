@@ -7,7 +7,6 @@ public class KeyboardCreator: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
     [SerializeField]
-    [Range(0, 1)]
     private float curvature;
     [SerializeField]
     private Camera raycastingCamera;
