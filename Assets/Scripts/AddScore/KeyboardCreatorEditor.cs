@@ -50,24 +50,24 @@ public class KeyboardCreatorEditor: Editor {
     }
 
     private void HandleScaleChange () {
-        if(keyboard.transform.hasChanged) {
-            //x scale changed
-            if(keyboard.transform.localScale.x != keyboardScale.x) {
+        //x scale changed
+        if(keyboard.transform.localScale.x != keyboardScale.x) {
                 keyboardScale.x = keyboard.transform.localScale.x;
                 keyboardScale.z = keyboard.transform.localScale.x;
-            //z scale changed
-            } else if(keyboard.transform.localScale.z != keyboardScale.z) {
+                keyboardScale.y = keyboard.transform.localScale.y;
+                keyboard.transform.localScale = keyboardScale;
+        //z scale changed
+        } else if(keyboard.transform.localScale.z != keyboardScale.z) {
                 keyboardScale.z = keyboard.transform.localScale.z;
                 keyboardScale.x = keyboard.transform.localScale.z;
-            }
-            keyboardScale.y = keyboard.transform.localScale.y;
-            keyboard.transform.localScale = keyboardScale;
+                keyboardScale.y = keyboard.transform.localScale.y;
+                keyboard.transform.localScale = keyboardScale;
         }
     }
 
     private void DrawMemebers () {
         
-        keyboard.Curvature = 1f - Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature));
+        keyboard.Curvature = Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature));
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
         keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;

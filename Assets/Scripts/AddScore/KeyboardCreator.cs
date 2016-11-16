@@ -85,13 +85,13 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
+    private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
         Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
-        position = AdditionalTransformations(keyTrnsform, position);
-        LookAtTransformations(keyTrnsform, position);
-        RotationTransformations(keyTrnsform);
+        position = AdditionalTransformations(keyTransform, position);
+        LookAtTransformations(keyTransform, position);
+        RotationTransformations(keyTransform);
 
     }
 
@@ -102,20 +102,34 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     private void LookAtTransformations ( Transform keyTrnsform, Vector3 position ) {
-        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( CurvatureToDistance() * gameobjectCopy.transform.localScale.x ));
+        float xPos = gameobjectCopy.transform.position.x;
+        float yPos = position.y;
+        float zOffset = ( CurvatureToDistance() * gameobjectCopy.transform.localScale.x );
+        float zPos = gameobjectCopy.transform.position.z - zOffset;
+        Vector3 lookAT = new Vector3(xPos, yPos , zPos);
         keyTrnsform.LookAt(lookAT);
     }
 
-    private Vector3 AdditionalTransformations ( Transform keyTrnsform, Vector3 position ) {
-        //radiousCalculations
-        position += gameobjectCopy.transform.position;
-        position.z -= CurvatureToDistance();
-        //scaleCalculations
-        position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
-        position.y = position.y / gameobjectCopy.transform.localScale.x;
+    private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 keyPosition ) {
+        // keyposition + position of Whole keyboard as component
+        keyPosition += gameobjectCopy.transform.position;
+        // moving out by distance from center
+        keyPosition.z -= CurvatureToDistance();
+        //create backup of y for code readability
+        float yPositionBackup = keyPosition.y;
+        // Vector from circle center to key (end - start)
+        Vector3 fromCenterToKey = ( keyPosition - gameobjectCopy.transform.position );
+        // scale of keybaord as whole element
+        float scaleOfX = ( gameobjectCopy.transform.localScale.x - 1 ) ;
+        //we move each key along it backward direction by scale
+        keyPosition = keyPosition + fromCenterToKey * scaleOfX;
+        
+        //we modified y in upper calculations time to restore it as 
+        //we need it to be unmodified
+        keyPosition.y = yPositionBackup;
 
-        keyTrnsform.position = position;
-        return position;
+        keyTransform.position = keyPosition;
+        return keyPosition;
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
@@ -124,7 +138,8 @@ public class KeyboardCreator: KeyboardComponent {
 
         float x = Mathf.Cos(degree) * CurvatureToDistance();
         float z = Mathf.Sin(degree) * CurvatureToDistance();
-        return new Vector3(x, -row * RowSpacing, z);
+        float y = -row * RowSpacing;
+        return new Vector3(x, y, z);
     }
 
     // After getting to new row we need to reset offset relative to iteration
@@ -182,11 +197,11 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float Curvature {
         get {
-            return curvature;
+            return 1f - curvature;
         }
         set {
-            if(curvature != value) {
-                curvature = value;                
+            if(curvature != 1f - value) {
+                curvature = 1f - value;                
                 ManageKeys();
             }
 
