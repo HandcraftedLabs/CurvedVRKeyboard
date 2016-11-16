@@ -38,12 +38,9 @@ public class KeyboardCreator: KeyboardComponent {
     private static bool wasDisabled = false;
     public static GameObject gameobjectCopy;
 
-
     public void Start () {
         CheckExistance();
-        gameobjectCopy.transform.parent = null;
         ManageKeys();
-
         ChangeMaterialOnKeys();
     }
 
@@ -221,7 +218,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float RowSpacing {
         get {
-            return 1f * gameobjectCopy.transform.localScale.y;
+            return 0.96f * gameobjectCopy.transform.localScale.y;
         }
         set {
             if(RowSpacing != value) {
@@ -336,7 +333,7 @@ public class KeyboardCreator: KeyboardComponent {
             clickHandle = value;
         }
     }
-
+    
 }
 
 

@@ -21,7 +21,12 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string NO_CAMERA_ERROR = "Camera wasn'f found. Add camera to scene";
 
     private KeyboardCreator keyboard;
+    private Vector3 keyboardScale;
     private bool noCameraFound = false;
+
+
+    private float xScalePrevious;
+    private float zScalePrevious;
 
 
     public void Awake () {
@@ -30,34 +35,44 @@ public class KeyboardCreatorEditor: Editor {
         if(keyboard.PivotTransform != null) {
             keyboard.ManageKeys();
         }
+        keyboardScale = keyboard.transform.localScale;
+
     }
 
 
     public override void OnInspectorGUI () {
         keyboard.CheckExistance();
         keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
+        HandleScaleChange();
         // if there is a pivot object users are allowed to modify values
-        if(keyboard.PivotTransform != null) { 
+        if(keyboard.PivotTransform != null) {
             DrawMemebers();
         } else {
             CameraFinderGui();
         }
-            
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboard);
         }
-        //if(KeyboardCreator.gameobjectCopy.transform.hasChanged) {
-        //    keyboard.ManageKeys();
-        //}
+
     }
 
+    private void HandleScaleChange () {
+        if(keyboard.transform.hasChanged) {
+            if(keyboard.transform.localScale.x != keyboardScale.x) {
+                keyboardScale.x = keyboard.transform.localScale.x;
+                keyboardScale.z = keyboard.transform.localScale.x;
+            } else if(keyboard.transform.localScale.z != keyboardScale.z) {
+                keyboardScale.z = keyboard.transform.localScale.z;
+                keyboardScale.x = keyboard.transform.localScale.z;
+            }
+            keyboardScale.y = keyboard.transform.localScale.y;
+            keyboard.transform.localScale = keyboardScale;
+        }
+    }
 
     private void DrawMemebers () {
         keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
-        //keyboard.SpacingBetweenKeys = EditorGUILayout.FloatField(COLUM_NDISTANCE, keyboard.SpacingBetweenKeys);
-        //keyboard.RowSpacing = EditorGUILayout.FloatField(KEY_SPACE_ROWS, keyboard.RowSpacing);
-        //keyboard.Rotation = EditorGUILayout.FloatField(ROTATION, keyboard.Rotation);
-        //keyboard.Flat = EditorGUILayout.Toggle(FLAT, keyboard.Flat);
+
 
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
