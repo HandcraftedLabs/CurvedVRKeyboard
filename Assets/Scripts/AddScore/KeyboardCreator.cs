@@ -103,14 +103,16 @@ public class KeyboardCreator: KeyboardComponent {
 
     private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
         //check row and how many keys were palced
+        //float mover = -Mathf.Atan(gameobjectCopy.transform.localScale.x - 1) * 2 / 3;
+
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
         Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
 
         position += gameobjectCopy.transform.position;
         keyTrnsform.position = position;
         keyTrnsform.LookAt(new Vector3(gameobjectCopy.transform.position.x, position.y,gameobjectCopy.transform.position.z) );
-        position.z -= Radious;
-        position.x = position.x * gameobjectCopy.transform.localScale.x;
+
+        position.z -= Radious * gameobjectCopy.transform.localScale.x;
         keyTrnsform.position = position;
 
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
@@ -120,9 +122,9 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
-        float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
-        float x = Mathf.Cos(degree) * Radious;
-        float z = Mathf.Sin(degree) * Radious;         
+        float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys ) ;
+        float x = Mathf.Cos(degree) * Radious * gameobjectCopy.transform.localScale.x;
+        float z = Mathf.Sin(degree) * Radious * gameobjectCopy.transform.localScale.x;         
         return new Vector3(x, -row * RowSpacing, z);
     }
 
