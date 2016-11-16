@@ -7,6 +7,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
     [SerializeField]
+    [Range(0, 1)]
     private float curvature;
     [SerializeField]
     private Camera raycastingCamera;
@@ -31,7 +32,7 @@ public class KeyboardCreator: KeyboardComponent {
     public static GameObject gameobjectCopy;
 
     //-------private Calculations--------
-    private readonly float defaultSpaceingColumns = 55f;
+    private readonly float defaultSpaceingColumns = 56.3f;
     private readonly float defaultSpacingRows = 0.96f;
     private readonly float defaultRotation = 90f;
 
@@ -52,7 +53,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
-        rayCaster.SetRayLength(Curvature + 1f);
+        rayCaster.SetRayLength(CurvatureToDistance() + 1f);
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
@@ -102,14 +103,14 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     private void LookAtTransformations ( Transform keyTrnsform, Vector3 position ) {
-        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Curvature * gameobjectCopy.transform.localScale.x ));
+        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( CurvatureToDistance() * gameobjectCopy.transform.localScale.x ));
         keyTrnsform.LookAt(lookAT);
     }
 
     private Vector3 AdditionalTransformations ( Transform keyTrnsform, Vector3 position ) {
         //radiousCalculations
         position += gameobjectCopy.transform.position;
-        position.z -= Curvature;
+        position.z -= CurvatureToDistance();
         //scaleCalculations
         position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
         position.y = position.y / gameobjectCopy.transform.localScale.x;
@@ -122,8 +123,8 @@ public class KeyboardCreator: KeyboardComponent {
         //row size - offset of current letter position
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
-        float x = Mathf.Cos(degree) * Curvature;
-        float z = Mathf.Sin(degree) * Curvature;
+        float x = Mathf.Cos(degree) * CurvatureToDistance();
+        float z = Mathf.Sin(degree) * CurvatureToDistance();
         return new Vector3(x, -row * RowSpacing, z);
     }
 
@@ -169,11 +170,17 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
-
+    private float CurvatureToDistance () {
+        return Mathf.Tan(curvature *1.57f) + 3;
+        
+    }
 
 
 
     //---------------PROPERTIES----------------
+
+
+
     public float Curvature {
         get {
             return curvature;
@@ -189,7 +196,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float SpacingBetweenKeys {
         get {
-            return defaultSpaceingColumns / Curvature ;
+            return defaultSpaceingColumns / CurvatureToDistance() ;
         }
     }
 

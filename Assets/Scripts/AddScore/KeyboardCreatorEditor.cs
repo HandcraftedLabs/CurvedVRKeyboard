@@ -66,8 +66,8 @@ public class KeyboardCreatorEditor: Editor {
     }
 
     private void DrawMemebers () {
-        keyboard.Curvature = EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature);
-
+        
+        keyboard.Curvature = 1f - Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature));
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
         keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;
