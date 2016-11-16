@@ -98,33 +98,35 @@ public class KeyboardCreator: KeyboardComponent {
             keys[i].Init();
             keys[i].setLetterText(allLetters[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
-       }
+        }
     }
 
     private void PositionSingleLetter ( int iteration, Transform keyTrnsform ) {
         //check row and how many keys were palced
-        //float mover = -Mathf.Atan(gameobjectCopy.transform.localScale.x - 1) * 2 / 3;
-
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
         Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
 
         position += gameobjectCopy.transform.position;
         keyTrnsform.position = position;
-        keyTrnsform.LookAt(new Vector3(gameobjectCopy.transform.position.x, position.y,gameobjectCopy.transform.position.z) );
 
-        position.z -= Radious * gameobjectCopy.transform.localScale.x;
+        position.z -= Radious;
+
+        position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
+        position.y = position.y / gameobjectCopy.transform.localScale.x;
         keyTrnsform.position = position;
-
+        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Radious * gameobjectCopy.transform.localScale.x ));
+        keyTrnsform.LookAt(lookAT);
+        //Debug.Log(lookAT);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
-        keyTrnsform.RotateAround(gameobjectCopy.transform.position,Vector3.right,gameobjectCopy.transform.rotation.eulerAngles.x);
+        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.right, gameobjectCopy.transform.rotation.eulerAngles.x);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.up, gameobjectCopy.transform.rotation.eulerAngles.y);
 
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
-        float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys ) ;
-        float x = Mathf.Cos(degree) * Radious * gameobjectCopy.transform.localScale.x;
-        float z = Mathf.Sin(degree) * Radious * gameobjectCopy.transform.localScale.x;         
+        float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
+        float x = Mathf.Cos(degree) * Radious;
+        float z = Mathf.Sin(degree) * Radious;
         return new Vector3(x, -row * RowSpacing, z);
     }
 
@@ -163,10 +165,10 @@ public class KeyboardCreator: KeyboardComponent {
         wasDisabled = true;
     }
 
-    
+
 
     private void ChangeMaterialOnKeys () {
-        foreach (KeyboardItem key in keys) {
+        foreach(KeyboardItem key in keys) {
             key.setMaterials(KeyDefaultMaterial, KeyHoldMaterial, KeyPressedMaterial);
         }
     }
@@ -195,7 +197,7 @@ public class KeyboardCreator: KeyboardComponent {
     public float SpacingBetweenKeys {
         get {
 
-            return 22f/Radious;
+            return 55f / Radious;
         }
         set {
             if(spacingBetweenKeys != value) {
@@ -208,14 +210,14 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float RowSpacing {
         get {
-            return 0.19f * gameobjectCopy.transform.localScale.y;
+            return 1f * gameobjectCopy.transform.localScale.y;
         }
         set {
             if(RowSpacing != value) {
                 rowSpacing = value;
                 ManageKeys();
             }
-                
+
         }
     }
 
@@ -228,7 +230,7 @@ public class KeyboardCreator: KeyboardComponent {
                 rotation = value;
                 ManageKeys();
             }
-                
+
         }
     }
 
@@ -241,7 +243,7 @@ public class KeyboardCreator: KeyboardComponent {
                 flat = value;
                 ManageKeys();
             }
-                
+
         }
     }
 
@@ -255,7 +257,7 @@ public class KeyboardCreator: KeyboardComponent {
                 spaceKeyOffsetRotation = value;
                 ManageKeys();
             }
-                
+
         }
     }
 
@@ -269,7 +271,7 @@ public class KeyboardCreator: KeyboardComponent {
                 keyDefaultMaterial = value;
                 ChangeMaterialOnKeys();
             }
-                
+
         }
     }
 
@@ -283,7 +285,7 @@ public class KeyboardCreator: KeyboardComponent {
                 keyHoldMaterial = value;
                 ChangeMaterialOnKeys();
             }
-                
+
         }
     }
 
@@ -297,7 +299,7 @@ public class KeyboardCreator: KeyboardComponent {
                 keyPressedMaterial = value;
                 ChangeMaterialOnKeys();
             }
-             
+
         }
     }
 
@@ -307,10 +309,10 @@ public class KeyboardCreator: KeyboardComponent {
         }
 
         set {
-            if (pivotTransform != value) {
+            if(pivotTransform != value) {
                 pivotTransform = value;
             }
-                
+
         }
     }
 
@@ -320,12 +322,11 @@ public class KeyboardCreator: KeyboardComponent {
         }
 
         set {
-            clickHandle =  value ;
+            clickHandle = value;
         }
     }
 
 }
-
 
 
 
