@@ -44,17 +44,6 @@ public class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
     }
 
-    //here update isn't called every frame in gameplay
-    //it is called only in editor to move keybaord 
-    //according to camera
-    public void Update () {
-        //if(!Application.isPlaying && PivotTransform != null) {
-        //    transform.position = PivotTransform.transform.position;
-        //    transform.localRotation =  Quaternion.identity;
-        //}
-    }
-
-
     public void ManageKeys () {
         if(keys == null) {
             keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
@@ -138,8 +127,6 @@ public class KeyboardCreator: KeyboardComponent {
         return new Vector3(x, -row * RowSpacing, z);
     }
 
-
-
     // After getting to new row we need to reset offset relative to iteration
     // so all keys spawn in front of user centered
     private float CalculateKeysPlacedAndRow ( int iteration ) {
@@ -193,9 +180,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(radious != value) {
-                radious = value;
-                //spacingBetweenKeys = 22.0f / radious;
-                //rowSpacing = 0.18f * gameobjectCopy.transform.localScale.y;
+                radious = value;                
                 ManageKeys();
             }
 

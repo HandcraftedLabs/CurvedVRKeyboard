@@ -36,7 +36,6 @@ public class KeyboardCreatorEditor: Editor {
             keyboard.ManageKeys();
         }
         keyboardScale = keyboard.transform.localScale;
-
     }
 
 
@@ -58,9 +57,11 @@ public class KeyboardCreatorEditor: Editor {
 
     private void HandleScaleChange () {
         if(keyboard.transform.hasChanged) {
+            //x scale changed
             if(keyboard.transform.localScale.x != keyboardScale.x) {
                 keyboardScale.x = keyboard.transform.localScale.x;
                 keyboardScale.z = keyboard.transform.localScale.x;
+            //z scale changed
             } else if(keyboard.transform.localScale.z != keyboardScale.z) {
                 keyboardScale.z = keyboard.transform.localScale.z;
                 keyboardScale.x = keyboard.transform.localScale.z;
@@ -72,7 +73,6 @@ public class KeyboardCreatorEditor: Editor {
 
     private void DrawMemebers () {
         keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
-
 
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
