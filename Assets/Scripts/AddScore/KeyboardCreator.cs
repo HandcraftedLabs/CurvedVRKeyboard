@@ -7,17 +7,9 @@ public class KeyboardCreator: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
     [SerializeField]
-    private float radious;
+    private float curvature;
     [SerializeField]
-    private float spacingBetweenKeys;
-    [SerializeField]
-    private float rowSpacing;
-    [SerializeField]
-    private float rotation;
-    [SerializeField]
-    private bool flat;
-    [SerializeField]
-    private Transform pivotTransform;
+    private Camera raycastingCamera;
     [SerializeField]
     private string clickHandle;
     [SerializeField]
@@ -38,6 +30,12 @@ public class KeyboardCreator: KeyboardComponent {
     private static bool wasDisabled = false;
     public static GameObject gameobjectCopy;
 
+    //-------private Calculations--------
+    private readonly float defaultSpaceingColumns = 55f;
+    private readonly float defaultSpacingRows = 0.96f;
+    private readonly float defaultRotation = 90f;
+
+
     public void Start () {
         CheckExistance();
         ManageKeys();
@@ -54,8 +52,8 @@ public class KeyboardCreator: KeyboardComponent {
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
-        rayCaster.SetRayLength(Radious + 1f);
-        rayCaster.SetCamera(PivotTransform);
+        rayCaster.SetRayLength(Curvature + 1f);
+        rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
@@ -97,21 +95,21 @@ public class KeyboardCreator: KeyboardComponent {
 
     }
 
-    private static void RotationTransformations ( Transform keyTrnsform ) {
+    private void RotationTransformations ( Transform keyTrnsform ) {
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.right, gameobjectCopy.transform.rotation.eulerAngles.x);
         keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.up, gameobjectCopy.transform.rotation.eulerAngles.y);
     }
 
     private void LookAtTransformations ( Transform keyTrnsform, Vector3 position ) {
-        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Radious * gameobjectCopy.transform.localScale.x ));
+        Vector3 lookAT = new Vector3(gameobjectCopy.transform.position.x, position.y, gameobjectCopy.transform.position.z - ( Curvature * gameobjectCopy.transform.localScale.x ));
         keyTrnsform.LookAt(lookAT);
     }
 
     private Vector3 AdditionalTransformations ( Transform keyTrnsform, Vector3 position ) {
         //radiousCalculations
         position += gameobjectCopy.transform.position;
-        position.z -= Radious;
+        position.z -= Curvature;
         //scaleCalculations
         position = position + ( ( -gameobjectCopy.transform.position + position ) * ( gameobjectCopy.transform.localScale.x - 1 ) );
         position.y = position.y / gameobjectCopy.transform.localScale.x;
@@ -121,9 +119,11 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
-        float degree = Mathf.Deg2Rad * ( Rotation + rowSize * ( SpacingBetweenKeys / 2 ) - offset * SpacingBetweenKeys );
-        float x = Mathf.Cos(degree) * Radious;
-        float z = Mathf.Sin(degree) * Radious;
+        //row size - offset of current letter position
+        float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
+
+        float x = Mathf.Cos(degree) * Curvature;
+        float z = Mathf.Sin(degree) * Curvature;
         return new Vector3(x, -row * RowSpacing, z);
     }
 
@@ -174,13 +174,13 @@ public class KeyboardCreator: KeyboardComponent {
 
 
     //---------------PROPERTIES----------------
-    public float Radious {
+    public float Curvature {
         get {
-            return radious;
+            return curvature;
         }
         set {
-            if(radious != value) {
-                radious = value;                
+            if(curvature != value) {
+                curvature = value;                
                 ManageKeys();
             }
 
@@ -189,70 +189,16 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float SpacingBetweenKeys {
         get {
-
-            return 55f / Radious;
-        }
-        set {
-            if(spacingBetweenKeys != value) {
-                spacingBetweenKeys = value;
-                ManageKeys();
-            }
-
+            return defaultSpaceingColumns / Curvature ;
         }
     }
 
     public float RowSpacing {
         get {
-            return 0.96f * gameobjectCopy.transform.localScale.y;
-        }
-        set {
-            if(RowSpacing != value) {
-                rowSpacing = value;
-                ManageKeys();
-            }
-
+            return defaultSpacingRows * gameobjectCopy.transform.localScale.y;
         }
     }
 
-    public float Rotation {
-        get {
-            return rotation;
-        }
-        set {
-            if(rotation != value) {
-                rotation = value;
-                ManageKeys();
-            }
-
-        }
-    }
-
-    public bool Flat {
-        get {
-            return flat;
-        }
-        set {
-            if(flat != value) {
-                flat = value;
-                ManageKeys();
-            }
-
-        }
-    }
-
-    public float SpaceKeyOffsetRotation {
-        get {
-            return spaceKeyOffsetRotation;
-        }
-
-        set {
-            if(SpaceKeyOffsetRotation != value) {
-                spaceKeyOffsetRotation = value;
-                ManageKeys();
-            }
-
-        }
-    }
 
     public Material KeyDefaultMaterial {
         get {
@@ -296,14 +242,14 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    public Transform PivotTransform {
+    public Camera RaycastingCamera {
         get {
-            return pivotTransform;
+            return raycastingCamera;
         }
 
         set {
-            if(pivotTransform != value) {
-                pivotTransform = value;
+            if(raycastingCamera != value) {
+                raycastingCamera = value;
             }
 
         }

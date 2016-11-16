@@ -6,13 +6,8 @@ using UnityEditor;
 [CanEditMultipleObjects]
 public class KeyboardCreatorEditor: Editor {
 
-    private readonly string DISTANCE = "Distance";
-    private readonly string COLUM_NDISTANCE = "Distance between columns";
-    private readonly string KEY_SPACE_ROWS = "Distance between rows";
-    private readonly string ROTATION= "Rotation around central point";
-    private readonly string FLAT = "Flatten keybaord?";
-    private readonly string TEMPORARY_IN_EDIOTR_MODE = "Build at runtime?";
-    private readonly string PIVOT = "Pivot object";
+    private readonly string CURVATURE = "Curvature";
+    private readonly string CAMERA = "Camera";
     private readonly string CLICKINPUTCOMMAND = "Input command";
     private readonly string MATERIAL_DEFAULT = "Material default";
     private readonly string MATERIAL_HOLD = "Material hold";
@@ -32,7 +27,7 @@ public class KeyboardCreatorEditor: Editor {
     public void Awake () {
         keyboard = target as KeyboardCreator;
         keyboard.CheckExistance();
-        if(keyboard.PivotTransform != null) {
+        if(keyboard.RaycastingCamera != null) {
             keyboard.ManageKeys();
         }
         keyboardScale = keyboard.transform.localScale;
@@ -41,10 +36,10 @@ public class KeyboardCreatorEditor: Editor {
 
     public override void OnInspectorGUI () {
         keyboard.CheckExistance();
-        keyboard.PivotTransform = EditorGUILayout.ObjectField(PIVOT, keyboard.PivotTransform, typeof(Transform), true) as Transform;
+        keyboard.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboard.RaycastingCamera, typeof(Transform), true) as Camera;
         HandleScaleChange();
         // if there is a pivot object users are allowed to modify values
-        if(keyboard.PivotTransform != null) {
+        if(keyboard.RaycastingCamera != null) {
             DrawMemebers();
         } else {
             CameraFinderGui();
@@ -52,7 +47,6 @@ public class KeyboardCreatorEditor: Editor {
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboard);
         }
-
     }
 
     private void HandleScaleChange () {
@@ -72,7 +66,7 @@ public class KeyboardCreatorEditor: Editor {
     }
 
     private void DrawMemebers () {
-        keyboard.Radious = EditorGUILayout.FloatField(DISTANCE, keyboard.Radious);
+        keyboard.Curvature = EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature);
 
         keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
         keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
@@ -96,7 +90,7 @@ public class KeyboardCreatorEditor: Editor {
         //if there is camera
         if(Camera.allCameras.Length != 0) {
             noCameraFound = false;
-            keyboard.PivotTransform = Camera.allCameras[0].transform;
+            keyboard.RaycastingCamera = Camera.allCameras[0];
         }else {
             noCameraFound = true;
         }  
