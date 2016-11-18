@@ -71,7 +71,7 @@ public class KeyboardCreatorEditor: Editor {
         keyboardCreator.Curvature = Mathf.Clamp01((float)curvatureValue / 100.0f);
         keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
         keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
-        keyboardCreator.KeyHoverMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoverMaterial, typeof(Material), true) as Material;
+        keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
         keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(CLICKED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
     }
 

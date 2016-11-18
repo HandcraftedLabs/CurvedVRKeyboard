@@ -3,24 +3,30 @@ using System.Collections;
 using UnityEngine.UI;
 
 
-public class KeyboardItem : KeyboardComponent {
+public class KeyboardItem: KeyboardComponent {
     private Text letter;
 
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
 
-    private Material keyDefaultMaterial;
-    private Material keyHoveringMaterial;
-    private Material keyPressedMaterial;
+    public Material keyDefaultMaterial;
+    public Material keyHoveringMaterial;
+    public Material keyPressedMaterial;
 
     private new Renderer renderer;
 
-    public void Awake() {
+    public enum MaterialEnum {
+        Default,
+        Hovering,
+        Pressed
+    }
+
+    public void Awake () {
         Init();
     }
 
-    public void Init() {
+    public void Init () {
         // check if was not destroyed
         if(letter == null || renderer == null) {
             letter = gameObject.GetComponentInChildren<Text>();
@@ -28,16 +34,15 @@ public class KeyboardItem : KeyboardComponent {
         }
     }
 
-    public void Hovering() {
+    public void Hovering () {
         if(!clicked) {
             ChangeMaterial(keyHoveringMaterial);
-        }
-        else { 
+        } else {
             HoldClick();
         }
     }
 
-    private void HoldClick() {
+    private void HoldClick () {
         ChangeMaterial(keyPressedMaterial);
 
         clickHoldTimer += Time.deltaTime;
@@ -47,32 +52,46 @@ public class KeyboardItem : KeyboardComponent {
         }
     }
 
-    public void StopHovering() {
+    public void StopHovering () {
         ChangeMaterial(keyDefaultMaterial);
     }
 
-    public void Click() {
+    public void Click () {
         clicked = true;
         ChangeMaterial(keyPressedMaterial);
     }
 
-    public string GetValue() {
+    public string GetValue () {
         return letter.text;
     }
 
-    public void SetKeyText(string value) {
+    public void SetKeyText ( string value ) {
         if(!letter.text.Equals(value)) {
             letter.text = value;
         }
     }
 
-    private void ChangeMaterial(Material material) {
+    private void ChangeMaterial ( Material material ) {
         renderer.material = material;
     }
 
-    public void SetMaterials(Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial) {
+    public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
         this.keyDefaultMaterial = keyDefaultMaterial;
         this.keyHoveringMaterial = keyHoveringMaterial;
         this.keyPressedMaterial = keyPressedMaterial;
+    }
+
+    public void SetMaterial ( MaterialEnum materialEnum, Material newMaterial ) {
+        switch(materialEnum) {
+            case MaterialEnum.Default:
+                keyDefaultMaterial = newMaterial;
+                break;
+            case MaterialEnum.Hovering:
+                keyHoveringMaterial = newMaterial;
+                break;
+            case MaterialEnum.Pressed:
+                keyPressedMaterial = newMaterial;
+                break;
+        }
     }
 }

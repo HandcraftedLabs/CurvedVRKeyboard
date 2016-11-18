@@ -31,7 +31,6 @@ public class KeyboardCreator: KeyboardComponent {
     private float centerPointDistance;
 
     public void Start () {
-        Curvature = 1f;
         ChangeMaterialOnKeys();
         SetComponents();
         ManageKeys();
@@ -68,7 +67,7 @@ public class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row], iteration - keysPlaced);
+        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] -1, iteration - keysPlaced);
         position = AdditionalTransformations(keyTransform, position);
         LookAtTransformations(keyTransform, position.y);
         RotationTransformations(keyTransform);
@@ -142,13 +141,6 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
-
-    private void ChangeMaterialOnKeys () {
-        foreach(KeyboardItem key in keys) {
-            key.SetMaterials(KeyDefaultMaterial, KeyHoverMaterial, KeyPressedMaterial);
-        }
-    }
-
     /// <summary>
     /// tan (x * 1,57) - tan is in range of <0,3.14>, With
     /// this approach we can scale it to range <0(0),1(close to infinity)>.
@@ -159,7 +151,11 @@ public class KeyboardCreator: KeyboardComponent {
     private void CurvatureToDistance () {
         centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
     }
-
+    private void ChangeMaterialOnKeys () {
+        foreach(KeyboardItem key in keys) {
+            key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
+        }
+    }
 
 
     //---------------PROPERTIES----------------
@@ -199,20 +195,24 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(KeyDefaultMaterial != value) {
                 keyDefaultMaterial = value;
-                ChangeMaterialOnKeys();
-            }
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterial(KeyboardItem.MaterialEnum.Default, keyDefaultMaterial);
+                }
 
+            }
         }
     }
 
-    public Material KeyHoverMaterial {
+    public Material KeyHoveringMaterial {
         get {
             return keyHoverMaterial;
         }
         set {
             if(keyHoverMaterial != value) {
                 keyHoverMaterial = value;
-                ChangeMaterialOnKeys();
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterial(KeyboardItem.MaterialEnum.Hovering, keyHoverMaterial);
+                }
             }
 
         }
@@ -225,7 +225,9 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(KeyPressedMaterial != value) {
                 keyPressedMaterial = value;
-                ChangeMaterialOnKeys();
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterial(KeyboardItem.MaterialEnum.Pressed, keyPressedMaterial);
+                }
             }
 
         }
