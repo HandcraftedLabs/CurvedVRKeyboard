@@ -28,22 +28,27 @@ public class KeyboardCreator: KeyboardComponent {
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
-    private float centerPointDistance;
+    private float centerPointDistance = -1f;
 
     public void Start () {
+        ManageKeys();
         ChangeMaterialOnKeys();
         SetComponents();
-        ManageKeys();
-
     }
 
     public void ManageKeys () {
         if(keys == null) {
-            keys = GetComponentsInChildren<KeyboardItem>();
+            InitKeys();
+        }
+        if(centerPointDistance == -1f) {
+            CurvatureToDistance();
         }
         FillAndPlaceKeys();
     }
 
+    public void InitKeys () {
+        keys = GetComponentsInChildren<KeyboardItem>();
+    }
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
@@ -151,7 +156,8 @@ public class KeyboardCreator: KeyboardComponent {
     private void CurvatureToDistance () {
         centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
     }
-    private void ChangeMaterialOnKeys () {
+
+    public void ChangeMaterialOnKeys () {
         foreach(KeyboardItem key in keys) {
             key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
         }
@@ -168,6 +174,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(curvature != 1f - value) {
+                Debug.Log("change");
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
@@ -210,9 +217,6 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(keyHoverMaterial != value) {
                 keyHoverMaterial = value;
-                foreach(KeyboardItem key in keys) {
-                    key.SetMaterial(KeyboardItem.MaterialEnum.Hovering, keyHoverMaterial);
-                }
             }
 
         }
@@ -225,9 +229,6 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(KeyPressedMaterial != value) {
                 keyPressedMaterial = value;
-                foreach(KeyboardItem key in keys) {
-                    key.SetMaterial(KeyboardItem.MaterialEnum.Pressed, keyPressedMaterial);
-                }
             }
 
         }
