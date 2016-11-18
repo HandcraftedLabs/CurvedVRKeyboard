@@ -3,78 +3,76 @@ using System.Collections;
 using UnityEngine.UI;
 
 
-
-public class KeyboardItem: KeyboardComponent {
-
+public class KeyboardItem : KeyboardComponent {
     private Text letter;
-    private float clickPlayLimit = 0.15f;
-    private float transitionTime = 0.01f;
-    private float clickTimer = 0f;
+
     private bool clicked = false;
+    private float clickHoldTimer = 0f;
+    private float clickHoldTimeLimit = 0.15f;
+
     private Material keyDefaultMaterial;
-    private Material keyHoldMaterial;
+    private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
-    private Renderer renderer;
+    private new Renderer renderer;
 
-    public void Awake () {
+    public void Awake() {
         Init();
     }
 
-    public void Init () {
-        //check if was not destroyed
+    public void Init() {
+        // check if was not destroyed
         if(letter == null || renderer == null) {
             letter = gameObject.GetComponentInChildren<Text>();
             renderer = gameObject.GetComponent<Renderer>();
         }
     }
 
-
-    public void hovering () {
+    public void Hovering() {
         if(!clicked) {
-           changeMaterial(keyHoldMaterial);
-        } else {//wait for some time 
+            ChangeMaterial(keyHoveringMaterial);
+        }
+        else { 
             HoldClick();
         }
     }
 
-    private void HoldClick () {
-        clickTimer += Time.deltaTime;
-        changeMaterial(keyPressedMaterial);
-        if(clickTimer >= clickPlayLimit) {
+    private void HoldClick() {
+        ChangeMaterial(keyPressedMaterial);
+
+        clickHoldTimer += Time.deltaTime;
+        if(clickHoldTimer >= clickHoldTimeLimit) {
             clicked = false;
-            clickTimer = 0f;
+            clickHoldTimer = 0f;
         }
     }
 
-    public void stopHovering () {
-        changeMaterial(keyDefaultMaterial);
+    public void StopHovering() {
+        ChangeMaterial(keyDefaultMaterial);
     }
 
-    public void click () {
+    public void Click() {
         clicked = true;
-        changeMaterial(keyPressedMaterial);
+        ChangeMaterial(keyPressedMaterial);
     }
 
-    public string getValue () {
+    public string GetValue() {
         return letter.text;
     }
 
-    public void setLetterText (string value) {
+    public void SetKeyText(string value) {
         if(!letter.text.Equals(value)) {
             letter.text = value;
         }
-        
     }
 
-    private void changeMaterial(Material material ) {
+    private void ChangeMaterial(Material material) {
         renderer.material = material;
     }
 
-    public void setMaterials (Material keyDefaultMaterial, Material keyHoldMaterial, Material keyPressedMaterial ) {
+    public void SetMaterials(Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial) {
         this.keyDefaultMaterial = keyDefaultMaterial;
-        this.keyHoldMaterial = keyHoldMaterial;
+        this.keyHoveringMaterial = keyHoveringMaterial;
         this.keyPressedMaterial = keyPressedMaterial;
     }
-
 }

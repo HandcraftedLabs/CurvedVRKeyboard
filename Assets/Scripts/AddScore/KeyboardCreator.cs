@@ -25,14 +25,14 @@ public class KeyboardCreator: KeyboardComponent {
 
     private KeyboardItem[] keys;
     private float row;
-    private static string name;
+    private static string objectName;
 
     private static bool wasDisabled = false;
     public static GameObject gameobjectCopy;
 
     //-------private Calculations--------
-    private readonly float defaultSpaceingColumns = 56.3f;
-    private readonly float defaultSpacingRows = 0.96f;
+    private readonly float defaultSpacingColumns = 56.3f;
+    private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
 
 
@@ -52,7 +52,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
-        rayCaster.SetRayLength(CurvatureToDistance() + 1f);
+        rayCaster.SetRayLength(50.0f /*CurvatureToDistance() + 1f*/);
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
         KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
@@ -68,12 +68,12 @@ public class KeyboardCreator: KeyboardComponent {
     public void CheckExistance () {
         if(wasDisabled) {
             wasDisabled = false;
-            gameobjectCopy = GameObject.Find(name);
+            gameobjectCopy = GameObject.Find(objectName);
         }
         //gameobject name changed or no name asigned yet
-        if(gameobjectCopy == null || name == null || !name.Equals(gameobjectCopy.name)) {
+        if(gameobjectCopy == null || objectName == null || !objectName.Equals(gameobjectCopy.name)) {
             gameobjectCopy = gameObject;
-            name = gameObject.name;
+            objectName = gameObject.name;
         }
         SetComponents();
     }
@@ -81,7 +81,7 @@ public class KeyboardCreator: KeyboardComponent {
     private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
             keys[i].Init();
-            keys[i].setLetterText(allLetters[i]);
+            keys[i].SetKeyText(allLettersLowercase[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
         }
     }
@@ -89,7 +89,7 @@ public class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        Vector3 position = CalculatePositionCirlce(rowLetters[(int)row], iteration - keysPlaced);
+        Vector3 position = CalculatePositionCirlce(lettersInRowsCount[(int)row], iteration - keysPlaced);
         position = AdditionalTransformations(keyTransform, position);
         LookAtTransformations(keyTransform, position);
         RotationTransformations(keyTransform);
@@ -147,26 +147,26 @@ public class KeyboardCreator: KeyboardComponent {
     // so all keys spawn in front of user centered
     private float CalculateKeysPlacedAndRow ( int iteration ) {
         float keysPlaced = 0;
-        if(iteration < rowLetters[0]) {//if is in firstrow
+        if(iteration < lettersInRowsCount[0]) {//if is in firstrow
             keysPlaced = 0;
             row = 0;
-        } else if(iteration < rowLetters[0] + rowLetters[1]) {//if is secondrow
-            keysPlaced = rowLetters[0];
+        } else if(iteration < lettersInRowsCount[0] + lettersInRowsCount[1]) {//if is secondrow
+            keysPlaced = lettersInRowsCount[0];
             row = 1;
-        } else if(iteration < rowLetters[0] + rowLetters[1] + rowLetters[2]) {//thirdrow
-            keysPlaced = rowLetters[0] + rowLetters[1];
+        } else if(iteration < lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {//thirdrow
+            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1];
             row = 2;
         }
         //now are special signs they need to be set manually (their offset) 
-        else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2]) {//?!#
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2];
-        } else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2] + 1) {//space
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2] - 1.5f;
-        } else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2] + 2) { // backspace
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2] - 3f;
+        else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {//?!#
+            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2];
+        } else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] + 1) {//space
+            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] - 1.5f;
+        } else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] + 2) { // backspace
+            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] - 3f;
         }
         //set third row for special keys
-        if(iteration >= rowLetters[0] + rowLetters[1] + rowLetters[2]) {
+        if(iteration >= lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {
             row = 3;
         }
         return keysPlaced;
@@ -180,7 +180,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     private void ChangeMaterialOnKeys () {
         foreach(KeyboardItem key in keys) {
-            key.setMaterials(KeyDefaultMaterial, KeyHoldMaterial, KeyPressedMaterial);
+            key.SetMaterials(KeyDefaultMaterial, KeyHoldMaterial, KeyPressedMaterial);
         }
     }
 
@@ -210,7 +210,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float SpacingBetweenKeys {
         get {
-            return defaultSpaceingColumns / CurvatureToDistance() ;
+            return defaultSpacingColumns / CurvatureToDistance() ;
         }
     }
 

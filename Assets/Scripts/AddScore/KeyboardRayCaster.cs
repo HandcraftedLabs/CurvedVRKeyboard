@@ -3,9 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class KeyboardRayCaster: KeyboardComponent {
-
-
-
     private Camera raycastingCamera;
 
     private float rayLength;
@@ -14,9 +11,9 @@ public class KeyboardRayCaster: KeyboardComponent {
     private LayerMask layer;
 
     private KeyboardStatus keyboardStatus;
-    private KeyboardItem kitemCurrent;
+    private KeyboardItem keyItemCurrent;
 
-    private string clickHandle;
+    private string clickInputName;
 
     void Start () {
         keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
@@ -30,47 +27,40 @@ public class KeyboardRayCaster: KeyboardComponent {
     
     private void RayCastKeyboard () {
         ray = new Ray(raycastingCamera.transform.position, raycastingCamera.transform.forward);
-        //if somthing was hit
-        if(Physics.Raycast(ray, out hit, rayLength, layer)) {
-            KeyboardItem focusedKitem = hit.transform.gameObject.GetComponent<KeyboardItem>();
-            
-            //if there is none current
-            if(kitemCurrent == null) {
-                kitemCurrent = focusedKitem;
+
+        if(Physics.Raycast(ray, out hit, rayLength, layer)) { // if any key was hit
+            KeyboardItem focusedKeyItem = hit.transform.gameObject.GetComponent<KeyboardItem>();
+
+            ChangeCurrentKeyItem(focusedKeyItem);
+            keyItemCurrent.Hovering();
+
+            // if key clicked
+            if(Input.GetButtonDown(clickInputName)) {
+                keyItemCurrent.Click();
+                keyboardStatus.HandleClick(keyItemCurrent);
             }
-
-            //if previous is different
-            if(focusedKitem != kitemCurrent) {
-                kitemCurrent.stopHovering();
-                kitemCurrent = focusedKitem;
-            }
-
-            kitemCurrent.hovering();
-            //if clicked
-            if(Input.GetButtonDown(clickHandle)) {
-                kitemCurrent.click();
-                keyboardStatus.HandleClick(kitemCurrent);
-            }
-
-
-
         }
-        //if no target hit and lost focus on item
-        else if(kitemCurrent != null) {
-            kitemCurrent.stopHovering();
-            kitemCurrent = null;
+        // if no target hit and lost focus on item
+        else if(keyItemCurrent != null) {
+            ChangeCurrentKeyItem(null);
         }
+    }
+
+    void ChangeCurrentKeyItem(KeyboardItem key) {
+        if (keyItemCurrent != null)
+            keyItemCurrent.StopHovering();
+        keyItemCurrent = key;
     }
 
     public void SetRayLength (float rayLength) {
         this.rayLength = rayLength;
     }
 
-    public void SetCamera(Camera pivot ) {
+    public void SetCamera(Camera pivot) {
         this.raycastingCamera = pivot;
     }
 
-    public void SetClickButton(string clickHandler ) {
-        this.clickHandle = clickHandler;
+    public void SetClickButton(string clickHandler) {
+        this.clickInputName = clickHandler;
     }
 }
