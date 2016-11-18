@@ -36,7 +36,7 @@ public class KeyboardCreatorEditor: Editor {
 
     public override void OnInspectorGUI () {
         keyboard.CheckExistance();
-        keyboard.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboard.RaycastingCamera, typeof(Transform), true) as Camera;
+        keyboard.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboard.RaycastingCamera, typeof(Camera), true) as Camera;
         HandleScaleChange();
         // if there is a pivot object users are allowed to modify values
         if(keyboard.RaycastingCamera != null) {
