@@ -91,24 +91,20 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 keyPosition ) {
-        // keyposition + position of Whole keyboard as component
         keyPosition += transform.position;
-        // moving out by distance from center
         keyPosition.z -= centerPointDistance;
-
         float yPositionBackup = keyPosition.y;
-        // Vector from circle center
         Vector3 fromCenterToKey = ( keyPosition - transform.position );
-        // scale of keybaord as whole element
         float scaleOfX = ( transform.localScale.x - 1 ) ;
+
         //we move each key along it backward direction by scale
         keyPosition = keyPosition + fromCenterToKey * scaleOfX;
         
-        //we modified y in upper calculations time to restore it as 
-        //we need it to be unmodified
+        //we modified y in upper calculations restore it 
         keyPosition.y = yPositionBackup;
 
         keyTransform.position = keyPosition;
+
         return keyPosition;
     }
 
@@ -125,18 +121,18 @@ public class KeyboardCreator: KeyboardComponent {
     // After getting to new row we need to reset offset relative to iteration
     // so all keys spawn in front of user centered
     private float CalculateKeysPlacedAndRow ( int iteration ) {
-        float keysPlaced = 0; // first row
+        float keysPlaced = 0;
         row = 0;
 
         int iterationCounter = 0;
-        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {
+        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {//for each row
             iterationCounter += lettersInRowsCount[rowChecked];
             if(iteration >= iterationCounter) {
                 keysPlaced += lettersInRowsCount[rowChecked];
                 row++;
             }
         }
-
+        //last row with space requires special calculations
         if(iteration >= iterationCounter) {
             const float offsetBetweenSpecialKeys = 1.5f;
             keysPlaced -= ( iteration - iterationCounter ) * offsetBetweenSpecialKeys;
