@@ -20,9 +20,6 @@ public class KeyboardCreatorEditor: Editor {
     private bool noCameraFound = false;
 
 
-    private float xScalePrevious;
-    private float zScalePrevious;
-
 
     private void Awake () {
         keyboardCreator = target as KeyboardCreator;
@@ -70,7 +67,8 @@ public class KeyboardCreatorEditor: Editor {
 
     private void DrawMemebers () {
         //so value of curvature is always between [0,1]
-        keyboardCreator.Curvature = Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboardCreator.Curvature));
+        int curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
+        keyboardCreator.Curvature = Mathf.Clamp01((float)curvatureValue / 100.0f);
         keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
         keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
         keyboardCreator.KeyHoverMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoverMaterial, typeof(Material), true) as Material;
