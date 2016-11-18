@@ -54,6 +54,6 @@ public abstract class KeyboardComponent : MonoBehaviour {
     };
 
     // Do not change this
-    public static readonly float[] lettersInRowsCount = new float[] { 10f, 9f, 8f, 6f };
+    public static readonly int[] lettersInRowsCount = new int[] { 10, 9, 8, 6 };
 
 }

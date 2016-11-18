@@ -8,14 +8,14 @@ public class KeyboardCreatorEditor: Editor {
 
     private readonly string CURVATURE = "Curvature";
     private readonly string CAMERA = "Camera";
-    private readonly string CLICKINPUTCOMMAND = "Input command";
-    private readonly string MATERIAL_DEFAULT = "Material default";
-    private readonly string MATERIAL_HOLD = "Material hold";
-    private readonly string MATERIAL_CLICKED = "Material clicked";
-    private readonly string FIND_CAMERA = "No camera found press to find";
-    private readonly string NO_CAMERA_ERROR = "Camera wasn'f found. Add camera to scene";
+    private readonly string CLICK_INPUT_COMMAND = "Click input Name";
+    private readonly string DEFAULT_MATERIAL = "Default Material";
+    private readonly string HOVERING_MATERIAL = "Hovering  Material";
+    private readonly string CLICKED_MATERIAL = "Clicked Material";
+    private readonly string FIND_CAMERA = "No camera found. Press to find";
+    private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
-    private KeyboardCreator keyboard;
+    private KeyboardCreator keyboardCreator;
     private Vector3 keyboardScale;
     private bool noCameraFound = false;
 
@@ -24,61 +24,64 @@ public class KeyboardCreatorEditor: Editor {
     private float zScalePrevious;
 
 
-    public void Awake () {
-        keyboard = target as KeyboardCreator;
-        keyboard.CheckExistance();
-        if(keyboard.RaycastingCamera != null) {
-            keyboard.ManageKeys();
+    private void Awake () {
+        keyboardCreator = target as KeyboardCreator;
+        if(keyboardCreator.RaycastingCamera != null) {
+            keyboardCreator.ManageKeys();
         }
-        keyboardScale = keyboard.transform.localScale;
+        keyboardScale = keyboardCreator.transform.localScale;
     }
 
 
     public override void OnInspectorGUI () {
-        keyboard.CheckExistance();
-        keyboard.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboard.RaycastingCamera, typeof(Camera), true) as Camera;
+        keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
         HandleScaleChange();
         // if there is a pivot object users are allowed to modify values
-        if(keyboard.RaycastingCamera != null) {
+        if(keyboardCreator.RaycastingCamera != null) {
             DrawMemebers();
         } else {
             CameraFinderGui();
         }
         if(GUI.changed) {
-            EditorUtility.SetDirty(keyboard);
+            EditorUtility.SetDirty(keyboardCreator);
         }
     }
 
     private void HandleScaleChange () {
-        //x scale changed
-        if(keyboard.transform.localScale.x != keyboardScale.x) {
-                keyboardScale.x = keyboard.transform.localScale.x;
-                keyboardScale.z = keyboard.transform.localScale.x;
-                keyboardScale.y = keyboard.transform.localScale.y;
-                keyboard.transform.localScale = keyboardScale;
-        //z scale changed
-        } else if(keyboard.transform.localScale.z != keyboardScale.z) {
-                keyboardScale.z = keyboard.transform.localScale.z;
-                keyboardScale.x = keyboard.transform.localScale.z;
-                keyboardScale.y = keyboard.transform.localScale.y;
-                keyboard.transform.localScale = keyboardScale;
+        float neededXScale = float.NaN;
+        if(keyboardCreator.transform.localScale.x != keyboardScale.x) { // x scale changed
+            neededXScale = keyboardCreator.transform.localScale.x;
+        } else if(keyboardCreator.transform.localScale.z != keyboardScale.z) { // z scale changed
+            neededXScale = keyboardCreator.transform.localScale.z;
         }
+
+        if(!float.IsNaN(neededXScale)) {
+            ChangeScale(neededXScale, keyboardCreator.transform.localScale.y);
+        }
+
+            
+    }
+
+    private void ChangeScale ( float horiziontalScale, float y ) {
+        keyboardScale.x = keyboardScale.z = horiziontalScale;
+        keyboardScale.y = y;
+        keyboardCreator.transform.localScale = keyboardScale;
     }
 
     private void DrawMemebers () {
-        //so value of curbaature is alwyas between [0,1]
-        keyboard.Curvature = Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboard.Curvature));
-        keyboard.ClickHandle = EditorGUILayout.TextField(CLICKINPUTCOMMAND, keyboard.ClickHandle);
-        keyboard.KeyDefaultMaterial = EditorGUILayout.ObjectField(MATERIAL_DEFAULT, keyboard.KeyDefaultMaterial, typeof(Material), true) as Material;
-        keyboard.KeyHoldMaterial = EditorGUILayout.ObjectField(MATERIAL_HOLD, keyboard.KeyHoldMaterial, typeof(Material), true) as Material;
-        keyboard.KeyPressedMaterial = EditorGUILayout.ObjectField(MATERIAL_CLICKED, keyboard.KeyPressedMaterial, typeof(Material), true) as Material;
+        //so value of curvature is always between [0,1]
+        keyboardCreator.Curvature = Mathf.Clamp01(EditorGUILayout.FloatField(CURVATURE, keyboardCreator.Curvature));
+        keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
+        keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
+        keyboardCreator.KeyHoverMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoverMaterial, typeof(Material), true) as Material;
+        keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(CLICKED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
     }
 
 
     private void CameraFinderGui () {
-        if(GUILayout.Button(FIND_CAMERA)) {
+        bool clicked = GUILayout.Button(FIND_CAMERA);
+        if(clicked)
             SearchForCamera();
-        }
         //if after button press there is no camera show warning
         if(noCameraFound) {
             GUILayout.Label(NO_CAMERA_ERROR);
@@ -90,7 +93,7 @@ public class KeyboardCreatorEditor: Editor {
         //if there is camera
         if(Camera.allCameras.Length != 0) {
             noCameraFound = false;
-            keyboard.RaycastingCamera = Camera.allCameras[0];
+            keyboardCreator.RaycastingCamera = Camera.allCameras[0];
         }else {
             noCameraFound = true;
         }  

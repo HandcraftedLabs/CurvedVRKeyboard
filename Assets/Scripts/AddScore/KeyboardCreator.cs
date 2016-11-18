@@ -13,70 +13,49 @@ public class KeyboardCreator: KeyboardComponent {
     [SerializeField]
     private string clickHandle;
     [SerializeField]
-    private float spaceKeyOffsetRotation;
-    [SerializeField]
     private Material keyDefaultMaterial;
     [SerializeField]
-    private Material keyHoldMaterial;
+    private Material keyHoverMaterial;
     [SerializeField]
     private Material keyPressedMaterial;
 
     //-----------SET IN UNITY --------------
 
     private KeyboardItem[] keys;
-    private float row;
-    private static string objectName;
-
-    private static bool wasDisabled = false;
-    public static GameObject gameobjectCopy;
+    private int row;
 
     //-------private Calculations--------
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
-
+    private float centerPointDistance;
 
     public void Start () {
-        CheckExistance();
-        ManageKeys();
+        Curvature = 1f;
         ChangeMaterialOnKeys();
+        SetComponents();
+        ManageKeys();
+
     }
 
     public void ManageKeys () {
         if(keys == null) {
-            keys = gameobjectCopy.GetComponentsInChildren<KeyboardItem>();
+            keys = GetComponentsInChildren<KeyboardItem>();
         }
         FillAndPlaceKeys();
     }
 
 
     private void SetComponents () {
-        KeyboardRayCaster rayCaster = gameobjectCopy.GetComponent<KeyboardRayCaster>();
-        rayCaster.SetRayLength(50.0f /*CurvatureToDistance() + 1f*/);
+        KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
+        //TODO Later update it to detect furthest point on update method
+        rayCaster.SetRayLength(50.0f);
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
-        KeyboardStatus status = gameobjectCopy.GetComponent<KeyboardStatus>();
+        KeyboardStatus status = GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
     }
 
-    //gameobject can be destroyed when we are stoping gameplay
-    //(we are using gameobject out of gameplay also to manipulate it on scene)
-    //since the gameobject can't be set by "gameobject ==" we need a copy
-    //of gameobject. When gameobject is destroied we assign new copy
-    //if somone would refer to gameobject error would be thrown
-    //WARINING NEVER REFER TO "gameobject" ALWAYS USE "gameobjectCopy"
-    public void CheckExistance () {
-        if(wasDisabled) {
-            wasDisabled = false;
-            gameobjectCopy = GameObject.Find(objectName);
-        }
-        //gameobject name changed or no name asigned yet
-        if(gameobjectCopy == null || objectName == null || !objectName.Equals(gameobjectCopy.name)) {
-            gameobjectCopy = gameObject;
-            objectName = gameObject.name;
-        }
-        SetComponents();
-    }
 
     private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
@@ -89,39 +68,39 @@ public class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        Vector3 position = CalculatePositionCirlce(lettersInRowsCount[(int)row], iteration - keysPlaced);
+        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row], iteration - keysPlaced);
         position = AdditionalTransformations(keyTransform, position);
-        LookAtTransformations(keyTransform, position);
+        LookAtTransformations(keyTransform, position.y);
         RotationTransformations(keyTransform);
 
     }
 
-    private void RotationTransformations ( Transform keyTrnsform ) {
-        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.forward, gameobjectCopy.transform.rotation.eulerAngles.z);
-        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.right, gameobjectCopy.transform.rotation.eulerAngles.x);
-        keyTrnsform.RotateAround(gameobjectCopy.transform.position, Vector3.up, gameobjectCopy.transform.rotation.eulerAngles.y);
+    private void RotationTransformations ( Transform keyTransform ) {
+        keyTransform.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
+        keyTransform.RotateAround(transform.position, Vector3.right, transform.rotation.eulerAngles.x);
+        keyTransform.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
     }
 
-    private void LookAtTransformations ( Transform keyTrnsform, Vector3 position ) {
-        float xPos = gameobjectCopy.transform.position.x;
-        float yPos = position.y;
-        float zOffset = ( CurvatureToDistance() * gameobjectCopy.transform.localScale.x );
-        float zPos = gameobjectCopy.transform.position.z - zOffset;
-        Vector3 lookAT = new Vector3(xPos, yPos , zPos);
-        keyTrnsform.LookAt(lookAT);
+    private void LookAtTransformations ( Transform keyTransform, float positionY ) {
+        float xPos = transform.position.x;
+        float yPos = positionY;
+        float zOffset = ( centerPointDistance * transform.localScale.x );
+        float zPos = transform.position.z - zOffset;
+        Vector3 lookAt = new Vector3(xPos, yPos , zPos);
+        keyTransform.LookAt(lookAt);
     }
 
     private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 keyPosition ) {
         // keyposition + position of Whole keyboard as component
-        keyPosition += gameobjectCopy.transform.position;
+        keyPosition += transform.position;
         // moving out by distance from center
-        keyPosition.z -= CurvatureToDistance();
-        //create backup of y for code readability
+        keyPosition.z -= centerPointDistance;
+
         float yPositionBackup = keyPosition.y;
-        // Vector from circle center to key (end - start)
-        Vector3 fromCenterToKey = ( keyPosition - gameobjectCopy.transform.position );
+        // Vector from circle center
+        Vector3 fromCenterToKey = ( keyPosition - transform.position );
         // scale of keybaord as whole element
-        float scaleOfX = ( gameobjectCopy.transform.localScale.x - 1 ) ;
+        float scaleOfX = ( transform.localScale.x - 1 ) ;
         //we move each key along it backward direction by scale
         keyPosition = keyPosition + fromCenterToKey * scaleOfX;
         
@@ -133,12 +112,12 @@ public class KeyboardCreator: KeyboardComponent {
         return keyPosition;
     }
 
-    private Vector3 CalculatePositionCirlce ( float rowSize, float offset ) {
+    private Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
         //row size - offset of current letter position
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
-        float x = Mathf.Cos(degree) * CurvatureToDistance();
-        float z = Mathf.Sin(degree) * CurvatureToDistance();
+        float x = Mathf.Cos(degree) * centerPointDistance;
+        float z = Mathf.Sin(degree) * centerPointDistance;
         float y = -row * RowSpacing;
         return new Vector3(x, y, z);
     }
@@ -146,48 +125,43 @@ public class KeyboardCreator: KeyboardComponent {
     // After getting to new row we need to reset offset relative to iteration
     // so all keys spawn in front of user centered
     private float CalculateKeysPlacedAndRow ( int iteration ) {
-        float keysPlaced = 0;
-        if(iteration < lettersInRowsCount[0]) {//if is in firstrow
-            keysPlaced = 0;
-            row = 0;
-        } else if(iteration < lettersInRowsCount[0] + lettersInRowsCount[1]) {//if is secondrow
-            keysPlaced = lettersInRowsCount[0];
-            row = 1;
-        } else if(iteration < lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {//thirdrow
-            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1];
-            row = 2;
-        }
-        //now are special signs they need to be set manually (their offset) 
-        else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {//?!#
-            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2];
-        } else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] + 1) {//space
-            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] - 1.5f;
-        } else if(iteration == lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] + 2) { // backspace
-            keysPlaced = lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2] - 3f;
-        }
-        //set third row for special keys
-        if(iteration >= lettersInRowsCount[0] + lettersInRowsCount[1] + lettersInRowsCount[2]) {
-            row = 3;
-        }
-        return keysPlaced;
-    }
+        float keysPlaced = 0; // first row
+        row = 0;
 
-    public void OnDisable () {
-        wasDisabled = true;
+        int iterationCounter = 0;
+        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {
+            iterationCounter += lettersInRowsCount[rowChecked];
+            if(iteration >= iterationCounter) {
+                keysPlaced += lettersInRowsCount[rowChecked];
+                row++;
+            }
+        }
+
+        if(iteration >= iterationCounter) {
+            const float offsetBetweenSpecialKeys = 1.5f;
+            keysPlaced -= ( iteration - iterationCounter ) * offsetBetweenSpecialKeys;
+        }
+
+        return keysPlaced;
     }
 
 
 
     private void ChangeMaterialOnKeys () {
         foreach(KeyboardItem key in keys) {
-            key.SetMaterials(KeyDefaultMaterial, KeyHoldMaterial, KeyPressedMaterial);
+            key.SetMaterials(KeyDefaultMaterial, KeyHoverMaterial, KeyPressedMaterial);
         }
     }
 
-
-    private float CurvatureToDistance () {
-        return Mathf.Tan(curvature *1.57f) + 3;
-        
+    /// <summary>
+    /// tan (x * 1,57) - tan is in range of <0,3.14>, With
+    /// this approach we can scale it to range <0(0),1(close to infinity)>.
+    /// + 3 - without tangent at value of 3 (minimum)
+    /// keyboard has 180 degree curve higher values make center
+    /// be further from keys (straight line)
+    /// </summary>
+    private void CurvatureToDistance () {
+        centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
     }
 
 
@@ -202,7 +176,8 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(curvature != 1f - value) {
-                curvature = 1f - value;                
+                curvature = 1f - value;
+                CurvatureToDistance();
                 ManageKeys();
             }
         }
@@ -210,13 +185,13 @@ public class KeyboardCreator: KeyboardComponent {
 
     public float SpacingBetweenKeys {
         get {
-            return defaultSpacingColumns / CurvatureToDistance() ;
+            return defaultSpacingColumns / centerPointDistance ;
         }
     }
 
     public float RowSpacing {
         get {
-            return defaultSpacingRows * gameobjectCopy.transform.localScale.y;
+            return defaultSpacingRows * transform.localScale.y;
         }
     }
 
@@ -234,13 +209,13 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    public Material KeyHoldMaterial {
+    public Material KeyHoverMaterial {
         get {
-            return keyHoldMaterial;
+            return keyHoverMaterial;
         }
         set {
-            if(keyHoldMaterial != value) {
-                keyHoldMaterial = value;
+            if(keyHoverMaterial != value) {
+                keyHoverMaterial = value;
                 ChangeMaterialOnKeys();
             }
 
