@@ -11,7 +11,7 @@ using UnityEngine;
 public abstract class KeyboardComponent : MonoBehaviour {
 
     // Special signs. Feel free to change
-    public static readonly string SPACE = "SPACE";
+    public static readonly string SPACE = "  ";
     public static readonly string BACK = "Back";
     public static readonly string ABC = "ABC";
     public static readonly string QEH = "?!#";
