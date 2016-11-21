@@ -14,8 +14,9 @@ public class KeyboardItem: KeyboardComponent {
     private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
-    private Renderer[] quadRenderers;  
-
+    
+    private Renderer quadFront;
+    private Renderer quadBack;
     public enum MaterialEnum {
         Default,
         Hovering,
@@ -28,10 +29,11 @@ public class KeyboardItem: KeyboardComponent {
 
     public void Init () {
         // check if was not destroyed
-        if(letter == null || quadRenderers[0] == null || quadRenderers[1] == null) {
+        if(letter == null || quadFront == null || quadBack == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            quadRenderers = GetComponentsInChildren<Renderer>();
-            
+            Renderer[]  quadRenderers = GetComponentsInChildren<Renderer>();
+            quadFront = quadRenderers[0];
+            quadBack = quadRenderers[1];
         }
     }
 
@@ -73,8 +75,8 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     private void ChangeMaterial ( Material material ) {
-        quadRenderers[0].material = material;
-        quadRenderers[1].material = material;
+        quadFront.material = material;
+        quadBack.material = material;
     }
 
     public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
@@ -87,8 +89,8 @@ public class KeyboardItem: KeyboardComponent {
         switch(materialEnum) {
             case MaterialEnum.Default:
                 keyDefaultMaterial = newMaterial;
-                quadRenderers[0].material = newMaterial;
-                quadRenderers[1].material = newMaterial;
+                quadFront.material = newMaterial;
+                quadBack.material = newMaterial;
                 break;
             case MaterialEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
