@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 
 public class KeyboardItem: KeyboardComponent {
     private Text letter;
-
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
@@ -101,7 +102,70 @@ public class KeyboardItem: KeyboardComponent {
         }
     }
 
+    public void ManipulateMesh () {
+        //Mesh mesh = new Mesh();
+        string traingles = "triangles: ";
+        string verticies = "verticies: ";
 
+            Mesh mesh = quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh;
+          
+            foreach(int trian in mesh.triangles) {
+                traingles += " " + trian + " /";
+            }
+            foreach(Vector3 vertic in mesh.vertices) {
+                verticies += " " + vertic.ToString() + " /";
+            }
+
+            List<Vector3> verticiesarray = new List<Vector3>(mesh.vertices);
+            List<int> trainglesarray = new List<int>(mesh.triangles);
+
+            verticiesarray.RemoveRange(4, verticiesarray.Capacity - 4);
+            trainglesarray.RemoveRange(6, trainglesarray.Capacity - 6);
+            verticiesarray.Add(new Vector3(-2f, 0.5f, 0));
+            trainglesarray.Add(3);
+            trainglesarray.Add(0);
+            trainglesarray.Add(4);
+
+            verticiesarray.Add(new Vector3(-2f, -0.5f, 0f));
+            trainglesarray.Add(0);
+            trainglesarray.Add(5);
+            trainglesarray.Add(4);
+
+            verticiesarray.Add(new Vector3(2f, 0.5f, 0f));
+            trainglesarray.Add(2);
+            trainglesarray.Add(1);
+            trainglesarray.Add(6);
+
+            verticiesarray.Add(new Vector3(2f, -0.5f, 0f));
+            trainglesarray.Add(6);
+            trainglesarray.Add(7);
+            trainglesarray.Add(2);
+
+
+            mesh.vertices = verticiesarray.ToArray();
+            mesh.triangles = trainglesarray.ToArray();
+            mesh.RecalculateNormals();
+
+            quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+
+            traingles = "triangles: ";
+            verticies = "verticies: ";
+            foreach(int trian in mesh.triangles) {
+                traingles += " " + trian + " /";
+            }
+            foreach(Vector3 vertic in mesh.vertices) {
+                verticies += " " + vertic.ToString() + " /";
+            }
+       
+        
+
+        Debug.Log(traingles);
+        Debug.Log(verticies);
+        //mesh.vertices = newVertices;
+        //mesh.uv = newUV;
+        //mesh.triangles = newTriangles;
+    }
 
 
 }
