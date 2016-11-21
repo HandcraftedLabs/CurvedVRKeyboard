@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 
@@ -9,13 +8,15 @@ public class KeyboardItem: KeyboardComponent {
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
+ 
 
-    public Material keyDefaultMaterial;
-    public Material keyHoveringMaterial;
-    public Material keyPressedMaterial;
+    private Material keyDefaultMaterial;
+    private Material keyHoveringMaterial;
+    private Material keyPressedMaterial;
 
-    private new Renderer renderer;
-
+    
+    private Renderer quadFront;
+    private Renderer quadBack;
     public enum MaterialEnum {
         Default,
         Hovering,
@@ -28,9 +29,11 @@ public class KeyboardItem: KeyboardComponent {
 
     public void Init () {
         // check if was not destroyed
-        if(letter == null || renderer == null) {
+        if(letter == null || quadFront == null || quadBack == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            renderer = gameObject.GetComponent<Renderer>();
+            Renderer[]  quadRenderers = GetComponentsInChildren<Renderer>();
+            quadFront = quadRenderers[0];
+            quadBack = quadRenderers[1];
         }
     }
 
@@ -72,7 +75,8 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     private void ChangeMaterial ( Material material ) {
-        renderer.material = material;
+        quadFront.material = material;
+        quadBack.material = material;
     }
 
     public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
@@ -85,7 +89,8 @@ public class KeyboardItem: KeyboardComponent {
         switch(materialEnum) {
             case MaterialEnum.Default:
                 keyDefaultMaterial = newMaterial;
-                renderer.material = newMaterial;
+                quadFront.material = newMaterial;
+                quadBack.material = newMaterial;
                 break;
             case MaterialEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
