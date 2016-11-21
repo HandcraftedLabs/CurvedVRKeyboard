@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 
@@ -10,11 +9,14 @@ public class KeyboardItem: KeyboardComponent {
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
 
+   
+
     public Material keyDefaultMaterial;
     public Material keyHoveringMaterial;
     public Material keyPressedMaterial;
 
-    private new Renderer renderer;
+    private Renderer[] quadRenderers;
+    
 
     public enum MaterialEnum {
         Default,
@@ -28,9 +30,10 @@ public class KeyboardItem: KeyboardComponent {
 
     public void Init () {
         // check if was not destroyed
-        if(letter == null || renderer == null) {
+        if(letter == null || quadRenderers[0] == null || quadRenderers[1] == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            renderer = gameObject.GetComponent<Renderer>();
+            quadRenderers = GetComponentsInChildren<Renderer>();
+            
         }
     }
 
@@ -72,7 +75,8 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     private void ChangeMaterial ( Material material ) {
-        renderer.material = material;
+        quadRenderers[0].material = material;
+        quadRenderers[1].material = material;
     }
 
     public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
@@ -85,7 +89,7 @@ public class KeyboardItem: KeyboardComponent {
         switch(materialEnum) {
             case MaterialEnum.Default:
                 keyDefaultMaterial = newMaterial;
-                renderer.material = newMaterial;
+                GetComponent<Renderer>().material = newMaterial;
                 break;
             case MaterialEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
