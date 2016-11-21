@@ -28,23 +28,27 @@ public class KeyboardCreator: KeyboardComponent {
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
-    private float centerPointDistance;
+    private float centerPointDistance = -1f;
 
     public void Start () {
-        Curvature = 1f;
+        ManageKeys();
         ChangeMaterialOnKeys();
         SetComponents();
-        ManageKeys();
-
     }
 
     public void ManageKeys () {
         if(keys == null) {
-            keys = GetComponentsInChildren<KeyboardItem>();
+            InitKeys();
+        }
+        if(centerPointDistance == -1f) {
+            CurvatureToDistance();
         }
         FillAndPlaceKeys();
     }
 
+    public void InitKeys () {
+        keys = GetComponentsInChildren<KeyboardItem>();
+    }
 
     private void SetComponents () {
         KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
@@ -68,7 +72,7 @@ public class KeyboardCreator: KeyboardComponent {
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row], iteration - keysPlaced);
+        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] -1, iteration - keysPlaced);
         position = AdditionalTransformations(keyTransform, position);
         LookAtTransformations(keyTransform, position.y);
         RotationTransformations(keyTransform);
@@ -142,13 +146,6 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
-
-    private void ChangeMaterialOnKeys () {
-        foreach(KeyboardItem key in keys) {
-            key.SetMaterials(KeyDefaultMaterial, KeyHoverMaterial, KeyPressedMaterial);
-        }
-    }
-
     /// <summary>
     /// tan (x * 1,57) - tan is in range of <0,3.14>, With
     /// this approach we can scale it to range <0(0),1(close to infinity)>.
@@ -160,6 +157,11 @@ public class KeyboardCreator: KeyboardComponent {
         centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
     }
 
+    public void ChangeMaterialOnKeys () {
+        foreach(KeyboardItem key in keys) {
+            key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
+        }
+    }
 
 
     //---------------PROPERTIES----------------
@@ -171,7 +173,12 @@ public class KeyboardCreator: KeyboardComponent {
             return 1f - curvature;
         }
         set {
+            // THERE IS ERROR IN IF LEAVE FOR LATER
+            //Debug.Log(curvature);
+            //Debug.Log(1f-value);
             if(curvature != 1f - value) {
+
+                //Debug.Log("CurvatureChange");
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
@@ -199,20 +206,21 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(KeyDefaultMaterial != value) {
                 keyDefaultMaterial = value;
-                ChangeMaterialOnKeys();
-            }
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterial(KeyboardItem.MaterialEnum.Default, keyDefaultMaterial);
+                }
 
+            }
         }
     }
 
-    public Material KeyHoverMaterial {
+    public Material KeyHoveringMaterial {
         get {
             return keyHoverMaterial;
         }
         set {
             if(keyHoverMaterial != value) {
                 keyHoverMaterial = value;
-                ChangeMaterialOnKeys();
             }
 
         }
@@ -225,7 +233,6 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             if(KeyPressedMaterial != value) {
                 keyPressedMaterial = value;
-                ChangeMaterialOnKeys();
             }
 
         }

@@ -23,6 +23,7 @@ public class KeyboardCreatorEditor: Editor {
 
     private void Awake () {
         keyboardCreator = target as KeyboardCreator;
+        keyboardCreator.InitKeys();
         if(keyboardCreator.RaycastingCamera != null) {
             keyboardCreator.ManageKeys();
         }
@@ -67,11 +68,12 @@ public class KeyboardCreatorEditor: Editor {
 
     private void DrawMemebers () {
         //so value of curvature is always between [0,1]
-        int curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
-        keyboardCreator.Curvature = Mathf.Clamp01((float)curvatureValue / 100.0f);
+        float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
+        float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
+        keyboardCreator.Curvature = clamped;
         keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
         keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
-        keyboardCreator.KeyHoverMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoverMaterial, typeof(Material), true) as Material;
+        keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
         keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(CLICKED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
     }
 
