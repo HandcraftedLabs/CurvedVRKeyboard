@@ -8,15 +8,13 @@ public class KeyboardItem: KeyboardComponent {
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
+ 
 
-   
+    private Material keyDefaultMaterial;
+    private Material keyHoveringMaterial;
+    private Material keyPressedMaterial;
 
-    public Material keyDefaultMaterial;
-    public Material keyHoveringMaterial;
-    public Material keyPressedMaterial;
-
-    private Renderer[] quadRenderers;
-    
+    private Renderer[] quadRenderers;  
 
     public enum MaterialEnum {
         Default,
@@ -89,7 +87,8 @@ public class KeyboardItem: KeyboardComponent {
         switch(materialEnum) {
             case MaterialEnum.Default:
                 keyDefaultMaterial = newMaterial;
-                GetComponent<Renderer>().material = newMaterial;
+                quadRenderers[0].material = newMaterial;
+                quadRenderers[1].material = newMaterial;
                 break;
             case MaterialEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
