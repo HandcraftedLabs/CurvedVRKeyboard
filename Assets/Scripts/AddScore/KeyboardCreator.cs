@@ -1,103 +1,258 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
-
-class KeyboardCreator: KeyboardComponent {
+[System.Serializable]
+[ExecuteInEditMode]
+public class KeyboardCreator: KeyboardComponent {
 
 
     //-----------SET IN UNITY --------------
-    public KeyboardItem[] keys;
-    public float r;
-    public float yPos;
-    public float degreesStep;
-    public float rowHeight;
-    public float rotation;
-    public float spaceXRotation; // Specialy for space (increase to rotate it around x Axis)
-    public bool flat;
-    public Camera cam;
-    public GameObject keyboard;
+    [SerializeField]
+    private float curvature;
+    [SerializeField]
+    private Camera raycastingCamera;
+    [SerializeField]
+    private string clickHandle;
+    [SerializeField]
+    private Material keyDefaultMaterial;
+    [SerializeField]
+    private Material keyHoverMaterial;
+    [SerializeField]
+    private Material keyPressedMaterial;
+
     //-----------SET IN UNITY --------------
 
+    private KeyboardItem[] keys;
+    private int row;
 
-    private float row;
+    //-------private Calculations--------
+    private readonly float defaultSpacingColumns = 56.3f;
+    private readonly float defaultSpacingRows = 1.0f;
+    private readonly float defaultRotation = 90f;
+    private float centerPointDistance;
 
     public void Start () {
-        //.Cast<Transform>().OrderBy(t => t.name)
-        int i = 0;
-        foreach(KeyboardItem keyItem in keys) {
-            if(i < allLetters.Length) {
-                keyItem.Init();
-                keyItem.letter.text = allLetters[i];
-                
-            }
-            PositionSingleLetter(i, keyItem.gameObject.transform);
-            i++;
+        Curvature = 1f;
+        ChangeMaterialOnKeys();
+        SetComponents();
+        ManageKeys();
+
+    }
+
+    public void ManageKeys () {
+        if(keys == null) {
+            keys = GetComponentsInChildren<KeyboardItem>();
+        }
+        FillAndPlaceKeys();
+    }
+
+
+    private void SetComponents () {
+        KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
+        //TODO Later update it to detect furthest point on update method
+        rayCaster.SetRayLength(50.0f);
+        rayCaster.SetCamera(RaycastingCamera);
+        rayCaster.SetClickButton(ClickHandle);
+        KeyboardStatus status = GetComponent<KeyboardStatus>();
+        status.SetKeys(keys);
+    }
+
+
+    private void FillAndPlaceKeys () {
+        for(int i = 0;i < keys.Length;i++) {
+            keys[i].Init();
+            keys[i].SetKeyText(allLettersLowercase[i]);
+            PositionSingleLetter(i, keys[i].gameObject.transform);
         }
     }
 
-    private void PositionSingleLetter ( int iteration,Transform child) {
+    private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         //check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-       
- 
-        child.position = CalculateVector(rowLetters[(int)row], iteration - keysPlaced);
-        child.LookAt(cam.transform);
-        //if(iteration != rowLetters[0] + rowLetters[1] + rowLetters[2] + 1) {// all expect space
-        //    child.LookAt(cam.tra)
-        //}else {
-        //    child.rotation = MyUtils.RotateToVector(-child.position + cam.transform.position + new Vector3(0, spaceXRotation, 0));
-        //}
+        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row], iteration - keysPlaced);
+        position = AdditionalTransformations(keyTransform, position);
+        LookAtTransformations(keyTransform, position.y);
+        RotationTransformations(keyTransform);
 
     }
 
-    private Vector3 CalculateVector ( float rowSize, float offset ) {
-        float degree = Mathf.Deg2Rad * ( rotation + rowSize * ( degreesStep / 2 ) - offset * degreesStep );
-        float x = Mathf.Cos(degree) * r;
-        float z;
-        z = flat ? r : Mathf.Sin(degree) * r;
-        return new Vector3(x, yPos - row * rowHeight, z);
+    private void RotationTransformations ( Transform keyTransform ) {
+        keyTransform.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
+        keyTransform.RotateAround(transform.position, Vector3.right, transform.rotation.eulerAngles.x);
+        keyTransform.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
+    }
+
+    private void LookAtTransformations ( Transform keyTransform, float positionY ) {
+        float xPos = transform.position.x;
+        float yPos = positionY;
+        float zOffset = ( centerPointDistance * transform.localScale.x );
+        float zPos = transform.position.z - zOffset;
+        Vector3 lookAt = new Vector3(xPos, yPos , zPos);
+        keyTransform.LookAt(lookAt);
+    }
+
+    private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 keyPosition ) {
+        keyPosition += transform.position;
+        keyPosition.z -= centerPointDistance;
+        float yPositionBackup = keyPosition.y;
+        Vector3 fromCenterToKey = ( keyPosition - transform.position );
+        float scaleOfX = ( transform.localScale.x - 1 ) ;
+
+        //we move each key along it backward direction by scale
+        keyPosition = keyPosition + fromCenterToKey * scaleOfX;
         
+        //we modified y in upper calculations restore it 
+        keyPosition.y = yPositionBackup;
+
+        keyTransform.position = keyPosition;
+
+        return keyPosition;
     }
 
+    private Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
+        //row size - offset of current letter position
+        float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
-    /// <summary>
-    /// After getting to new row we need to reset offset relative to iteration
-    /// so all keys spawn in front of user
-    /// </summary>
-    /// <param name="iteration"></param>
-    /// <returns></returns>
+        float x = Mathf.Cos(degree) * centerPointDistance;
+        float z = Mathf.Sin(degree) * centerPointDistance;
+        float y = -row * RowSpacing;
+        return new Vector3(x, y, z);
+    }
+
+    // After getting to new row we need to reset offset relative to iteration
+    // so all keys spawn in front of user centered
     private float CalculateKeysPlacedAndRow ( int iteration ) {
         float keysPlaced = 0;
-        if(iteration < rowLetters[0]) {//if is in firstrow
-            keysPlaced = 0;
-            row = 0;
-        } else if(iteration < rowLetters[0] + rowLetters[1]) {//if is secondrow
-            keysPlaced = rowLetters[0];
-            row = 1;
-        } else if(iteration < rowLetters[0] + rowLetters[1] + rowLetters[2]) {//thirdrow
-            keysPlaced = rowLetters[0] + rowLetters[1];
-            row = 2;
+        row = 0;
+
+        int iterationCounter = 0;
+        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {//for each row
+            iterationCounter += lettersInRowsCount[rowChecked];
+            if(iteration >= iterationCounter) {
+                keysPlaced += lettersInRowsCount[rowChecked];
+                row++;
+            }
         }
-        //now are special signs they need to be set manually (their offset) 
-        else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2]) {//?!#
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2];
-        } else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2] + 1) {//space
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2] - 1.5f;
-        } else if(iteration == rowLetters[0] + rowLetters[1] + rowLetters[2] + 2) { // backspace
-            keysPlaced = rowLetters[0] + rowLetters[1] + rowLetters[2] - 3f;
+        //last row with space requires special calculations
+        if(iteration >= iterationCounter) {
+            const float offsetBetweenSpecialKeys = 1.5f;
+            keysPlaced -= ( iteration - iterationCounter ) * offsetBetweenSpecialKeys;
         }
-        //set third row for special keys
-        if(iteration >= rowLetters[0] + rowLetters[1] + rowLetters[2]) {
-            row = 3;
-        }
+
         return keysPlaced;
     }
 
-}
 
+
+    private void ChangeMaterialOnKeys () {
+        foreach(KeyboardItem key in keys) {
+            key.SetMaterials(KeyDefaultMaterial, KeyHoverMaterial, KeyPressedMaterial);
+        }
+    }
+
+    /// <summary>
+    /// tan (x * 1,57) - tan is in range of <0,3.14>, With
+    /// this approach we can scale it to range <0(0),1(close to infinity)>.
+    /// + 3 - without tangent at value of 3 (minimum)
+    /// keyboard has 180 degree curve higher values make center
+    /// be further from keys (straight line)
+    /// </summary>
+    private void CurvatureToDistance () {
+        centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
+    }
+
+
+
+    //---------------PROPERTIES----------------
+
+
+
+    public float Curvature {
+        get {
+            return 1f - curvature;
+        }
+        set {
+            if(curvature != 1f - value) {
+                curvature = 1f - value;
+                CurvatureToDistance();
+                ManageKeys();
+            }
+        }
+    }
+
+    public float SpacingBetweenKeys {
+        get {
+            return defaultSpacingColumns / centerPointDistance ;
+        }
+    }
+
+    public float RowSpacing {
+        get {
+            return defaultSpacingRows * transform.localScale.y;
+        }
+    }
+
+
+    public Material KeyDefaultMaterial {
+        get {
+            return keyDefaultMaterial;
+        }
+        set {
+            if(KeyDefaultMaterial != value) {
+                keyDefaultMaterial = value;
+                ChangeMaterialOnKeys();
+            }
+
+        }
+    }
+
+    public Material KeyHoverMaterial {
+        get {
+            return keyHoverMaterial;
+        }
+        set {
+            if(keyHoverMaterial != value) {
+                keyHoverMaterial = value;
+                ChangeMaterialOnKeys();
+            }
+
+        }
+    }
+
+    public Material KeyPressedMaterial {
+        get {
+            return keyPressedMaterial;
+        }
+        set {
+            if(KeyPressedMaterial != value) {
+                keyPressedMaterial = value;
+                ChangeMaterialOnKeys();
+            }
+
+        }
+    }
+
+    public Camera RaycastingCamera {
+        get {
+            return raycastingCamera;
+        }
+        set {
+            if(raycastingCamera != value) {
+                raycastingCamera = value;
+            }
+
+        }
+    }
+
+    public string ClickHandle {
+        get {
+            return clickHandle;
+        }
+        set {
+            clickHandle = value;
+        }
+    }
+    
+}
 
 
 

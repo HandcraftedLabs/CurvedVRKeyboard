@@ -3,56 +3,64 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class KeyboardRayCaster: KeyboardComponent {
+    private Camera raycastingCamera;
 
-
-
-
-
-    //-----------SET IN UNITY --------------
-    public Camera cam;
-    public float rayLength;
-    public KeyboardStatus keyboardStatus;
-    //-----------SET IN UNITY --------------
-
+    private float rayLength;
     private Ray ray;
     private RaycastHit hit;
     private LayerMask layer;
 
+    private KeyboardStatus keyboardStatus;
+    private KeyboardItem keyItemCurrent;
 
-    private GameObject keyboard;
-    private KeyboardItem kitemprevious;
-    private KeyboardItem kitemCurrent;
+    private string clickInputName;
 
     void Start () {
+        keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
         layer = 1 << LayerMask.NameToLayer(LAYER_TO_CAST);
-        keyboard = GameObject.Find(KEYBOARD);
     }
 
     void Update () {
         RayCastKeyboard();
     }
 
+    
     private void RayCastKeyboard () {
-        ray = new Ray(cam.transform.position, cam.transform.forward);
-        if(Physics.Raycast(ray, out hit, rayLength, layer)) {
-            KeyboardItem focusedKitem = hit.transform.gameObject.GetComponent<KeyboardItem>();
+        ray = new Ray(raycastingCamera.transform.position, raycastingCamera.transform.forward);
 
-            if(kitemCurrent == null) {//if there is none selected
-                kitemCurrent = focusedKitem;
-            }
-            if(focusedKitem != kitemCurrent) {//if previous is different
-                kitemCurrent.stopHovering();
-                kitemCurrent = focusedKitem;
-            }
-            kitemCurrent.hovering();
-            if(Input.GetButtonDown("fire1")) {//if clicked
-                kitemCurrent.click();
-                keyboardStatus.HandleClick(kitemCurrent);
-            }
+        if(Physics.Raycast(ray, out hit, rayLength, layer)) { // if any key was hit
+            KeyboardItem focusedKeyItem = hit.transform.gameObject.GetComponent<KeyboardItem>();
 
-        } else if(kitemCurrent != null) {//if no target hit and lost focus on item
-            kitemCurrent.stopHovering();
-            kitemCurrent = null;
+            ChangeCurrentKeyItem(focusedKeyItem);
+            keyItemCurrent.Hovering();
+
+            // if key clicked
+            if(Input.GetButtonDown(clickInputName)) {
+                keyItemCurrent.Click();
+                keyboardStatus.HandleClick(keyItemCurrent);
+            }
         }
+        // if no target hit and lost focus on item
+        else if(keyItemCurrent != null) {
+            ChangeCurrentKeyItem(null);
+        }
+    }
+
+    void ChangeCurrentKeyItem(KeyboardItem key) {
+        if (keyItemCurrent != null)
+            keyItemCurrent.StopHovering();
+        keyItemCurrent = key;
+    }
+
+    public void SetRayLength (float rayLength) {
+        this.rayLength = rayLength;
+    }
+
+    public void SetCamera(Camera pivot) {
+        this.raycastingCamera = pivot;
+    }
+
+    public void SetClickButton(string clickHandler) {
+        this.clickInputName = clickHandler;
     }
 }

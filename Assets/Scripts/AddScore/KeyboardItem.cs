@@ -3,79 +3,76 @@ using System.Collections;
 using UnityEngine.UI;
 
 
+public class KeyboardItem : KeyboardComponent {
+    private Text letter;
 
-[ExecuteInEditMode]
-public class KeyboardItem: KeyboardComponent {
-    //-----------SET IN UNITY --------------
-    public Text letter;
-    //-----------SET IN UNITY --------------
-
-
-    private float clickPlayLimit = 0.15f;
-    private float transitionTime = 0.01f;
-    private float clickTimer = 0f;
     private bool clicked = false;
-    private Animator animator;
+    private float clickHoldTimer = 0f;
+    private float clickHoldTimeLimit = 0.15f;
 
-    public void Awake () {
+    private Material keyDefaultMaterial;
+    private Material keyHoveringMaterial;
+    private Material keyPressedMaterial;
+
+    private new Renderer renderer;
+
+    public void Awake() {
         Init();
-
     }
 
-    public void Init () {
-        letter = gameObject.GetComponentInChildren<Text>();
-        animator = gameObject.GetComponent<Animator>();
-    }
-
-    private enum STATE {
-        NORMAL,
-        CHOSEN,
-        CLICKED
-    }
-
-
-
-
-
-    void Update () {
-
-    }
-
-    public void hovering () {
-        if(!clicked) {
-            animator.CrossFade(EnumToString(STATE.CHOSEN), transitionTime);
-        } else {//wait for some time 
-            clickTimer += Time.deltaTime;
-            animator.CrossFade(EnumToString(STATE.CLICKED), transitionTime);
-            if(clickTimer >= clickPlayLimit) {
-                clicked = false;
-                clickTimer = 0f;
-            }
+    public void Init() {
+        // check if was not destroyed
+        if(letter == null || renderer == null) {
+            letter = gameObject.GetComponentInChildren<Text>();
+            renderer = gameObject.GetComponent<Renderer>();
         }
     }
 
-
-    public void stopHovering () {
-        animator.CrossFade(EnumToString(STATE.NORMAL), transitionTime);
+    public void Hovering() {
+        if(!clicked) {
+            ChangeMaterial(keyHoveringMaterial);
+        }
+        else { 
+            HoldClick();
+        }
     }
 
-    public void click () {
+    private void HoldClick() {
+        ChangeMaterial(keyPressedMaterial);
+
+        clickHoldTimer += Time.deltaTime;
+        if(clickHoldTimer >= clickHoldTimeLimit) {
+            clicked = false;
+            clickHoldTimer = 0f;
+        }
+    }
+
+    public void StopHovering() {
+        ChangeMaterial(keyDefaultMaterial);
+    }
+
+    public void Click() {
         clicked = true;
-        animator.CrossFade(EnumToString(STATE.CLICKED), 0.01f);
+        ChangeMaterial(keyPressedMaterial);
     }
 
-    public string getValue () {
+    public string GetValue() {
         return letter.text;
     }
 
-    private string EnumToString ( STATE state ) {
-        switch(state) {
-            case STATE.NORMAL:
-                return "Normal";
-            case STATE.CLICKED:
-                return "Clicked";
-            default:
-                return "Chosen";
+    public void SetKeyText(string value) {
+        if(!letter.text.Equals(value)) {
+            letter.text = value;
         }
+    }
+
+    private void ChangeMaterial(Material material) {
+        renderer.material = material;
+    }
+
+    public void SetMaterials(Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial) {
+        this.keyDefaultMaterial = keyDefaultMaterial;
+        this.keyHoveringMaterial = keyHoveringMaterial;
+        this.keyPressedMaterial = keyPressedMaterial;
     }
 }

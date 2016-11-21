@@ -1,36 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class KeyboardStatus: KeyboardComponent {
+public class KeyboardStatus : KeyboardComponent {
 
     //-----------SET IN UNITY --------------
-    public KeyboardItem[] keys;
-    public GameObject keyboard;
-    public Text name;
+    [Tooltip("Text field receiving input from the keyboard")]
+    public Text output;
+    [Tooltip("Maximum output text length")]
+    public int maxOutputLength;
     //-----------SET IN UNITY --------------
 
-    private bool latters = true;
-    private bool lower = true;
+    private KeyboardItem[] keys;
+    private bool areLettersActive = true;
+    private bool isLowercase = true;
 
-    private static readonly string BLANKSPACE = "_";
-    private static readonly int MAXLETTERS = 8;
+    private static readonly char BLANKSPACE = ' ';
 
-    private int currentLetter = -1;
+    public void HandleClick(KeyboardItem clicked) {
+        string value = clicked.GetValue();
 
-    public void HandleClick ( KeyboardItem clicked ) {
-        string value = clicked.getValue();
-
-        if(value.Equals(QEH) || value.Equals(ABC)) {//if special signs
+        if(value.Equals(QEH) || value.Equals(ABC)) { // special signs
             ChangeSpecialLetters();
-        } else if(value.Equals(UP) || value.Equals(LOW)) {//if upper/lower
+        }
+        else if(value.Equals(UP) || value.Equals(LOW)) { // upper/lower case
             LowerUpperKeys();
-        } else if(value.Equals(SPACE)) {// if space
-            TypeKey(' ');
-        } else if(value.Equals(BACK)) {// if backspace
+        }
+        else if(value.Equals(SPACE)) {// if space
+            TypeKey(BLANKSPACE);
+        }
+        else if(value.Equals(BACK)) {// if backspace
             BackspaceKey();
         }
         else {//normalLetter
@@ -38,55 +36,39 @@ public class KeyboardStatus: KeyboardComponent {
         }
     }
 
-    public int GetCurrentLetter () {
-        return currentLetter;
-    }
 
-
-    private void ChangeSpecialLetters () {
-        latters = !latters;
-        int i = 0;
-        if(latters) {
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLetters[i];
-                i++;
-            }
-        } else {// special signs
-            foreach( KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allSpecials[i];
-                i++;
-            }
+    private void ChangeSpecialLetters() {
+        areLettersActive = !areLettersActive;
+        string[] ToDisplay = areLettersActive ? allLettersLowercase : allSpecials;
+        for(int i = 0; i < keys.Length; i++) {
+            keys[i].SetKeyText(ToDisplay[i]);
         }
     }
 
-    private void LowerUpperKeys () {
-        lower = !lower;
-        int i = 0;
-        if(lower) {
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLetters[i];
-                i++;
-            }
-        } else {// special signs
-            foreach(KeyboardItem keyItem in keys) {
-                keyItem.letter.text = allLettersUpper[i];
-                i++;
-            }
+    private void LowerUpperKeys() {
+        isLowercase = !isLowercase;
+        string[] ToDisplay = isLowercase ? allLettersLowercase : allLettersUppercase;
+        ChangeKeysDisplayied(ToDisplay);
+    }
+
+    private void ChangeKeysDisplayied(string[] ToDisplay) {
+        for(int i = 0; i < keys.Length; i++) {
+            keys[i].SetKeyText(ToDisplay[i]);
         }
     }
 
-    private void BackspaceKey () {
-        if(currentLetter >= 0) {
-            name.text = name.text.Remove(currentLetter, 1).Insert(currentLetter, BLANKSPACE);
-            currentLetter--;
-        }
+    private void BackspaceKey() {
+        if(output.text.Length >= 1)
+            output.text = output.text.Remove(output.text.Length - 1, 1);
     }
 
-    private void TypeKey ( char key ) {
-        if(currentLetter < MAXLETTERS - 1) {//starts from -1
-            currentLetter++;
-            name.text = name.text.Remove(currentLetter, 1).Insert(currentLetter, key.ToString());
-        }
+    private void TypeKey(char key) {
+        if(output.text.Length < maxOutputLength)
+            output.text = output.text + key.ToString();
+    }
+
+    public void SetKeys(KeyboardItem[] keys) {
+        this.keys = keys;
     }
 }
 
