@@ -85,6 +85,7 @@ public class KeyboardItem: KeyboardComponent {
         switch(materialEnum) {
             case MaterialEnum.Default:
                 keyDefaultMaterial = newMaterial;
+                renderer.material = newMaterial;
                 break;
             case MaterialEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
@@ -94,4 +95,12 @@ public class KeyboardItem: KeyboardComponent {
                 break;
         }
     }
+
+
+
+
 }
+
+
+
+
