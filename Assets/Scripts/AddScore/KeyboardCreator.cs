@@ -173,8 +173,9 @@ public class KeyboardCreator: KeyboardComponent {
             return 1f - curvature;
         }
         set {
+            
             if(curvature != 1f - value) {
-                Debug.Log("change");
+                Debug.Log("CurvatureChange");
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
@@ -240,6 +241,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(raycastingCamera != value) {
+                Debug.Log("camera set");
                 raycastingCamera = value;
             }
 
