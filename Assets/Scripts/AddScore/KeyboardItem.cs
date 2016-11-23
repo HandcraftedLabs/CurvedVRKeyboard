@@ -9,13 +9,13 @@ public class KeyboardItem: KeyboardComponent {
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
- 
+
 
     private Material keyDefaultMaterial;
     private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
-    
+
     private Renderer quadFront;
     private Renderer quadBack;
     public enum MaterialEnum {
@@ -32,7 +32,7 @@ public class KeyboardItem: KeyboardComponent {
         // check if was not destroyed
         if(letter == null || quadFront == null || quadBack == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            Renderer[]  quadRenderers = GetComponentsInChildren<Renderer>();
+            Renderer[] quadRenderers = GetComponentsInChildren<Renderer>();
             quadFront = quadRenderers[0];
             quadBack = quadRenderers[1];
         }
@@ -103,62 +103,79 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void ManipulateMesh () {
-        //Mesh mesh = new Mesh();
+        KeyboardCreator keyboardCreator = GameObject.Find("KeyBoard").GetComponent<KeyboardCreator>();
+
         string traingles = "triangles: ";
         string verticies = "verticies: ";
 
-            Mesh mesh = quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh;
-          
-            foreach(int trian in mesh.triangles) {
-                traingles += " " + trian + " /";
-            }
-            foreach(Vector3 vertic in mesh.vertices) {
-                verticies += " " + vertic.ToString() + " /";
-            }
+        Mesh mesh = quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh;
 
-            List<Vector3> verticiesarray = new List<Vector3>(mesh.vertices);
-            List<int> trainglesarray = new List<int>(mesh.triangles);
+        foreach(int trian in mesh.triangles) {
+            traingles += " " + trian + " /";
+        }
+        foreach(Vector3 vertic in mesh.vertices) {
+            verticies += " " + vertic.ToString() + " /";
+        }
 
-            verticiesarray.RemoveRange(4, verticiesarray.Capacity - 4);
-            trainglesarray.RemoveRange(6, trainglesarray.Capacity - 6);
-            verticiesarray.Add(new Vector3(-2f, 0.5f, 0));
-            trainglesarray.Add(3);
-            trainglesarray.Add(0);
-            trainglesarray.Add(4);
+        List<Vector3> verticiesarray = new List<Vector3>(mesh.vertices);
+        List<int> trainglesarray = new List<int>(mesh.triangles);
 
-            verticiesarray.Add(new Vector3(-2f, -0.5f, 0f));
-            trainglesarray.Add(0);
-            trainglesarray.Add(5);
-            trainglesarray.Add(4);
+        verticiesarray.RemoveRange(4, verticiesarray.Capacity - 4);
+        trainglesarray.RemoveRange(6, trainglesarray.Capacity - 6);
 
-            verticiesarray.Add(new Vector3(2f, 0.5f, 0f));
-            trainglesarray.Add(2);
-            trainglesarray.Add(1);
-            trainglesarray.Add(6);
+        //add 2 verticies 
+        verticiesarray.Add(new Vector3(-0.75f, 0.5f, 0));
+        trainglesarray.Add(3);
+        trainglesarray.Add(0);
+        trainglesarray.Add(4);
 
-            verticiesarray.Add(new Vector3(2f, -0.5f, 0f));
-            trainglesarray.Add(6);
-            trainglesarray.Add(7);
-            trainglesarray.Add(2);
+        verticiesarray.Add(new Vector3(-0.75f, -0.5f, 0f));
+        trainglesarray.Add(0);
+        trainglesarray.Add(5);
+        trainglesarray.Add(4);
 
+        //fill rest
+        for(int i = 4;i <= 12;i += 2) {
+            float xPos = -1 - ((i-4) * 0.25f)/2f;
+            CreateQuadXPlus(xPos, i, trainglesarray, verticiesarray);
+        }
 
-            mesh.vertices = verticiesarray.ToArray();
-            mesh.triangles = trainglesarray.ToArray();
-            mesh.RecalculateNormals();
+        //add 2 verticies
+        verticiesarray.Add(new Vector3(0.75f, 0.5f, 0f));
+        trainglesarray.Add(16);
+        trainglesarray.Add(2);
+        trainglesarray.Add(1);
 
-            quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh = mesh;
+        verticiesarray.Add(new Vector3(0.75f, -0.5f, 0f));
+        trainglesarray.Add(2);
+        trainglesarray.Add(16);
+        trainglesarray.Add(17);
 
+        //fill rest
+        for(int i = 16;i <= 24;i += 2) {
+            float xPos = 1 + ( ( i - 16 ) * 0.25f ) / 2f;
+            CreateQuadXMinus(xPos, i, trainglesarray, verticiesarray);
+        }
 
-            traingles = "triangles: ";
-            verticies = "verticies: ";
-            foreach(int trian in mesh.triangles) {
-                traingles += " " + trian + " /";
-            }
-            foreach(Vector3 vertic in mesh.vertices) {
-                verticies += " " + vertic.ToString() + " /";
-            }
        
-        
+
+        mesh.vertices = verticiesarray.ToArray();
+        mesh.triangles = trainglesarray.ToArray();
+        mesh.RecalculateNormals();
+
+        quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+
+        traingles = "triangles: ";
+        verticies = "verticies: ";
+        foreach(int trian in mesh.triangles) {
+            traingles += " " + trian + " /";
+        }
+        foreach(Vector3 vertic in mesh.vertices) {
+            verticies += " " + vertic.ToString() + " /";
+        }
+
+
 
         Debug.Log(traingles);
         Debug.Log(verticies);
@@ -167,7 +184,29 @@ public class KeyboardItem: KeyboardComponent {
         //mesh.triangles = newTriangles;
     }
 
+    private void CreateQuadXPlus (float xPos, int firstVertex, List<int> trianglesList, List<Vector3> VertexList) {
+        VertexList.Add(new Vector3(xPos, 0.5f, 0f));
+        trianglesList.Add(firstVertex);
+        trianglesList.Add(firstVertex + 1);
+        trianglesList.Add(firstVertex + 2);
 
+        VertexList.Add(new Vector3(xPos, -0.5f, 0f));
+        trianglesList.Add(firstVertex + 1);
+        trianglesList.Add(firstVertex + 3);
+        trianglesList.Add(firstVertex + 2);
+    }
+
+    private void CreateQuadXMinus ( float xPos, int firstVertex, List<int> trianglesList, List<Vector3> VertexList ) {
+        VertexList.Add(new Vector3(xPos, 0.5f, 0f));
+        trianglesList.Add(firstVertex);
+        trianglesList.Add(firstVertex + 2);
+        trianglesList.Add(firstVertex + 1);
+
+        VertexList.Add(new Vector3(xPos, -0.5f, 0f));
+        trianglesList.Add(firstVertex + 1);
+        trianglesList.Add(firstVertex + 2);
+        trianglesList.Add(firstVertex + 3);
+    }
 }
 
 

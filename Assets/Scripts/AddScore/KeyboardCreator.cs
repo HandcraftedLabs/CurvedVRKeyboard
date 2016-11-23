@@ -113,7 +113,7 @@ public class KeyboardCreator: KeyboardComponent {
         return keyPosition;
     }
 
-    private Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
+    public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
         //row size - offset of current letter position
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
