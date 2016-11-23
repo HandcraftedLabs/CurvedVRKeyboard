@@ -66,7 +66,9 @@ public class KeyboardCreator: KeyboardComponent {
             keys[i].Init();
             keys[i].SetKeyText(allLettersLowercase[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
-
+            if(i == 28) {
+                keys[i].ManipulateMesh(this);
+            }
         }
     }
 
@@ -261,7 +263,7 @@ public class KeyboardCreator: KeyboardComponent {
     }
     
     public void RebuildMesh () {
-        keys[keys.Length - 2].ManipulateMesh();
+        keys[keys.Length - 2].ManipulateMesh(this);
     }
 }
 

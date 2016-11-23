@@ -31,13 +31,15 @@ public class KeyboardRayCaster: KeyboardComponent {
         if(Physics.Raycast(ray, out hit, rayLength, layer)) { // if any key was hit
             KeyboardItem focusedKeyItem = hit.transform.gameObject.GetComponent<KeyboardItem>();
 
-            ChangeCurrentKeyItem(focusedKeyItem);
-            keyItemCurrent.Hovering();
+            if(focusedKeyItem != null) { 
+                ChangeCurrentKeyItem(focusedKeyItem);
+                keyItemCurrent.Hovering();
 
-            // if key clicked
-            if(Input.GetButtonDown(clickInputName)) {
-                keyItemCurrent.Click();
-                keyboardStatus.HandleClick(keyItemCurrent);
+                // if key clicked
+                if(Input.GetButtonDown(clickInputName)) {
+                    keyItemCurrent.Click();
+                    keyboardStatus.HandleClick(keyItemCurrent);
+                }
             }
         }
         // if no target hit and lost focus on item
