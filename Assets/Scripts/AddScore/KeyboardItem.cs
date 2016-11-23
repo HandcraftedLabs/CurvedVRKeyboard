@@ -107,13 +107,13 @@ public class KeyboardItem: KeyboardComponent {
         KeyboardCreator keyboardCreator = GameObject.Find("KeyBoard").GetComponent<KeyboardCreator>();
         float curvature = keyboardCreator.Curvature;
         float centerPointDistance = keyboardCreator.centerPointDistance;
-        
-        
+
+
 
         string traingles = "triangles: ";
         string verticies = "verticies: ";
 
-        Mesh mesh = quadFront.gameObject.GetComponent<MeshFilter>().sharedMesh;
+        Mesh mesh = quadBack.gameObject.GetComponent<MeshFilter>().sharedMesh;
 
         foreach(int trian in mesh.triangles) {
             traingles += " " + trian + " /";
@@ -122,57 +122,44 @@ public class KeyboardItem: KeyboardComponent {
             verticies += " " + vertic.ToString() + " /";
         }
 
-        List<Vector3> verticiesarray = new List<Vector3>(mesh.vertices);
-        List<int> trainglesarray = new List<int>(mesh.triangles);
+        List<Vector3> verticiesarray = new List<Vector3>();
+        List<int> trainglesarray = new List<int>();
 
-        verticiesarray.RemoveRange(4, verticiesarray.Capacity - 4);
-        trainglesarray.RemoveRange(6, trainglesarray.Capacity - 6);
 
         //add 2 verticies 
-        verticiesarray.Add(new Vector3(-0.75f, 0.5f, 0));
+        verticiesarray.Add(new Vector3(-2f, 0.5f, 0));
+        verticiesarray.Add(new Vector3(-2f, -0.5f, 0f));
+        verticiesarray.Add(new Vector3(-1.75f, 0.5f, 0f));
+        verticiesarray.Add(new Vector3(-1.75f, -0.5f, 0f));
+        trainglesarray.Add(0);
+        trainglesarray.Add(1);
+        trainglesarray.Add(2);
         trainglesarray.Add(3);
-        trainglesarray.Add(0);
-        trainglesarray.Add(4);
-
-        verticiesarray.Add(new Vector3(-0.75f, -0.5f, 0f));
-        trainglesarray.Add(0);
-        trainglesarray.Add(5);
-        trainglesarray.Add(4);
-
-        //fill rest
-        for(int i = 4;i <= 12;i += 2) {
-            float xPos = -1 - ((i-4) * 0.25f)/2f;
-            CreateQuadXPlus(xPos, i, trainglesarray, verticiesarray);
-        }
-
-        //add 2 verticies
-        verticiesarray.Add(new Vector3(0.75f, 0.5f, 0f));
-        trainglesarray.Add(16);
         trainglesarray.Add(2);
         trainglesarray.Add(1);
 
-        verticiesarray.Add(new Vector3(0.75f, -0.5f, 0f));
-        trainglesarray.Add(2);
-        trainglesarray.Add(16);
-        trainglesarray.Add(17);
+        for(int i = 2;i < 32;i += 2) {
+            float xPos = -1.5f + ( ( i - 2 ) * 0.25f ) / 2f;
 
-        //fill rest
-        for(int i = 16;i <= 24;i += 2) {
-            float xPos = 1 + ( ( i - 16 ) * 0.25f ) / 2f;
-            CreateQuadXMinus(xPos, i, trainglesarray, verticiesarray);
+            trainglesarray.Add(i);
+            trainglesarray.Add(i + 1);
+            trainglesarray.Add(i + 2);
+            verticiesarray.Add(new Vector3(xPos, 0.5f, 0));
+
+            trainglesarray.Add(i + 3);
+            trainglesarray.Add(i + 2);
+            trainglesarray.Add(i + 1);
+            verticiesarray.Add(new Vector3(xPos, -0.5f, 0));
         }
 
-        Vector3 lastVert = verticiesarray[verticiesarray.Count - 2];
         float offset = 0;
-        for(int i = verticiesarray.Count - 1;i >= 16;i = i - 2) {
-            verticiesarray[i] = CalculatePositionOnCylinder(verticiesarray[i], keyboardCreator, offset);
-            verticiesarray[i - 1] = CalculatePositionOnCylinder(verticiesarray[i - 1], keyboardCreator, offset);
+        for(int i = 0;i < verticiesarray.Count;i += 2) {
+            verticiesarray[i] = CalculatePositionOnCylinder(verticiesarray[i], keyboardCreator, offset) - new Vector3(0,0,keyboardCreator.centerPointDistance);
+            verticiesarray[i+1] = CalculatePositionOnCylinder(verticiesarray[i+1], keyboardCreator, offset) -  new Vector3(0, 0, keyboardCreator.centerPointDistance);
             offset += 0.25f;
         }
 
 
-        //verticiesarray[verticiesarray.Count - 3] = CalculatePositionOnCylinder(verticiesarray[verticiesarray.Count - 3], keyboardCreator, 0f);
-        //verticiesarray[verticiesarray.Count - 4] = CalculatePositionOnCylinder(verticiesarray[verticiesarray.Count - 4], keyboardCreator, 0f);
 
         mesh.vertices = verticiesarray.ToArray();
         mesh.triangles = trainglesarray.ToArray();
@@ -199,36 +186,12 @@ public class KeyboardItem: KeyboardComponent {
         //mesh.triangles = newTriangles;
     }
 
-    private void CreateQuadXPlus (float xPos, int firstVertex, List<int> trianglesList, List<Vector3> VertexList) {
-        VertexList.Add(new Vector3(xPos, 0.5f, 0f));
-        trianglesList.Add(firstVertex);
-        trianglesList.Add(firstVertex + 1);
-        trianglesList.Add(firstVertex + 2);
-
-        VertexList.Add(new Vector3(xPos, -0.5f, 0f));
-        trianglesList.Add(firstVertex + 1);
-        trianglesList.Add(firstVertex + 3);
-        trianglesList.Add(firstVertex + 2);
-    }
-
-    private void CreateQuadXMinus ( float xPos, int firstVertex, List<int> trianglesList, List<Vector3> VertexList ) {
-        VertexList.Add(new Vector3(xPos, 0.5f, 0f));
-        trianglesList.Add(firstVertex);
-        trianglesList.Add(firstVertex + 2);
-        trianglesList.Add(firstVertex + 1);
-
-        VertexList.Add(new Vector3(xPos, -0.5f, 0f));
-        trianglesList.Add(firstVertex + 1);
-        trianglesList.Add(firstVertex + 2);
-        trianglesList.Add(firstVertex + 3);
-    }
-
 
     public Vector3 CalculatePositionOnCylinder (Vector3 lastVert, KeyboardCreator creator,float offset) {
         //row size - offset of current letter position
         float rowSize = 4f;
-        float degree = Mathf.Deg2Rad * ( rowSize * creator.SpacingBetweenKeys / 2 - offset * creator.SpacingBetweenKeys );
-
+        float degree = Mathf.Deg2Rad * (90f + rowSize * creator.SpacingBetweenKeys / 2 - offset * creator.SpacingBetweenKeys );
+        // wciagnac offset * creator.SpacingBetweenKeys 
         float x = Mathf.Cos(degree) * creator.centerPointDistance;
         float z = Mathf.Sin(degree) * creator.centerPointDistance;
         Debug.Log("x: " + x + "z: " + z);
