@@ -21,14 +21,14 @@ public class KeyboardCreator: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
 
-    private KeyboardItem[] keys;
+    public KeyboardItem[] keys;
     private int row;
 
     //-------private Calculations--------
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
-    private float centerPointDistance = -1f;
+    public float centerPointDistance = -1f;
 
     public void Start () {
         ManageKeys();

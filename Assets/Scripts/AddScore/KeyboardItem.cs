@@ -15,6 +15,7 @@ public class KeyboardItem: KeyboardComponent {
     private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
+    private float maxX = 0;
 
     private Renderer quadFront;
     private Renderer quadBack;
@@ -104,6 +105,10 @@ public class KeyboardItem: KeyboardComponent {
 
     public void ManipulateMesh () {
         KeyboardCreator keyboardCreator = GameObject.Find("KeyBoard").GetComponent<KeyboardCreator>();
+        float curvature = keyboardCreator.Curvature;
+        float centerPointDistance = keyboardCreator.centerPointDistance;
+        
+        
 
         string traingles = "triangles: ";
         string verticies = "verticies: ";
@@ -157,7 +162,17 @@ public class KeyboardItem: KeyboardComponent {
             CreateQuadXMinus(xPos, i, trainglesarray, verticiesarray);
         }
 
-       
+        Vector3 lastVert = verticiesarray[verticiesarray.Count - 2];
+        float offset = 0;
+        for(int i = verticiesarray.Count - 1;i >= 16;i = i - 2) {
+            verticiesarray[i] = CalculatePositionOnCylinder(verticiesarray[i], keyboardCreator, offset);
+            verticiesarray[i - 1] = CalculatePositionOnCylinder(verticiesarray[i - 1], keyboardCreator, offset);
+            offset += 0.25f;
+        }
+
+
+        //verticiesarray[verticiesarray.Count - 3] = CalculatePositionOnCylinder(verticiesarray[verticiesarray.Count - 3], keyboardCreator, 0f);
+        //verticiesarray[verticiesarray.Count - 4] = CalculatePositionOnCylinder(verticiesarray[verticiesarray.Count - 4], keyboardCreator, 0f);
 
         mesh.vertices = verticiesarray.ToArray();
         mesh.triangles = trainglesarray.ToArray();
@@ -206,6 +221,20 @@ public class KeyboardItem: KeyboardComponent {
         trianglesList.Add(firstVertex + 1);
         trianglesList.Add(firstVertex + 2);
         trianglesList.Add(firstVertex + 3);
+    }
+
+
+    public Vector3 CalculatePositionOnCylinder (Vector3 lastVert, KeyboardCreator creator,float offset) {
+        //row size - offset of current letter position
+        float rowSize = 4f;
+        float degree = Mathf.Deg2Rad * ( rowSize * creator.SpacingBetweenKeys / 2 - offset * creator.SpacingBetweenKeys );
+
+        float x = Mathf.Cos(degree) * creator.centerPointDistance;
+        float z = Mathf.Sin(degree) * creator.centerPointDistance;
+        Debug.Log("x: " + x + "z: " + z);
+        return new Vector3(x, lastVert.y, z);
+
+
     }
 }
 
