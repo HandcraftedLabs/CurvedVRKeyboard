@@ -55,7 +55,7 @@ public class SpaceMeshCreator{
         mesh.RecalculateNormals();
         return mesh;
     }
-
+    //use function from KeybaordCreator
     private void CalculatePosition ( List<Vector3> verticiesarray ) {
         float offset = 0;
         for(int i = 0; i < verticiesarray.Count;i += 2) {
