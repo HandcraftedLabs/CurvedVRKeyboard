@@ -14,6 +14,7 @@ public class KeyboardItem: KeyboardComponent {
     private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
+    private SpaceMeshCreator meshCreator;
     private Renderer quadFront;
     private Renderer quadBack;
     public enum MaterialEnum {
@@ -101,10 +102,12 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void ManipulateMesh ( KeyboardCreator creator ) {
-
-        SpaceMeshCreator meshcreator = new SpaceMeshCreator(quadBack, quadFront, creator);
-        meshcreator.BuildBackface();
-        meshcreator.BuildFrontface();
+        if(meshCreator == null) {
+            meshCreator = new SpaceMeshCreator(quadBack, quadFront, creator);
+        }
+        
+        meshCreator.BuildBackface();
+        meshCreator.BuildFrontface();
     }
 
 }
