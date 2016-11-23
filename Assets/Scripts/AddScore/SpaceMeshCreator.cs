@@ -5,15 +5,19 @@ using System.Collections.Generic;
 public class SpaceMeshCreator{
 
 
-    public Renderer backMesh;
-    public Renderer frontMesh;
     KeyboardCreator creator;
     List<Vector3> verticiesArray;
     private bool isFrontFace;
 
-    public SpaceMeshCreator( Renderer backMesh, Renderer frontMesh, KeyboardCreator creator ) {
-        this.backMesh = backMesh;
-        this.frontMesh = frontMesh;
+
+    //-------------BuildingData--------------
+    private Vector3 zero = new Vector3(-2f, 0.5f, 0);
+    private Vector3 one = new Vector3(-2f, -0.5f, 0f);
+    private Vector3 two = new Vector3(-1.75f, 0.5f, 0f);
+    private Vector3 three = new Vector3(-1.75f, -0.5f, 0f);
+    private float boundaryY = 0.5f;
+
+    public SpaceMeshCreator(KeyboardCreator creator ) {
         this.creator = creator;
        
     }
@@ -23,9 +27,9 @@ public class SpaceMeshCreator{
         Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
 
         BuildVerticies();
-
         List<int> trainglesArray = new List<int>();
         BuildQuads(trainglesArray);
+
         CalculatePosition(verticiesArray);
         renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
     }
@@ -34,15 +38,14 @@ public class SpaceMeshCreator{
     private void BuildVerticies () {
         if(verticiesArray == null) {
             verticiesArray = new List<Vector3>();
-            verticiesArray.Add(new Vector3(-2f, 0.5f, 0));
-            verticiesArray.Add(new Vector3(-2f, -0.5f, 0f));
-            verticiesArray.Add(new Vector3(-1.75f, 0.5f, 0f));
-            verticiesArray.Add(new Vector3(-1.75f, -0.5f, 0f));
+            verticiesArray.Add(zero);
+            verticiesArray.Add(one);
+            verticiesArray.Add(two);
+            verticiesArray.Add(three);
 
-            for(int i = 2;i < 32;i += 2) {
-                float xPos = -1.5f + ( ( i - 2 ) * 0.25f ) / 2f;
-                verticiesArray.Add(new Vector3(xPos, 0.5f, 0));
-                verticiesArray.Add(new Vector3(xPos, -0.5f, 0));
+            for(float i = -1.5f;i <= 2f;i += 0.25f) {
+                verticiesArray.Add(new Vector3(i, boundaryY, 0));
+                verticiesArray.Add(new Vector3(i, -boundaryY, 0));
             }
         }
     }
@@ -110,13 +113,6 @@ public class SpaceMeshCreator{
             trainglesarray.Add(1);
         }
     }
-
-
-
-    
-
-
-
 
     public Vector3 CalculatePositionOnCylinder ( Vector3 lastVert, KeyboardCreator creator, float offset ) {
         float rowSize = 4f;

@@ -103,7 +103,7 @@ public class KeyboardItem: KeyboardComponent {
 
     public void ManipulateMesh ( KeyboardCreator creator ) {
         if(meshCreator == null) {
-            meshCreator = new SpaceMeshCreator(quadBack, quadFront, creator);
+            meshCreator = new SpaceMeshCreator(creator);
         }
         
         meshCreator.BuildBackface(quadBack, false);
