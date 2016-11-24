@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+
 
 public class KeyboardRayCaster: KeyboardComponent {
     private Camera raycastingCamera;
+    private GameObject target;
 
     private float rayLength;
     private Ray ray;
@@ -21,6 +21,7 @@ public class KeyboardRayCaster: KeyboardComponent {
     }
 
     void Update () {
+        rayLength = Vector3.Distance(raycastingCamera.transform.position, target.transform.position) * 1.1f;
         RayCastKeyboard();
     }
 
@@ -64,5 +65,8 @@ public class KeyboardRayCaster: KeyboardComponent {
 
     public void SetClickButton(string clickHandler) {
         this.clickInputName = clickHandler;
+    }
+    public void SetTarget(GameObject target ) {
+        this.target = target;
     }
 }

@@ -56,6 +56,7 @@ public class KeyboardCreator: KeyboardComponent {
         rayCaster.SetRayLength(50.0f);
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
+        rayCaster.SetTarget(gameObject);
         KeyboardStatus status = GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
     }
