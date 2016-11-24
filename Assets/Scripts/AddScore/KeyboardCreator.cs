@@ -43,7 +43,7 @@ public class KeyboardCreator: KeyboardComponent {
         if(keys == null) {
              InitKeys();
         }
-        if(IsWithoutErrors()) {
+        if(CanBuild()) {
             if(centerPointDistance == -1f) {
                 CurvatureToDistance();
             }
@@ -172,7 +172,7 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
-    public bool IsWithoutErrors () {
+    public bool CanBuild () {
         if(keys.Length != 30) {//is there correct number of keys
             Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
             return false;
