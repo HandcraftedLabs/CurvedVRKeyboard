@@ -181,7 +181,7 @@ public class KeyboardCreator: KeyboardComponent {
             Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence");
             return false;
         }
-        if(GetComponent<KeyboardStatus>().output == null) {
+        if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
             Debug.LogWarning("Please set output Text");
         }
         return true;
