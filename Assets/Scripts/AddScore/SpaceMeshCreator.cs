@@ -24,8 +24,7 @@ public class SpaceMeshCreator{
 
 
     public SpaceMeshCreator(KeyboardCreator creator ) {
-        this.creator = creator;
-       
+        this.creator = creator;  
     }
 
     public void BuildFace(Renderer renderer,bool frontFace) {
@@ -42,9 +41,8 @@ public class SpaceMeshCreator{
 
  
     private void BuildVerticies () {
-        if(verticiesArray == null) {
+        if(verticiesArray == null) {//lazy initialization reusable
             verticiesArray = new List<Vector3>();
-
             for(float i = -boundaryX;i <= boundaryX;i += 0.25f) {
                 verticiesArray.Add(new Vector3(i, boundaryY, 0));
                 verticiesArray.Add(new Vector3(i, -boundaryY, 0));
@@ -78,25 +76,25 @@ public class SpaceMeshCreator{
 
 
 
-    private void CalculatePosition ( List<Vector3> verticiesarray ) {
+    private void CalculatePosition ( List<Vector3> verticiesArray ) {
         float offset = 0;
-        for(int i = 0; i < verticiesarray.Count;i += 2) {
+        for(int i = 0; i < verticiesArray.Count;i += 2) {
             Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
             calculatedVertex.z -= creator.centerPointDistance;
             
             calculatedVertex.y = 0.5f;
-            verticiesArray[i] = calculatedVertex;
+            this.verticiesArray[i] = calculatedVertex;
 
             calculatedVertex.y = -0.5f;
-            verticiesArray[i + 1] = calculatedVertex;
+            this.verticiesArray[i + 1] = calculatedVertex;
 
             offset += 0.25f;
         }
     }
 
-    private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesarray, List<int> trainglesarray ) {
-        mesh.vertices = verticiesarray.ToArray();
-        mesh.triangles = trainglesarray.ToArray();
+    private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
+        mesh.vertices = verticiesArray.ToArray();
+        mesh.triangles = trainglesArray.ToArray();
         mesh.RecalculateNormals();
         return mesh;
     }

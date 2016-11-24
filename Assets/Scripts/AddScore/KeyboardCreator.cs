@@ -21,7 +21,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     //-----------SET IN UNITY --------------
 
-    public KeyboardItem[] keys;
+    private KeyboardItem[] keys;
     private int row;
 
     //-------private Calculations--------
