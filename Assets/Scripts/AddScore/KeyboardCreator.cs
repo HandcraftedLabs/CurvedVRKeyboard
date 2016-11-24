@@ -28,7 +28,7 @@ public class KeyboardCreator: KeyboardComponent {
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
-    private float centerPointDistance = -1f;
+    public float centerPointDistance = -1f;
 
     public void Start () {
         ManageKeys();
@@ -66,6 +66,9 @@ public class KeyboardCreator: KeyboardComponent {
             keys[i].Init();
             keys[i].SetKeyText(allLettersLowercase[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
+            if(i == 28) {
+                keys[i].ManipulateMesh(this);
+            }
         }
     }
 
@@ -112,7 +115,7 @@ public class KeyboardCreator: KeyboardComponent {
         return keyPosition;
     }
 
-    private Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
+    public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
         //row size - offset of current letter position
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
@@ -259,6 +262,9 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
     
+    public void RebuildMesh () {
+        keys[keys.Length - 2].ManipulateMesh(this);
+    }
 }
 
 

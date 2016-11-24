@@ -1,22 +1,26 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 
 public class KeyboardItem: KeyboardComponent {
     private Text letter;
-
     private bool clicked = false;
     private float clickHoldTimer = 0f;
     private float clickHoldTimeLimit = 0.15f;
- 
+
 
     private Material keyDefaultMaterial;
     private Material keyHoveringMaterial;
     private Material keyPressedMaterial;
 
-    
-    private Renderer quadFront;
+    private SpaceMeshCreator meshCreator;
+    public Renderer quadFront;
     private Renderer quadBack;
+
+    private static readonly string QUAD_FRONT = "Front";
+    private static readonly string QUAD_BACK = "Back";
+
     public enum MaterialEnum {
         Default,
         Hovering,
@@ -31,9 +35,8 @@ public class KeyboardItem: KeyboardComponent {
         // check if was not destroyed
         if(letter == null || quadFront == null || quadBack == null) {
             letter = gameObject.GetComponentInChildren<Text>();
-            Renderer[]  quadRenderers = GetComponentsInChildren<Renderer>();
-            quadFront = quadRenderers[0];
-            quadBack = quadRenderers[1];
+            quadBack = transform.Find(QUAD_BACK).GetComponent<Renderer>();
+            quadFront = transform.Find(QUAD_FRONT).GetComponent<Renderer>();
         }
     }
 
@@ -101,11 +104,17 @@ public class KeyboardItem: KeyboardComponent {
         }
     }
 
-
-
+    public void ManipulateMesh ( KeyboardCreator creator ) {
+        if(meshCreator == null) {//lazy initialization
+            meshCreator = new SpaceMeshCreator(creator);
+        }
+        
+        meshCreator.BuildFace(quadBack, false);
+        meshCreator.BuildFace(quadFront, true);
+       
+    }
 
 }
-
 
 
 
