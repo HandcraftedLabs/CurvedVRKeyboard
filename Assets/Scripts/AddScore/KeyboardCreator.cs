@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
-
+/// <summary>
+/// Creates Keyboard, calculates all necessary positions and rotations
+/// </summary>
 [System.Serializable]
 [ExecuteInEditMode]
 public class KeyboardCreator: KeyboardComponent {
@@ -38,9 +40,8 @@ public class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
         SetComponents();
     }
-
     public void ManageKeys () {
-        if(keys == null) {
+        if(keys == null) { 
              InitKeys();
         }
         if(CanBuild()) {
@@ -54,11 +55,12 @@ public class KeyboardCreator: KeyboardComponent {
     public void InitKeys () {
         keys = GetComponentsInChildren<KeyboardItem>();
     }
-
+    
+    /// <summary>
+    /// Sets values for other necessary components
+    /// </summary>
     private void SetComponents () {
         KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
-        //TODO Later update it to detect furthest point on update method
-        rayCaster.SetRayLength(50.0f);
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
         rayCaster.SetTarget(gameObject);
@@ -66,34 +68,48 @@ public class KeyboardCreator: KeyboardComponent {
         status.SetKeys(keys);
     }
 
-
+    /// <summary>
+    /// Fills key with text and calulates position 
+    /// </summary>
     private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
             keys[i].Init();
             keys[i].SetKeyText(allLettersLowercase[i]);
             PositionSingleLetter(i, keys[i].gameObject.transform);
-            if(i == 28) {
+            if(i == 28) {// Space key
                 keys[i].ManipulateMesh(this);
             }
         }
     }
-
+    /// <summary>
+    /// Calculates whole transformation for single key
+    /// </summary>
+    /// <param name="iteration">index of key to be placed</param>
+    /// <param name="keyTransform">key transformation</param>
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
-        //check row and how many keys were palced
+        // Check row and how many keys were palced
         float keysPlaced = CalculateKeysPlacedAndRow(iteration);
-        Vector3 position = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] -1, iteration - keysPlaced);
-        position = AdditionalTransformations(keyTransform, position);
-        LookAtTransformations(keyTransform, position.y);
+        Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] -1, iteration - keysPlaced);
+        positionOnCylinder = AdditionalTransformations(keyTransform, positionOnCylinder);
+        LookAtTransformations(keyTransform, positionOnCylinder.y);
         RotationTransformations(keyTransform);
 
     }
-
+    /// <summary>
+    /// Applys transformation rotation to key in correct order 
+    /// </summary>
+    /// <param name="keyTransform">key to be transformed</param>
     private void RotationTransformations ( Transform keyTransform ) {
         keyTransform.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
         keyTransform.RotateAround(transform.position, Vector3.right, transform.rotation.eulerAngles.x);
         keyTransform.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
     }
 
+    /// <summary>
+    /// Makes key look at cylinder center
+    /// </summary>
+    /// <param name="keyTransform"></param>
+    /// <param name="positionY"></param>
     private void LookAtTransformations ( Transform keyTransform, float positionY ) {
         float xPos = transform.position.x;
         float yPos = positionY;
@@ -102,27 +118,37 @@ public class KeyboardCreator: KeyboardComponent {
         Vector3 lookAt = new Vector3(xPos, yPos , zPos);
         keyTransform.LookAt(lookAt);
     }
-
-    private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 keyPosition ) {
-        keyPosition += transform.position;
-        keyPosition.z -= centerPointDistance;
-        float yPositionBackup = keyPosition.y;
-        Vector3 fromCenterToKey = ( keyPosition - transform.position );
+    /// <summary>
+    /// Applays transformation gameobject(whole keyboard) to each key
+    /// </summary>
+    /// <param name="keyTransform">key to transform</param>
+    /// <param name="positionOnCylinder">position on cylinder</param>
+    /// <returns></returns>
+    private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 positionOnCylinder ) {
+        positionOnCylinder += transform.position;
+        positionOnCylinder.z -= centerPointDistance;
+        float yPositionBackup = positionOnCylinder.y;
+        Vector3 fromCenterToKey = ( positionOnCylinder - transform.position );
         float scaleOfX = ( transform.localScale.x - 1 ) ;
 
         //we move each key along it backward direction by scale
-        keyPosition = keyPosition + fromCenterToKey * scaleOfX;
+        positionOnCylinder = positionOnCylinder + fromCenterToKey * scaleOfX;
         
         //we modified y in upper calculations restore it 
-        keyPosition.y = yPositionBackup;
+        positionOnCylinder.y = yPositionBackup;
 
-        keyTransform.position = keyPosition;
+        keyTransform.position = positionOnCylinder;
 
-        return keyPosition;
+        return positionOnCylinder;
     }
-
+    /// <summary>
+    /// Caculates position of key
+    /// </summary>
+    /// <param name="rowSize">size of current row</param>
+    /// <param name="offset">position of letter in row</param>
+    /// <returns>Position of key</returns>
     public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
-        //row size - offset of current letter position
+        
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
 
         float x = Mathf.Cos(degree) * centerPointDistance;
@@ -131,14 +157,17 @@ public class KeyboardCreator: KeyboardComponent {
         return new Vector3(x, y, z);
     }
 
-    // After getting to new row we need to reset offset relative to iteration
-    // so all keys spawn in front of user centered
+    /// <summary> 
+    /// Calculates current row and offset of key
+    /// </summary>
+    /// <param name="iteration"></param>
+    /// <returns></returns>
     private float CalculateKeysPlacedAndRow ( int iteration ) {
         float keysPlaced = 0;
         row = 0;
 
         int iterationCounter = 0;
-        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {//for each row
+        for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {
             iterationCounter += lettersInRowsCount[rowChecked];
             if(iteration >= iterationCounter) {
                 keysPlaced += lettersInRowsCount[rowChecked];
@@ -166,13 +195,20 @@ public class KeyboardCreator: KeyboardComponent {
         centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
     }
 
+    /// <summary>
+    /// Changes materials for all keys
+    /// </summary>
     public void ChangeMaterialOnKeys () {
         foreach(KeyboardItem key in keys) {
             key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
         }
     }
 
-
+    /// <summary>
+    /// Checks if user didn't delet any items.
+    /// Also rises warnings
+    /// </summary>
+    /// <returns></returns>
     public bool CanBuild () {
         if(keys.Length != 30) {//is there correct number of keys
             Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
@@ -197,7 +233,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             const float errorThreshold = 0.01f;
-            if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {
+            if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {// Value changed
 
                 curvature = 1f - value;
                 CurvatureToDistance();
@@ -228,7 +264,7 @@ public class KeyboardCreator: KeyboardComponent {
             if(KeyDefaultMaterial != value) {
                 keyDefaultMaterial = value;
                 foreach(KeyboardItem key in keys) {
-                    key.SetMaterial(KeyboardItem.MaterialEnum.Default, keyDefaultMaterial);
+                    key.SetMaterial(KeyboardItem.KeyStateEnum.Default, keyDefaultMaterial);
                 }
 
             }
@@ -280,10 +316,7 @@ public class KeyboardCreator: KeyboardComponent {
             clickHandle = value;
         }
     }
-    
-    public void RebuildMesh () {
-        keys[keys.Length - 2].ManipulateMesh(this);
-    }
+
 }
 
 

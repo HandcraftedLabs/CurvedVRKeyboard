@@ -15,7 +15,10 @@ public class KeyboardStatus : KeyboardComponent {
     private bool isLowercase = true;
 
     private static readonly char BLANKSPACE = ' ';
-
+    /// <summary>
+    /// Handles click on keyboarditem
+    /// </summary>
+    /// <param name="clicked">keyboard item clicked</param>
     public void HandleClick(KeyboardItem clicked) {
         string value = clicked.GetValue();
 
@@ -36,7 +39,9 @@ public class KeyboardStatus : KeyboardComponent {
         }
     }
 
-
+    /// <summary>
+    /// Displays special signs
+    /// </summary>
     private void ChangeSpecialLetters() {
         areLettersActive = !areLettersActive;
         string[] ToDisplay = areLettersActive ? allLettersLowercase : allSpecials;
@@ -44,7 +49,9 @@ public class KeyboardStatus : KeyboardComponent {
             keys[i].SetKeyText(ToDisplay[i]);
         }
     }
-
+    /// <summary>
+    /// Changes between lower and upper keys
+    /// </summary>
     private void LowerUpperKeys() {
         isLowercase = !isLowercase;
         string[] ToDisplay = isLowercase ? allLettersLowercase : allLettersUppercase;

@@ -20,8 +20,10 @@ public class KeyboardItem: KeyboardComponent {
 
     private static readonly string QUAD_FRONT = "Front";
     private static readonly string QUAD_BACK = "Back";
-
-    public enum MaterialEnum {
+    /// <summary>
+    /// Enums for materials
+    /// </summary>
+    public enum KeyStateEnum {
         Default,
         Hovering,
         Pressed
@@ -32,14 +34,15 @@ public class KeyboardItem: KeyboardComponent {
     }
 
     public void Init () {
-        // check if was not destroyed
-        if(letter == null || quadFront == null || quadBack == null) {
+        if(letter == null || quadFront == null || quadBack == null) {  // Check if initialized
             letter = gameObject.GetComponentInChildren<Text>();
             quadBack = transform.Find(QUAD_BACK).GetComponent<Renderer>();
             quadFront = transform.Find(QUAD_FRONT).GetComponent<Renderer>();
         }
     }
-
+    /// <summary>
+    /// Handle for chover function
+    /// </summary>
     public void Hovering () {
         if(!clicked) {
             ChangeMaterial(keyHoveringMaterial);
@@ -47,63 +50,91 @@ public class KeyboardItem: KeyboardComponent {
             HoldClick();
         }
     }
-
-    private void HoldClick () {
-        ChangeMaterial(keyPressedMaterial);
-
-        clickHoldTimer += Time.deltaTime;
-        if(clickHoldTimer >= clickHoldTimeLimit) {
-            clicked = false;
-            clickHoldTimer = 0f;
-        }
-    }
-
-    public void StopHovering () {
-        ChangeMaterial(keyDefaultMaterial);
-    }
-
+    /// <summary>
+    /// handle for click start
+    /// </summary>
     public void Click () {
         clicked = true;
         ChangeMaterial(keyPressedMaterial);
     }
+    /// <summary>
+    /// handle for click function 
+    /// </summary>
+    private void HoldClick () {
+        ChangeMaterial(keyPressedMaterial);
 
+        clickHoldTimer += Time.deltaTime;
+        if(clickHoldTimer >= clickHoldTimeLimit) {// Check if time of click is over
+            clicked = false;
+            clickHoldTimer = 0f;
+        }
+    }
+    /// <summary>
+    /// Handle for hover over
+    /// </summary>
+    public void StopHovering () {
+        ChangeMaterial(keyDefaultMaterial);
+    }
+
+    /// <summary>
+    /// Get value of key text
+    /// </summary>
+    /// <returns>value of key</returns>
     public string GetValue () {
         return letter.text;
     }
-
+    /// <summary>
+    /// Changes value of key text
+    /// </summary>
+    /// <param name="value"></param>
     public void SetKeyText ( string value ) {
         if(!letter.text.Equals(value)) {
             letter.text = value;
         }
     }
-
+    /// <summary>
+    /// Changes material on key
+    /// </summary>
+    /// <param name="material">material to be displayed</param>
     private void ChangeMaterial ( Material material ) {
         quadFront.material = material;
         quadBack.material = material;
     }
-
+    /// <summary>
+    /// Changes materials on all keys
+    /// </summary>
+    /// <param name="keyDefaultMaterial"></param>
+    /// <param name="keyHoveringMaterial"></param>
+    /// <param name="keyPressedMaterial"></param>
     public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
         this.keyDefaultMaterial = keyDefaultMaterial;
         this.keyHoveringMaterial = keyHoveringMaterial;
         this.keyPressedMaterial = keyPressedMaterial;
     }
-
-    public void SetMaterial ( MaterialEnum materialEnum, Material newMaterial ) {
+    /// <summary>
+    /// Changes material for state
+    /// </summary>
+    /// <param name="materialEnum">State of which material will be changed</param>
+    /// <param name="newMaterial">new material</param>
+    public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial ) {
         switch(materialEnum) {
-            case MaterialEnum.Default:
+            case KeyStateEnum.Default:
                 keyDefaultMaterial = newMaterial;
                 quadFront.material = newMaterial;
                 quadBack.material = newMaterial;
                 break;
-            case MaterialEnum.Hovering:
+            case KeyStateEnum.Hovering:
                 keyHoveringMaterial = newMaterial;
                 break;
-            case MaterialEnum.Pressed:
+            case KeyStateEnum.Pressed:
                 keyPressedMaterial = newMaterial;
                 break;
         }
     }
-
+    /// <summary>
+    /// Changes mesh for space
+    /// </summary>
+    /// <param name="creator"></param>
     public void ManipulateMesh ( KeyboardCreator creator ) {
         if(meshCreator == null) {//lazy initialization
             meshCreator = new SpaceMeshCreator(creator);

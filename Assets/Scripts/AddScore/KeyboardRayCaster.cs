@@ -25,31 +25,33 @@ public class KeyboardRayCaster: KeyboardComponent {
         RayCastKeyboard();
     }
 
-    
+    /// <summary>
+    /// Checks if camera is pointing at any key. 
+    /// If it does changes state of key
+    /// </summary>
     private void RayCastKeyboard () {
         ray = new Ray(raycastingCamera.transform.position, raycastingCamera.transform.forward);
 
-        if(Physics.Raycast(ray, out hit, rayLength, layer)) { // if any key was hit
+        if(Physics.Raycast(ray, out hit, rayLength, layer)) { // If any key was hit
             KeyboardItem focusedKeyItem = hit.transform.gameObject.GetComponent<KeyboardItem>();
 
             if(focusedKeyItem != null) { 
                 ChangeCurrentKeyItem(focusedKeyItem);
                 keyItemCurrent.Hovering();
 
-                // if key clicked
-                if(Input.GetButtonDown(clickInputName)) {
+                
+                if(Input.GetButtonDown(clickInputName)) {// If key clicked
                     keyItemCurrent.Click();
                     keyboardStatus.HandleClick(keyItemCurrent);
                 }
             }
         }
-        // if no target hit and lost focus on item
-        else if(keyItemCurrent != null) {
+       
+        else if(keyItemCurrent != null) {// If no target hit and lost focus on item
             ChangeCurrentKeyItem(null);
         }
     }
-
-    void ChangeCurrentKeyItem(KeyboardItem key) {
+   private void ChangeCurrentKeyItem(KeyboardItem key) {
         if (keyItemCurrent != null)
             keyItemCurrent.StopHovering();
         keyItemCurrent = key;
