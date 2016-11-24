@@ -106,8 +106,8 @@ public class KeyboardItem: KeyboardComponent {
             meshCreator = new SpaceMeshCreator(creator);
         }
         
-        meshCreator.BuildBackface(quadBack, false);
-        meshCreator.BuildBackface(quadFront, true);
+        meshCreator.BuildFace(quadBack, false);
+        meshCreator.BuildFace(quadFront, true);
        
     }
 
