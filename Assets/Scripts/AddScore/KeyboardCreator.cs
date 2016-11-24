@@ -69,7 +69,7 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     /// <summary>
-    /// Fills key with text and calulates position 
+    /// Fills key with text and calculates position 
     /// </summary>
     private void FillAndPlaceKeys () {
         for(int i = 0;i < keys.Length;i++) {
@@ -96,7 +96,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     }
     /// <summary>
-    /// Applys transformation rotation to key in correct order 
+    /// Applies transformation rotation to key in correct order 
     /// </summary>
     /// <param name="keyTransform">key to be transformed</param>
     private void RotationTransformations ( Transform keyTransform ) {
@@ -119,7 +119,7 @@ public class KeyboardCreator: KeyboardComponent {
         keyTransform.LookAt(lookAt);
     }
     /// <summary>
-    /// Applays transformation gameobject(whole keyboard) to each key
+    /// Applies transformation gameobject(whole keyboard) to each key
     /// </summary>
     /// <param name="keyTransform">key to transform</param>
     /// <param name="positionOnCylinder">position on cylinder</param>
@@ -142,7 +142,7 @@ public class KeyboardCreator: KeyboardComponent {
         return positionOnCylinder;
     }
     /// <summary>
-    /// Caculates position of key
+    /// Calculates position of key
     /// </summary>
     /// <param name="rowSize">size of current row</param>
     /// <param name="offset">position of letter in row</param>
@@ -205,7 +205,7 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
     /// <summary>
-    /// Checks if user didn't delet any items.
+    /// Checks if user didn't delete any items.
     /// Also rises warnings
     /// </summary>
     /// <returns></returns>

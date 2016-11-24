@@ -22,7 +22,7 @@ public class SpaceMeshCreator{
         this.creator = creator;  
     }
     /// <summary>
-    /// Builds mesh for space
+    /// Builds mesh for space bar
     /// </summary>
     /// <param name="renderer"> Renderer to get nesh from</param>
     /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>

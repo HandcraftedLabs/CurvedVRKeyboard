@@ -41,7 +41,7 @@ public class KeyboardItem: KeyboardComponent {
         }
     }
     /// <summary>
-    /// Handle for chover function
+    /// Handle for hover function
     /// </summary>
     public void Hovering () {
         if(!clicked) {
@@ -132,7 +132,7 @@ public class KeyboardItem: KeyboardComponent {
         }
     }
     /// <summary>
-    /// Changes mesh for space
+    /// Changes 'space' bar mesh
     /// </summary>
     /// <param name="creator"></param>
     public void ManipulateMesh ( KeyboardCreator creator ) {
