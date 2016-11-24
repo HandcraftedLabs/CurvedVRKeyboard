@@ -173,12 +173,12 @@ public class KeyboardCreator: KeyboardComponent {
 
 
     public bool IsWithoutErrors () {
-        if(keys.Length != 30) {
+        if(keys.Length != 30) {//is there correct number of keys
             Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
             return false;
         }
-        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {
-            Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab");
+        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//if keys are positioned corectly
+            Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence");
             return false;
         }
         return true;
