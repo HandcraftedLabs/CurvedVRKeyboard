@@ -114,6 +114,12 @@ public class KeyboardItem: KeyboardComponent {
        
     }
 
+    public string GetMeshName () {
+        if(quadFront == null) {
+            Init();
+        }
+        return quadFront.GetComponent<MeshFilter>().sharedMesh.name;
+    }
 }
 
 

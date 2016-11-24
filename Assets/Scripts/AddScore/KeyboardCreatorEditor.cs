@@ -43,10 +43,6 @@ public class KeyboardCreatorEditor: Editor {
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);
         }
-        //DEBUG
-        if(GUILayout.Button("Rebuild mesh")) {
-            keyboardCreator.RebuildMesh();
-        }
 
 
     }

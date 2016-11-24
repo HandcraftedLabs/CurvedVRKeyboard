@@ -30,6 +30,9 @@ public class KeyboardCreator: KeyboardComponent {
     private readonly float defaultRotation = 90f;
     public float centerPointDistance = -1f;
 
+    private static readonly string MESH_NAME_SEARCHED = "Quad";
+
+
     public void Start () {
         ManageKeys();
         ChangeMaterialOnKeys();
@@ -38,12 +41,14 @@ public class KeyboardCreator: KeyboardComponent {
 
     public void ManageKeys () {
         if(keys == null) {
-            InitKeys();
+             InitKeys();
         }
-        if(centerPointDistance == -1f) {
-            CurvatureToDistance();
+        if(IsWithoutErrors()) {
+            if(centerPointDistance == -1f) {
+                CurvatureToDistance();
+            }
+            FillAndPlaceKeys();
         }
-        FillAndPlaceKeys();
     }
 
     public void InitKeys () {
@@ -167,6 +172,17 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
+    public bool IsWithoutErrors () {
+        if(keys.Length != 30) {
+            Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
+            return false;
+        }
+        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {
+            Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab");
+            return false;
+        }
+        return true;
+    }
     //---------------PROPERTIES----------------
 
 
@@ -180,11 +196,10 @@ public class KeyboardCreator: KeyboardComponent {
             //Debug.Log(curvature);
             //Debug.Log(1f-value);
             if(curvature != 1f - value) {
-
-                //Debug.Log("CurvatureChange");
-                curvature = 1f - value;
-                CurvatureToDistance();
-                ManageKeys();
+                    curvature = 1f - value;
+                    CurvatureToDistance();
+                    ManageKeys();
+                
             }
         }
     }
@@ -247,6 +262,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(raycastingCamera != value) {
+                InitKeys();
                 raycastingCamera = value;
             }
 
