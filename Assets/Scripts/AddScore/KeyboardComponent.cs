@@ -53,7 +53,6 @@ public abstract class KeyboardComponent : MonoBehaviour {
         ABC, SPACE, BACK
     };
 
-    // Do not change this
     public static readonly int[] lettersInRowsCount = new int[] { 10, 9, 8, 6 };
 
 }
