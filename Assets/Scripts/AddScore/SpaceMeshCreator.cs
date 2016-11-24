@@ -11,10 +11,6 @@ public class SpaceMeshCreator{
 
 
     //-------------BuildingData--------------
-    private Vector3 zero = new Vector3(-2f, 0.5f, 0);
-    private Vector3 one = new Vector3(-2f, -0.5f, 0f);
-    private Vector3 two = new Vector3(-1.75f, 0.5f, 0f);
-    private Vector3 three = new Vector3(-1.75f, -0.5f, 0f);
 
     private float boundaryY = 0.5f;
     private float boundaryX = 2f;

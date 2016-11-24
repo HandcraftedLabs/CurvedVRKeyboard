@@ -195,16 +195,13 @@ public class KeyboardCreator: KeyboardComponent {
             return 1f - curvature;
         }
         set {
-            // THERE IS ERROR IN IF LEAVE FOR LATER
-            
-            if(curvature != 1f - value) {
-                Debug.Log("1f - value:"+ (1f - value));
-                Debug.Log("curvature :"+ curvature);
+            const float errorThreshold = 0.01f;
+            if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {
 
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
-                
+
             }
         }
     }
