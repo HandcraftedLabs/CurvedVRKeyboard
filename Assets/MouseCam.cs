@@ -20,4 +20,5 @@ public class MouseCam: MonoBehaviour {
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
+
 }
