@@ -177,7 +177,7 @@ public class KeyboardCreator: KeyboardComponent {
             Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
             return false;
         }
-        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//if keys are positioned corectly
+        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
             Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence");
             return false;
         }
@@ -196,12 +196,14 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             // THERE IS ERROR IN IF LEAVE FOR LATER
-            //Debug.Log(curvature);
-            //Debug.Log(1f-value);
+            
             if(curvature != 1f - value) {
-                    curvature = 1f - value;
-                    CurvatureToDistance();
-                    ManageKeys();
+                Debug.Log("1f - value:"+ (1f - value));
+                Debug.Log("curvature :"+ curvature);
+
+                curvature = 1f - value;
+                CurvatureToDistance();
+                ManageKeys();
                 
             }
         }
