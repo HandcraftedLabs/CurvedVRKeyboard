@@ -30,6 +30,9 @@ public class KeyboardCreator: KeyboardComponent {
     private readonly float defaultRotation = 90f;
     public float centerPointDistance = -1f;
 
+    private static readonly string MESH_NAME_SEARCHED = "Quad";
+
+
     public void Start () {
         ManageKeys();
         ChangeMaterialOnKeys();
@@ -38,12 +41,14 @@ public class KeyboardCreator: KeyboardComponent {
 
     public void ManageKeys () {
         if(keys == null) {
-            InitKeys();
+             InitKeys();
         }
-        if(centerPointDistance == -1f) {
-            CurvatureToDistance();
+        if(CanBuild()) {
+            if(centerPointDistance == -1f) {
+                CurvatureToDistance();
+            }
+            FillAndPlaceKeys();
         }
-        FillAndPlaceKeys();
     }
 
     public void InitKeys () {
@@ -168,6 +173,20 @@ public class KeyboardCreator: KeyboardComponent {
     }
 
 
+    public bool CanBuild () {
+        if(keys.Length != 30) {//is there correct number of keys
+            Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
+            return false;
+        }
+        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
+            Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence");
+            return false;
+        }
+        if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
+            Debug.LogWarning("Please set output Text");
+        }
+        return true;
+    }
     //---------------PROPERTIES----------------
 
 
@@ -177,15 +196,13 @@ public class KeyboardCreator: KeyboardComponent {
             return 1f - curvature;
         }
         set {
-            // THERE IS ERROR IN IF LEAVE FOR LATER
-            //Debug.Log(curvature);
-            //Debug.Log(1f-value);
-            if(curvature != 1f - value) {
+            const float errorThreshold = 0.01f;
+            if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {
 
-                //Debug.Log("CurvatureChange");
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
+
             }
         }
     }
@@ -248,6 +265,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(raycastingCamera != value) {
+                InitKeys();
                 raycastingCamera = value;
             }
 

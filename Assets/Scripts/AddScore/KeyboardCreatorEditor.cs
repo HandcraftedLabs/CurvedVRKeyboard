@@ -34,7 +34,7 @@ public class KeyboardCreatorEditor: Editor {
     public override void OnInspectorGUI () {
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
         HandleScaleChange();
-        // if there is a pivot object users are allowed to modify values
+        // if there is a camera users are allowed to modify values
         if(keyboardCreator.RaycastingCamera != null) {
             DrawMemebers();
         } else {
@@ -42,10 +42,6 @@ public class KeyboardCreatorEditor: Editor {
         }
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);
-        }
-        //DEBUG
-        if(GUILayout.Button("Rebuild mesh")) {
-            keyboardCreator.RebuildMesh();
         }
 
 
