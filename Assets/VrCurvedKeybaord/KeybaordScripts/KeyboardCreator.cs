@@ -60,7 +60,7 @@ public class KeyboardCreator: KeyboardComponent {
     /// Sets values for other necessary components
     /// </summary>
     private void SetComponents () {
-        KeyboardRayCaster rayCaster = GetComponent<KeyboardRayCaster>();
+        KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
         rayCaster.SetCamera(RaycastingCamera);
         rayCaster.SetClickButton(ClickHandle);
         rayCaster.SetTarget(gameObject);
@@ -220,7 +220,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
             Debug.LogWarning("Please set output Text");
-            return false;
+            
         }
 
 

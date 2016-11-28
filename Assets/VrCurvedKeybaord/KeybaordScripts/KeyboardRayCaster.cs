@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-public class KeyboardRayCaster: KeyboardComponent {
+public class KeyboardRaycaster: KeyboardComponent {
     private Camera raycastingCamera;
     private GameObject target;
 

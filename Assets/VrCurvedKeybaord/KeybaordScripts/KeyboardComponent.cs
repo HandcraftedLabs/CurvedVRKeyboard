@@ -23,10 +23,10 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead).
-    // Reamamber to always have 30 values
+    // Remember to always have 30 values
     public static readonly string[] allLettersLowercase = new string[]
     {
-        "q","w","e","r","t","y","u","i","o","p",
+        "q","w","=","r","t","y","u","i","o","p",
         "a","s","d","f","g","h","j","k","l",
         UP,"z","x","c","v","b","n","m",
         QEH, SPACE, BACK
@@ -34,7 +34,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead)
-    // Reamamber to always have 30 values
+    // Remember to always have 30 values
     public static readonly string[] allLettersUppercase = new string[]
     {
         "Q","W","E","R","T","Y","U","I","O","P",
@@ -45,7 +45,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead)
-    // Reamamber to always have 30 values
+    // Remember to always have 30 values
     public static readonly string[] allSpecials = new string[]
     {
         "1","2","3","4","5","6","7","8","9","0",
