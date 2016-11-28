@@ -11,20 +11,19 @@ using UnityEngine;
 public abstract class KeyboardComponent : MonoBehaviour {
 
     // Special signs. Feel free to change
-    public static readonly string SPACE = "  ";
-    public static readonly string BACK = "Back";
-    public static readonly string ABC = "ABC";
-    public static readonly string QEH = "?!#";
-    public static readonly string UP = "UP";
-    public static readonly string LOW = "low";
+    public const string SPACE = "  ";
+    public const string BACK = "Back";
+    public const string ABC = "ABC";
+    public const string QEH = "?!#";
+    public const string UP = "UP";
+    public const string LOW = "low";
 
-    public static readonly int CENTER_ITEM = 15;
-
-    // Name of layer to cast; must be the same as the layer set in editor
-    public static readonly string LAYER_TO_CAST = "UI";
+    public const int CENTER_ITEM = 15;
+    public const int KEY_NUMBER = 30;
 
     // Feel free to change (but do not write strings in place of
-    // special signs, change variables values instead)
+    // special signs, change variables values instead).
+    // Reamamber to always have 30 values
     public static readonly string[] allLettersLowercase = new string[]
     {
         "q","w","e","r","t","y","u","i","o","p",
@@ -35,6 +34,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead)
+    // Reamamber to always have 30 values
     public static readonly string[] allLettersUppercase = new string[]
     {
         "Q","W","E","R","T","Y","U","I","O","P",
@@ -45,6 +45,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead)
+    // Reamamber to always have 30 values
     public static readonly string[] allSpecials = new string[]
     {
         "1","2","3","4","5","6","7","8","9","0",
@@ -55,4 +56,19 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     public static readonly int[] lettersInRowsCount = new int[] { 10, 9, 8, 6 };
 
+
+
+    public static bool CheckKeyArrays () {
+        if(allLettersLowercase.Length != KEY_NUMBER) {
+            Debug.LogWarning("There is incorrect amount of letters in Lowercase array. Check KeyboardComponent class");
+            return false;
+        }else if(allLettersUppercase.Length != KEY_NUMBER) {
+            Debug.LogWarning("There is incorrect amount of letters in Uppercase array. Check KeyboardComponent class");
+            return false;
+        } else if(allSpecials.Length != KEY_NUMBER) {
+            Debug.LogWarning("There is incorrect amount of letters in Special array. Check KeyboardComponent class");
+            return false;
+        }
+        return true;
+    }
 }

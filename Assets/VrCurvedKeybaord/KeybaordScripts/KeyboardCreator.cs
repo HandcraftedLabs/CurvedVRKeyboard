@@ -220,8 +220,11 @@ public class KeyboardCreator: KeyboardComponent {
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
             Debug.LogWarning("Please set output Text");
+            return false;
         }
-        return true;
+
+
+        return CheckKeyArrays();
     }
     //---------------PROPERTIES----------------
 
