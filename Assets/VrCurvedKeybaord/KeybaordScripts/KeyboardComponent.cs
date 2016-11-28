@@ -21,7 +21,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
     public static readonly int CENTER_ITEM = 15;
 
     // Name of layer to cast; must be the same as the layer set in editor
-    public static readonly string LAYER_TO_CAST = "KeyboardItem";
+    public static readonly string LAYER_TO_CAST = "UI";
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead)

@@ -1,0 +1,23 @@
+VRCKeyboard - VrCurvatureKeyboard
+
+Are you tired of setting up thousands of options to setup things?
+We may have somthing for you.
+
+VRCKeyboard  is a free solution allowing user to fast setup 
+in game keyboard for virtual reality or standard projects
+in which user can't freely type on keyboard with hands.
+
+VRCKeyboard is simple to start with. Just attach camera, or eaven use
+button to find one.Later just add UI text and it's working.
+
+You don't like straight keyboards?? This solution allows you to bend 
+keyboard with just one simple slider drag.
+
+VRCKeyboard was designed with perspective of fast setup and simplicity.
+We tried to limit user configuration to minimum. You won't fill overwhelmed.
+
+If you have some opinions to share please contact us:
+kontakt
+
+
+

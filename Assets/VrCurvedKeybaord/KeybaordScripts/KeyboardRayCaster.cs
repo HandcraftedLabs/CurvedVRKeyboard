@@ -17,7 +17,8 @@ public class KeyboardRayCaster: KeyboardComponent {
 
     void Start () {
         keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
-        layer = 1 << LayerMask.NameToLayer(LAYER_TO_CAST);
+        int layerNumber  = gameObject.layer;
+        layer = 1 << layerNumber;
     }
 
     void Update () {
@@ -52,8 +53,9 @@ public class KeyboardRayCaster: KeyboardComponent {
         }
     }
    private void ChangeCurrentKeyItem(KeyboardItem key) {
-        if (keyItemCurrent != null)
+        if (keyItemCurrent != null) {
             keyItemCurrent.StopHovering();
+        }
         keyItemCurrent = key;
     }
 
