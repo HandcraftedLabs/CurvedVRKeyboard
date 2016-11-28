@@ -18,6 +18,7 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
     private KeyboardCreator keyboardCreator;
+    private ErrorReporter errorReporter;
     private Vector3 keyboardScale;
     private bool noCameraFound = false;
     
@@ -25,7 +26,8 @@ public class KeyboardCreatorEditor: Editor {
 
     private void Awake () {
         keyboardCreator = target as KeyboardCreator;
-        keyboardCreator.InitKeys();
+        keyboardCreator.InitKeysAndReporter();
+        
         if(keyboardCreator.RaycastingCamera != null) {
             keyboardCreator.ManageKeys();
         }
@@ -34,25 +36,29 @@ public class KeyboardCreatorEditor: Editor {
 
 
     public override void OnInspectorGUI () {
+        errorReporter = ErrorReporter.Instance;
+        errorReporter.Update();
+
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
 
         keyboardCreator.checkErrors();
 
-  
-
         HandleScaleChange();
         if(keyboardCreator.RaycastingCamera != null) {// If there is a camera
             DrawMemebers();
+
+            if(errorReporter.IsComunicatAviable()) {
+                Color standard = GUI.color;
+                GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
+                GUIStyle s = new GUIStyle(EditorStyles.textField);
+                s.normal.textColor = Color.black;
+                EditorGUILayout.LabelField(errorReporter.GetMessage(), s);
+            }
+
         } else {
             CameraFinderGui();
         }
-        if(ErrorReporter.Instance.IsComunicatAviable()) {
-            Color standard = GUI.color;
-            GUI.color = ( ErrorReporter.Instance.IsErrorPresent() ) ? Color.red : Color.yellow;
-            GUIStyle s = new GUIStyle(EditorStyles.textField);
-            s.normal.textColor = Color.black;
-            EditorGUILayout.LabelField(ErrorReporter.Instance.GetMessage(), s);
-        }
+    
 
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);

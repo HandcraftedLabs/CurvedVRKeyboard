@@ -25,7 +25,6 @@ public class KeyboardCreator: KeyboardComponent {
 
     private KeyboardItem[] keys;
     private int row;
-
     //-------private Calculations--------
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
@@ -45,8 +44,10 @@ public class KeyboardCreator: KeyboardComponent {
     }
     public void ManageKeys () {
         if(keys == null) { 
-             InitKeys();
+             InitKeysAndReporter();
         }
+
+        checkErrors();
 
         if(CanBuild()) {
             if(centerPointDistance == -1f) {
@@ -56,9 +57,9 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    public void InitKeys () {
+    public void InitKeysAndReporter () {
         keys = GetComponentsInChildren<KeyboardItem>();
-     }
+    }
     
     /// <summary>
     /// Sets values for other necessary components
@@ -211,17 +212,18 @@ public class KeyboardCreator: KeyboardComponent {
 
 
     public void checkErrors () {
-        ErrorReporter.Instance.Update();
+        errorReporter = ErrorReporter.Instance;
+        errorReporter.Update();
         if(keys.Length != 30) {//is there correct number of keys
-            ErrorReporter.Instance.SetMessage("Can't procced. Number of keys is incorrect. Revert your changes to prefab",ErrorReporter.Status.Error);
+            errorReporter.SetMessage("Can't procced. Number of keys is incorrect. Revert your changes to prefab",ErrorReporter.Status.Error);
             return;
         }
         if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
-            ErrorReporter.Instance.SetMessage("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
+            errorReporter.SetMessage("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
             return;
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-            ErrorReporter.Instance.SetMessage("Please set output Text", ErrorReporter.Status.Warning);
+            errorReporter.SetMessage("Please set output Text", ErrorReporter.Status.Warning);
             
         }
         CheckKeyArrays();
@@ -234,7 +236,7 @@ public class KeyboardCreator: KeyboardComponent {
     /// </summary>
     /// <returns></returns>
     public bool CanBuild () {
-        return !ErrorReporter.Instance.IsErrorPresent();
+        return !errorReporter.IsErrorPresent();
     }
     //---------------PROPERTIES----------------
 
@@ -313,7 +315,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(raycastingCamera != value) {
-                InitKeys();
+                InitKeysAndReporter();
                 raycastingCamera = value;
             }
 

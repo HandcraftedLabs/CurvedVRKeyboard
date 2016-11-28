@@ -18,6 +18,9 @@ public class ErrorReporter  {
         Warning
     }
 
+    public static void RecreateReporter () {
+        instance = new ErrorReporter();
+    }
 
     public static ErrorReporter Instance {
         get {
