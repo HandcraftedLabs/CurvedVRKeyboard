@@ -20,7 +20,7 @@ public class KeyboardCreatorEditor: Editor {
     private KeyboardCreator keyboardCreator;
     private Vector3 keyboardScale;
     private bool noCameraFound = false;
-
+    
 
 
     private void Awake () {
@@ -35,12 +35,25 @@ public class KeyboardCreatorEditor: Editor {
 
     public override void OnInspectorGUI () {
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
+
+        keyboardCreator.checkErrors();
+
+  
+
         HandleScaleChange();
         if(keyboardCreator.RaycastingCamera != null) {// If there is a camera
             DrawMemebers();
         } else {
             CameraFinderGui();
         }
+        if(ErrorReporter.Instance.IsComunicatAviable()) {
+            Color standard = GUI.color;
+            GUI.color = ( ErrorReporter.Instance.IsErrorPresent() ) ? Color.red : Color.yellow;
+            GUIStyle s = new GUIStyle(EditorStyles.textField);
+            s.normal.textColor = Color.black;
+            EditorGUILayout.LabelField(ErrorReporter.Instance.GetMessage(), s);
+        }
+
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);
         }
