@@ -40,7 +40,6 @@ public class KeyboardCreatorEditor: Editor {
 
     public override void OnInspectorGUI () {
         errorReporter = ErrorReporter.Instance;
-        errorReporter.Reset();
         keyboardCreator.checkErrors();
 
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;

@@ -215,11 +215,11 @@ public class KeyboardCreator: KeyboardComponent {
         errorReporter = ErrorReporter.Instance;
         errorReporter.Reset();
         if(keys.Length != 30) {//is there correct number of keys
-            errorReporter.SetMessage("Can't procced. Number of keys is incorrect. Revert your changes to prefab",ErrorReporter.Status.Error);
+            errorReporter.SetMessage("Cannot procced. Number of keys is incorrect. Revert your changes to prefab", ErrorReporter.Status.Error);
             return;
         }
         if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
-            errorReporter.SetMessage("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
+            errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
             return;
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
