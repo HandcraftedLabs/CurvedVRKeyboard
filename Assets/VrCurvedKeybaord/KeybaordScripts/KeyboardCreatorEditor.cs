@@ -20,14 +20,17 @@ public class KeyboardCreatorEditor: Editor {
     private KeyboardCreator keyboardCreator;
     private ErrorReporter errorReporter;
     private Vector3 keyboardScale;
+    private GUIStyle style;
     private bool noCameraFound = false;
+
+
     
 
 
     private void Awake () {
         keyboardCreator = target as KeyboardCreator;
-        keyboardCreator.InitKeysAndReporter();
-        
+        keyboardCreator.InitKeys();
+        style = new GUIStyle(EditorStyles.textField);
         if(keyboardCreator.RaycastingCamera != null) {
             keyboardCreator.ManageKeys();
         }
@@ -37,23 +40,17 @@ public class KeyboardCreatorEditor: Editor {
 
     public override void OnInspectorGUI () {
         errorReporter = ErrorReporter.Instance;
-        errorReporter.Update();
+        errorReporter.Reset();
+        keyboardCreator.checkErrors();
 
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
 
-        keyboardCreator.checkErrors();
+      
 
         HandleScaleChange();
         if(keyboardCreator.RaycastingCamera != null) {// If there is a camera
             DrawMemebers();
-
-            if(errorReporter.IsComunicatAviable()) {
-                Color standard = GUI.color;
-                GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
-                GUIStyle s = new GUIStyle(EditorStyles.textField);
-                s.normal.textColor = Color.black;
-                EditorGUILayout.LabelField(errorReporter.GetMessage(), s);
-            }
+            NotifyErrors();
 
         } else {
             CameraFinderGui();
@@ -66,6 +63,14 @@ public class KeyboardCreatorEditor: Editor {
 
 
     }
+
+    private void NotifyErrors () {
+        if(errorReporter.IsComunicatAviable()) {
+            GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
+            EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
+        }
+    }
+
     /// <summary>
     /// Checks if gameobject (whole keyboard) scale was changed
     /// </summary>

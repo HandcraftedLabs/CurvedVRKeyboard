@@ -40,7 +40,7 @@ public class ErrorReporter  {
         }
     }
 
-    public void Update () {
+    public void Reset () {
         isErrorPresent = false;
         isWariningPresent = false;
     }

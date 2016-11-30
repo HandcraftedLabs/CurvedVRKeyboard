@@ -44,7 +44,7 @@ public class KeyboardCreator: KeyboardComponent {
     }
     public void ManageKeys () {
         if(keys == null) { 
-             InitKeysAndReporter();
+             InitKeys();
         }
 
         checkErrors();
@@ -57,7 +57,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    public void InitKeysAndReporter () {
+    public void InitKeys () {
         keys = GetComponentsInChildren<KeyboardItem>();
     }
     
@@ -213,7 +213,7 @@ public class KeyboardCreator: KeyboardComponent {
 
     public void checkErrors () {
         errorReporter = ErrorReporter.Instance;
-        errorReporter.Update();
+        errorReporter.Reset();
         if(keys.Length != 30) {//is there correct number of keys
             errorReporter.SetMessage("Can't procced. Number of keys is incorrect. Revert your changes to prefab",ErrorReporter.Status.Error);
             return;
@@ -231,8 +231,7 @@ public class KeyboardCreator: KeyboardComponent {
         
     }
     /// <summary>
-    /// Checks if user didn't delete any items.
-    /// Also rises warnings
+    /// Checks if any errors were detected
     /// </summary>
     /// <returns></returns>
     public bool CanBuild () {
@@ -315,7 +314,7 @@ public class KeyboardCreator: KeyboardComponent {
         }
         set {
             if(raycastingCamera != value) {
-                InitKeysAndReporter();
+                InitKeys();
                 raycastingCamera = value;
             }
 
