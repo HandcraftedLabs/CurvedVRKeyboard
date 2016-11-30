@@ -1,23 +1,19 @@
-Thank you for downloading our Product.
+Thank you for downloading Curved VR Keyboard.
 
-Starting:
-
- To start working with this asset just create new scene and drop keyboard prefab
- on it or add it to existing one. Next press no raycasting source found button or drop gameobject from scene.
- Next create canvas and add UI text To it, set it in keybaord status script. You are ready to go.
+Full setup:
+- Drop keyboard prefab to your scene. 
+- Set „Raycasting source" field by dragging camera on it, or any other object that will be used to control raycasting direction.
+- Create canvas with UI text for output
+- Set UI text object in „Output" field in „Keybaord Status" script.
 
 Changing key colors:
-
- You can change color or transparency by editing materials in  
- VrCurvedKeybaord --> KeyboardResources --> KeyboardMaterials
- As you do with standard materials.
+You can change color or transparency by editing materials in VrCurvedKeybaord/KeyboardResources/KeyboardMaterials
+just as you would do with any other materials.
  
-Changing keyDisplays:
- 
- To change key displays go into
- VrCurvedKeybaord --> KeybaordScripts --> KeyboardComponent 
- Open it in editor and change values you don't like.
+Changing keys values:
+To change values used on keyboard open
+VrCurvedKeyboard/KeyboardScripts/KeyboardComponent 
+script and edit values you would like to change.
  
 Need more help?
-https://handcraftedmobile.com/
-Some contact or other stuff
+https://handcraftedmobile.com/ or contact@handcraftedmobile.com
