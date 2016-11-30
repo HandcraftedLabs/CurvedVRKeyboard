@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
-/// Setup class derived by all classes who are part of keyboard 
+/// Setup class derived by all classes who are part of keyboard,
 /// so those variables are easy accessable everywhere
 /// </summary>
 public abstract class KeyboardComponent : MonoBehaviour {
@@ -20,6 +16,9 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     public const int CENTER_ITEM = 15;
     public const int KEY_NUMBER = 30;
+
+
+
 
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead).
@@ -54,21 +53,22 @@ public abstract class KeyboardComponent : MonoBehaviour {
         ABC, SPACE, BACK
     };
 
+    // Number of items in a row
     public static readonly int[] lettersInRowsCount = new int[] { 10, 9, 8, 6 };
 
-
-
-    public static bool CheckKeyArrays () {
+    /// <summary>
+    /// Checks for errrors with array of keys. 
+    /// </summary>
+    public static void CheckKeyArrays () {
         if(allLettersLowercase.Length != KEY_NUMBER) {
             ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Lowercase array. Check KeyboardComponent class", ErrorReporter.Status.Error);
-            return false;
+            return;
         }else if(allLettersUppercase.Length != KEY_NUMBER) {
             ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Uppercase array. Check KeyboardComponent class", ErrorReporter.Status.Error);
-            return false;
+            return ;
         } else if(allSpecials.Length != KEY_NUMBER) {
             ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Special array. Check KeyboardComponent class", ErrorReporter.Status.Error);
-            return false;
+            return ;
         }
-        return true;
     }
 }

@@ -1,26 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿
 public class ErrorReporter  {
 
     private static ErrorReporter instance;
-
+    
+    //----Comunication-----
     private bool isErrorPresent = false;
     private bool isWarningPresent = false;
     private string currentProblemMessage = "";
 
+    public enum Status {
+        Error, Warning
+    }
+
+
 
     private ErrorReporter () { }
-
-
-    public enum Status {
-        Error,
-        Warning
-    }
-
-    public static void RecreateReporter () {
-        instance = new ErrorReporter();
-    }
 
     public static ErrorReporter Instance {
         get {
@@ -68,5 +62,4 @@ public class ErrorReporter  {
     public bool ShouldMessageBeDisplayed () {
         return isErrorPresent || isWarningPresent;
     }
-
 }

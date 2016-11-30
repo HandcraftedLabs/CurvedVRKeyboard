@@ -3,39 +3,40 @@ using UnityEngine.UI;
 
 public class KeyboardStatus : KeyboardComponent {
 
-    //-----------SET IN UNITY --------------
+    //------SET IN UNITY-------
     [Tooltip("Text field receiving input from the keyboard")]
     public Text output;
     [Tooltip("Maximum output text length")]
     public int maxOutputLength;
-    //-----------SET IN UNITY --------------
 
+    //----CurrentKeysStatus----
     private KeyboardItem[] keys;
     private bool areLettersActive = true;
     private bool isLowercase = true;
-
     private static readonly char BLANKSPACE = ' ';
+    
+    
+    
+    
     /// <summary>
     /// Handles click on keyboarditem
     /// </summary>
     /// <param name="clicked">keyboard item clicked</param>
     public void HandleClick(KeyboardItem clicked) {
         string value = clicked.GetValue();
-
-
-        if(value.Equals(QEH) || value.Equals(ABC)) { // special signs
+        if(value.Equals(QEH) || value.Equals(ABC)) { // special signs pressed
             ChangeSpecialLetters();
         }
-        else if(value.Equals(UP) || value.Equals(LOW)) { // upper/lower case
+        else if(value.Equals(UP) || value.Equals(LOW)) { // upper/lower case pressed
             LowerUpperKeys();
         }
-        else if(value.Equals(SPACE)) {// if space
+        else if(value.Equals(SPACE)) {
             TypeKey(BLANKSPACE);
         }
-        else if(value.Equals(BACK)) {// if backspace
+        else if(value.Equals(BACK)) {
             BackspaceKey();
         }
-        else {//normalLetter
+        else {// Normal letter
             TypeKey(value[0]);
         }
     }
@@ -50,16 +51,17 @@ public class KeyboardStatus : KeyboardComponent {
             keys[i].SetKeyText(ToDisplay[i]);
         }
     }
+
     /// <summary>
     /// Changes between lower and upper keys
     /// </summary>
     private void LowerUpperKeys() {
         isLowercase = !isLowercase;
         string[] ToDisplay = isLowercase ? allLettersLowercase : allLettersUppercase;
-        ChangeKeysDisplayied(ToDisplay);
+        ChangeKeysDisplayed(ToDisplay);
     }
 
-    private void ChangeKeysDisplayied(string[] ToDisplay) {
+    private void ChangeKeysDisplayed(string[] ToDisplay) {
         for(int i = 0; i < keys.Length; i++) {
             keys[i].SetKeyText(ToDisplay[i]);
         }
