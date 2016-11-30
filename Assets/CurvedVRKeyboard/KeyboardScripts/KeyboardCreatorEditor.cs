@@ -13,7 +13,7 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string RAYCASTING_SOURCE = "Raycasting source";
     private readonly string CLICK_INPUT_COMMAND = "Click input Name";
     private readonly string DEFAULT_MATERIAL = "Normal material";
-    private readonly string HOVERING_MATERIAL = "Hover  material";
+    private readonly string SELECTED_MATERIAL = "Selected material";
     private readonly string PRESSED_MATERIAL = "Pressed material";
     private readonly string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
     private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
@@ -102,7 +102,7 @@ public class KeyboardCreatorEditor: Editor {
         keyboardCreator.Curvature = clamped;
         keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
         keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
-        keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(HOVERING_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
+        keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
         keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
     }
 
