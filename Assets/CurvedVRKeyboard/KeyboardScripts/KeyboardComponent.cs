@@ -17,6 +17,9 @@ public abstract class KeyboardComponent : MonoBehaviour {
     public const int CENTER_ITEM = 15;
     public const int KEY_NUMBER = 30;
 
+
+
+
     // Feel free to change (but do not write strings in place of
     // special signs, change variables values instead).
     // Remember to always have 30 values
