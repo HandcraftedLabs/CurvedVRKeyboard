@@ -11,7 +11,7 @@ public class KeyboardCreator: KeyboardComponent {
     [SerializeField]
     private float curvature;
     [SerializeField]
-    private Camera raycastingCamera;
+    private Transform raycastingSource;
     [SerializeField]
     private string clickHandle;
     [SerializeField]
@@ -66,7 +66,7 @@ public class KeyboardCreator: KeyboardComponent {
     /// </summary>
     private void SetComponents () {
         KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
-        rayCaster.SetCamera(RaycastingCamera);
+        rayCaster.SetRaycastingTransform(RaycastingSource);
         rayCaster.SetClickButton(ClickHandle);
         rayCaster.SetTarget(gameObject);
         KeyboardStatus status = GetComponent<KeyboardStatus>();
@@ -308,14 +308,14 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-    public Camera RaycastingCamera {
+    public Transform RaycastingSource {
         get {
-            return raycastingCamera;
+            return raycastingSource;
         }
         set {
-            if(raycastingCamera != value) {
+            if(raycastingSource != value) {
                 InitKeys();
-                raycastingCamera = value;
+                raycastingSource = value;
             }
 
         }
