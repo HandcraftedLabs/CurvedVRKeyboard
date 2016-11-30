@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 /// <summary>
 /// Special inspector for Keybaord
 /// </summary>
@@ -14,7 +15,7 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string DEFAULT_MATERIAL = "Default Material";
     private readonly string HOVERING_MATERIAL = "Hovering  Material";
     private readonly string CLICKED_MATERIAL = "Clicked Material";
-    private readonly string FIND_CAMERA = "Raycasting source missing. Press to set default camera";
+    private readonly string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
     private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
     private KeyboardCreator keyboardCreator;
@@ -24,7 +25,6 @@ public class KeyboardCreatorEditor: Editor {
     private bool noCameraFound = false;
 
 
-    
 
 
     private void Awake () {
@@ -37,30 +37,27 @@ public class KeyboardCreatorEditor: Editor {
         keyboardScale = keyboardCreator.transform.localScale;
     }
 
-
     public override void OnInspectorGUI () {
         errorReporter = ErrorReporter.Instance;
         keyboardCreator.checkErrors();
-
         keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
-
         HandleScaleChange();
-        if(keyboardCreator.RaycastingSource != null) {// If there is a camera
+
+        if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
             DrawMemebers();
             NotifyErrors();
-
         } else {
             CameraFinderGui();
         }
     
-
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);
         }
-
-
     }
 
+    /// <summary>
+    /// Handles label with error.
+    /// </summary>
     private void NotifyErrors () {
         if(errorReporter.ShouldMessageBeDisplayed()) {
             GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
@@ -81,10 +78,9 @@ public class KeyboardCreatorEditor: Editor {
 
         if(!float.IsNaN(neededXScale)) {// If change was made
             ChangeScale(neededXScale, keyboardCreator.transform.localScale.y);
-        }
-
-            
+        }        
     }
+
     /// <summary>
     /// Keeps x and z scale bound together. Resizes keybaord
     /// </summary>
@@ -95,8 +91,9 @@ public class KeyboardCreatorEditor: Editor {
         keyboardScale.y = y;
         keyboardCreator.transform.localScale = keyboardScale;
     }
+
     /// <summary>
-    /// Draw all fields in inspector (if camera is set)
+    /// Draw all fields in inspector (if raycast source is set)
     /// </summary>
     private void DrawMemebers () {
         // Value of curvature is always between [0,1]
@@ -113,11 +110,12 @@ public class KeyboardCreatorEditor: Editor {
     /// Draws camera find button
     /// </summary>
     private void CameraFinderGui () {
-        bool clicked = GUILayout.Button(FIND_CAMERA);
-        if(clicked)
+        bool clicked = GUILayout.Button(FIND_SOURCE);
+        if(clicked) {
             SearchForCamera();
-       
-        if(noCameraFound) { // If after button press there is no camera
+        }
+            
+        if(noCameraFound) { // After button press there is no camera
             GUILayout.Label(NO_CAMERA_ERROR);
         }
     }
@@ -133,9 +131,5 @@ public class KeyboardCreatorEditor: Editor {
             noCameraFound = true;
         }  
     }
-
-
-
-
 }
 #endif

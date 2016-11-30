@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 
 public class SpaceMeshCreator{
-
-
+    
+   
     KeyboardCreator creator;
     List<Vector3> verticiesArray;
     private bool isFrontFace;
 
-
-    //-------------BuildingData--------------
-
+    //-----BuildingData-----
     private float boundaryY = 0.5f;
     private float boundaryX = 2f;
     private int verticiesCount = 32;
@@ -18,9 +16,11 @@ public class SpaceMeshCreator{
 
 
 
+
     public SpaceMeshCreator(KeyboardCreator creator ) {
         this.creator = creator;  
     }
+
     /// <summary>
     /// Builds mesh for space bar
     /// </summary>
@@ -30,17 +30,15 @@ public class SpaceMeshCreator{
         isFrontFace = frontFace;
         Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
         List<int> trainglesArray = new List<int>();
-
         BuildVerticies();
         BuildQuads(trainglesArray);
-
         CalculatePosition(verticiesArray);
         renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
     }
 
  
     private void BuildVerticies () {
-        if(verticiesArray == null) {//lazy initialization reusable
+        if(verticiesArray == null) {//lazy initialization
             verticiesArray = new List<Vector3>();
             for(float i = -boundaryX;i <= boundaryX;i += 0.25f) {
                 verticiesArray.Add(new Vector3(i, boundaryY, 0));
@@ -48,6 +46,7 @@ public class SpaceMeshCreator{
             }
         }
     }
+
     /// <summary>
     /// Builds triangles from array of integers
     /// </summary>
@@ -76,7 +75,6 @@ public class SpaceMeshCreator{
         }
     }
 
-
     /// <summary>
     /// Calculates position for verticies
     /// </summary>
@@ -86,7 +84,7 @@ public class SpaceMeshCreator{
         for(int i = 0; i < verticiesArray.Count;i += 2) {
             Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
             calculatedVertex.z -= creator.centerPointDistance;
-            
+
             calculatedVertex.y = 0.5f;
             this.verticiesArray[i] = calculatedVertex;
 
@@ -96,6 +94,7 @@ public class SpaceMeshCreator{
             offset += 0.25f;
         }
     }
+
     /// <summary>
     /// Apply all changes 
     /// </summary>

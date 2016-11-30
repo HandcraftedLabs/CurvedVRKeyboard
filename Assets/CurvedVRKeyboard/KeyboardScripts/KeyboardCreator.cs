@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
+
 /// <summary>
 /// Creates Keyboard, calculates all necessary positions and rotations
 /// </summary>
 [System.Serializable]
 [ExecuteInEditMode]
 public class KeyboardCreator: KeyboardComponent {
-
 
     //-----------SET IN UNITY --------------
     [SerializeField]
@@ -15,25 +15,24 @@ public class KeyboardCreator: KeyboardComponent {
     [SerializeField]
     private string clickHandle;
     [SerializeField]
-    private Material keyDefaultMaterial;
+    private Material keyNormalMaterial;
     [SerializeField]
-    private Material keyHoverMaterial;
+    private Material KeySelectedMaterial;
     [SerializeField]
     private Material keyPressedMaterial;
-
-    //-----------SET IN UNITY --------------
-
-    private KeyboardItem[] keys;
-    private int row;
-    //-------private Calculations--------
+    
+    //-------private Calculations---------
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
     public float centerPointDistance = -1f;
+    private KeyboardItem[] keys;
+    private int row;
 
+    //--------------others----------------
     private ErrorReporter errorReporter;
+    private const string MESH_NAME_SEARCHED = "Quad";
 
-    private static readonly string MESH_NAME_SEARCHED = "Quad";
 
 
 
@@ -42,6 +41,7 @@ public class KeyboardCreator: KeyboardComponent {
         ChangeMaterialOnKeys();
         SetComponents();
     }
+
     public void ManageKeys () {
         if(keys == null) { 
              InitKeys();
@@ -71,7 +71,6 @@ public class KeyboardCreator: KeyboardComponent {
         rayCaster.SetTarget(gameObject);
         KeyboardStatus status = GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
-        
     }
 
     /// <summary>
@@ -87,6 +86,7 @@ public class KeyboardCreator: KeyboardComponent {
             }
         }
     }
+
     /// <summary>
     /// Calculates whole transformation for single key
     /// </summary>
@@ -94,18 +94,18 @@ public class KeyboardCreator: KeyboardComponent {
     /// <param name="keyTransform">key transformation</param>
     private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
         // Check row and how many keys were palced
-        float keysPlaced = CalculateKeysPlacedAndRow(iteration);
+        float keysPlaced = CalculateKeyOffsetAndRow(iteration);
         Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] -1, iteration - keysPlaced);
         positionOnCylinder = AdditionalTransformations(keyTransform, positionOnCylinder);
-        LookAtTransformations(keyTransform, positionOnCylinder.y);
-        RotationTransformations(keyTransform);
-
+        LookAtTransformation(keyTransform, positionOnCylinder.y);
+        RotationTransformation(keyTransform);
     }
+
     /// <summary>
     /// Applies transformation rotation to key in correct order 
     /// </summary>
     /// <param name="keyTransform">key to be transformed</param>
-    private void RotationTransformations ( Transform keyTransform ) {
+    private void RotationTransformation ( Transform keyTransform ) {
         keyTransform.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
         keyTransform.RotateAround(transform.position, Vector3.right, transform.rotation.eulerAngles.x);
         keyTransform.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
@@ -116,7 +116,7 @@ public class KeyboardCreator: KeyboardComponent {
     /// </summary>
     /// <param name="keyTransform"></param>
     /// <param name="positionY"></param>
-    private void LookAtTransformations ( Transform keyTransform, float positionY ) {
+    private void LookAtTransformation ( Transform keyTransform, float positionY ) {
         float xPos = transform.position.x;
         float yPos = positionY;
         float zOffset = ( centerPointDistance * transform.localScale.x );
@@ -124,6 +124,7 @@ public class KeyboardCreator: KeyboardComponent {
         Vector3 lookAt = new Vector3(xPos, yPos , zPos);
         keyTransform.LookAt(lookAt);
     }
+
     /// <summary>
     /// Applies transformation gameobject(whole keyboard) to each key
     /// </summary>
@@ -136,27 +137,22 @@ public class KeyboardCreator: KeyboardComponent {
         float yPositionBackup = positionOnCylinder.y;
         Vector3 fromCenterToKey = ( positionOnCylinder - transform.position );
         float scaleOfX = ( transform.localScale.x - 1 ) ;
-
         //we move each key along it backward direction by scale
         positionOnCylinder = positionOnCylinder + fromCenterToKey * scaleOfX;
-        
         //we modified y in upper calculations restore it 
         positionOnCylinder.y = yPositionBackup;
-
         keyTransform.position = positionOnCylinder;
-
         return positionOnCylinder;
     }
+
     /// <summary>
-    /// Calculates position of key
+    /// Calculates position of keyboard key
     /// </summary>
     /// <param name="rowSize">size of current row</param>
     /// <param name="offset">position of letter in row</param>
     /// <returns>Position of key</returns>
-    public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
-        
+    public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {    
         float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys/2 - offset * SpacingBetweenKeys);
-
         float x = Mathf.Cos(degree) * centerPointDistance;
         float z = Mathf.Sin(degree) * centerPointDistance;
         float y = -row * RowSpacing;
@@ -168,10 +164,9 @@ public class KeyboardCreator: KeyboardComponent {
     /// </summary>
     /// <param name="iteration"></param>
     /// <returns></returns>
-    private float CalculateKeysPlacedAndRow ( int iteration ) {
+    private float CalculateKeyOffsetAndRow ( int iteration ) {
         float keysPlaced = 0;
         row = 0;
-
         int iterationCounter = 0;
         for(int rowChecked = 0;rowChecked <= 2;rowChecked++) {
             iterationCounter += lettersInRowsCount[rowChecked];
@@ -189,13 +184,11 @@ public class KeyboardCreator: KeyboardComponent {
         return keysPlaced;
     }
 
-
     /// <summary>
-    /// tan (x * 1,57) - tan is in range of <0,3.14>, With
+    /// tan (x * 1,57) - tan is in range of <0,3.14>. With
     /// this approach we can scale it to range <0(0),1(close to infinity)>.
-    /// + 3 - without tangent at value of 3 (minimum)
-    /// keyboard has 180 degree curve higher values make center
-    /// be further from keys (straight line)
+    /// Then value is 3 keyboard has 180 degree curve so + 3.
+    /// Higher values make center position further from keys (straight line)
     /// </summary>
     private void CurvatureToDistance () {
         centerPointDistance = Mathf.Tan(curvature *1.57f) + 3;
@@ -210,7 +203,6 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
-
     public void checkErrors () {
         errorReporter = ErrorReporter.Instance;
         errorReporter.Reset();
@@ -223,23 +215,16 @@ public class KeyboardCreator: KeyboardComponent {
             return;
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-            errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
-            
+            errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning); 
         }
         CheckKeyArrays();
-
-        
     }
-    /// <summary>
-    /// Checks if any errors were detected
-    /// </summary>
-    /// <returns></returns>
+
     public bool CanBuild () {
         return !errorReporter.IsErrorPresent();
     }
+
     //---------------PROPERTIES----------------
-
-
     public float Curvature {
         get {
             return 1f - curvature;
@@ -247,11 +232,9 @@ public class KeyboardCreator: KeyboardComponent {
         set {
             const float errorThreshold = 0.01f;
             if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {// Value changed
-
                 curvature = 1f - value;
                 CurvatureToDistance();
                 ManageKeys();
-
             }
         }
     }
@@ -271,13 +254,13 @@ public class KeyboardCreator: KeyboardComponent {
 
     public Material KeyDefaultMaterial {
         get {
-            return keyDefaultMaterial;
+            return keyNormalMaterial;
         }
         set {
             if(KeyDefaultMaterial != value) {
-                keyDefaultMaterial = value;
+                keyNormalMaterial = value;
                 foreach(KeyboardItem key in keys) {
-                    key.SetMaterial(KeyboardItem.KeyStateEnum.Default, keyDefaultMaterial);
+                    key.SetMaterial(KeyboardItem.KeyStateEnum.Normal, keyNormalMaterial);
                 }
 
             }
@@ -286,11 +269,11 @@ public class KeyboardCreator: KeyboardComponent {
 
     public Material KeyHoveringMaterial {
         get {
-            return keyHoverMaterial;
+            return KeySelectedMaterial;
         }
         set {
-            if(keyHoverMaterial != value) {
-                keyHoverMaterial = value;
+            if(KeySelectedMaterial != value) {
+                KeySelectedMaterial = value;
             }
 
         }
@@ -304,7 +287,6 @@ public class KeyboardCreator: KeyboardComponent {
             if(KeyPressedMaterial != value) {
                 keyPressedMaterial = value;
             }
-
         }
     }
 
@@ -317,7 +299,6 @@ public class KeyboardCreator: KeyboardComponent {
                 InitKeys();
                 raycastingSource = value;
             }
-
         }
     }
 
@@ -329,7 +310,6 @@ public class KeyboardCreator: KeyboardComponent {
             clickHandle = value;
         }
     }
-
 }
 
 
