@@ -223,7 +223,7 @@ public class KeyboardCreator: KeyboardComponent {
             return;
         }
         if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-            errorReporter.SetMessage("Please set output Text", ErrorReporter.Status.Warning);
+            errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
             
         }
         CheckKeyArrays();
