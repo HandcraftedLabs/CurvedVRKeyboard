@@ -6,7 +6,7 @@ public class ErrorReporter  {
     private static ErrorReporter instance;
 
     private bool isErrorPresent = false;
-    private bool isWariningPresent = false;
+    private bool isWarningPresent = false;
     private string currentProblemMessage = "";
 
 
@@ -42,7 +42,7 @@ public class ErrorReporter  {
 
     public void Reset () {
         isErrorPresent = false;
-        isWariningPresent = false;
+        isWarningPresent = false;
     }
 
     public string GetMessage () {
@@ -53,8 +53,8 @@ public class ErrorReporter  {
         return isErrorPresent;
     }
 
-    public bool IsWariningPresent () {
-        return isWariningPresent;
+    public bool IsWarningPresent () {
+        return isWarningPresent;
     }
 
     public void TriggerError ( ) {
@@ -62,11 +62,11 @@ public class ErrorReporter  {
     }
     
     public void TriggerWarning () {
-        isWariningPresent = true;
+        isWarningPresent = true;
     }
     
-    public bool IsComunicatAviable () {
-        return isErrorPresent || isWariningPresent;
+    public bool ShouldMessageBeDisplayed () {
+        return isErrorPresent || isWarningPresent;
     }
 
 }

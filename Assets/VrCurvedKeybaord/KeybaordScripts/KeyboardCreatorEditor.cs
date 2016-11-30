@@ -64,7 +64,7 @@ public class KeyboardCreatorEditor: Editor {
     }
 
     private void NotifyErrors () {
-        if(errorReporter.IsComunicatAviable()) {
+        if(errorReporter.ShouldMessageBeDisplayed()) {
             GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
             EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
         }
