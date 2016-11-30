@@ -2,7 +2,7 @@
 
 
 public class KeyboardRaycaster: KeyboardComponent {
-    private Camera raycastingCamera;
+    private Transform raycastingSource;
     private GameObject target;
 
     private float rayLength;
@@ -22,7 +22,7 @@ public class KeyboardRaycaster: KeyboardComponent {
     }
 
     void Update () {
-        rayLength = Vector3.Distance(raycastingCamera.transform.position, target.transform.position) * 1.1f;
+        rayLength = Vector3.Distance(raycastingSource.position, target.transform.position) * 1.1f;
         RayCastKeyboard();
     }
 
@@ -31,7 +31,7 @@ public class KeyboardRaycaster: KeyboardComponent {
     /// If it does changes state of key
     /// </summary>
     private void RayCastKeyboard () {
-        ray = new Ray(raycastingCamera.transform.position, raycastingCamera.transform.forward);
+        ray = new Ray(raycastingSource.position, raycastingSource.forward);
 
         if(Physics.Raycast(ray, out hit, rayLength, layer)) { // If any key was hit
             KeyboardItem focusedKeyItem = hit.transform.gameObject.GetComponent<KeyboardItem>();
@@ -63,8 +63,8 @@ public class KeyboardRaycaster: KeyboardComponent {
         this.rayLength = rayLength;
     }
 
-    public void SetCamera(Camera pivot) {
-        this.raycastingCamera = pivot;
+    public void SetRaycastingTransform(Transform raycastingSource) {
+        this.raycastingSource = raycastingSource;
     }
 
     public void SetClickButton(string clickHandler) {

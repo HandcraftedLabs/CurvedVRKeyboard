@@ -9,12 +9,12 @@ using UnityEditor;
 public class KeyboardCreatorEditor: Editor {
 
     private readonly string CURVATURE = "Curvature";
-    private readonly string CAMERA = "Camera";
+    private readonly string RAYCASTING_SOURCE = "Raycasting source";
     private readonly string CLICK_INPUT_COMMAND = "Click input Name";
     private readonly string DEFAULT_MATERIAL = "Default Material";
     private readonly string HOVERING_MATERIAL = "Hovering  Material";
     private readonly string CLICKED_MATERIAL = "Clicked Material";
-    private readonly string FIND_CAMERA = "No camera found. Press to find";
+    private readonly string FIND_CAMERA = "Raycasting source missing. Press to set default camera";
     private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
     private KeyboardCreator keyboardCreator;
@@ -31,7 +31,7 @@ public class KeyboardCreatorEditor: Editor {
         keyboardCreator = target as KeyboardCreator;
         keyboardCreator.InitKeys();
         style = new GUIStyle(EditorStyles.textField);
-        if(keyboardCreator.RaycastingCamera != null) {
+        if(keyboardCreator.RaycastingSource != null) {
             keyboardCreator.ManageKeys();
         }
         keyboardScale = keyboardCreator.transform.localScale;
@@ -42,12 +42,10 @@ public class KeyboardCreatorEditor: Editor {
         errorReporter = ErrorReporter.Instance;
         keyboardCreator.checkErrors();
 
-        keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
-
-      
+        keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
 
         HandleScaleChange();
-        if(keyboardCreator.RaycastingCamera != null) {// If there is a camera
+        if(keyboardCreator.RaycastingSource != null) {// If there is a camera
             DrawMemebers();
             NotifyErrors();
 
@@ -130,7 +128,7 @@ public class KeyboardCreatorEditor: Editor {
     private void SearchForCamera () {
         if(Camera.allCameras.Length != 0) {//If there is camera on scene
             noCameraFound = false;
-            keyboardCreator.RaycastingCamera = Camera.allCameras[0];
+            keyboardCreator.RaycastingSource = Camera.allCameras[0].transform;
         }else {
             noCameraFound = true;
         }  
