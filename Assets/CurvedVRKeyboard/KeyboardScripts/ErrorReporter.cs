@@ -16,8 +16,6 @@ public class ErrorReporter  {
 
     private ErrorReporter () { }
 
-
-
     public static ErrorReporter Instance {
         get {
             if(instance == null) {

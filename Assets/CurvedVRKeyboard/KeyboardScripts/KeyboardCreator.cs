@@ -180,7 +180,6 @@ public class KeyboardCreator: KeyboardComponent {
             const float offsetBetweenSpecialKeys = 1.5f;
             keysPlaced -= ( iteration - iterationCounter ) * offsetBetweenSpecialKeys;
         }
-
         return keysPlaced;
     }
 

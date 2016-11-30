@@ -53,8 +53,8 @@ public abstract class KeyboardComponent : MonoBehaviour {
         ABC, SPACE, BACK
     };
 
+    // Number of items in a row
     public static readonly int[] lettersInRowsCount = new int[] { 10, 9, 8, 6 };
-
 
     /// <summary>
     /// Checks for errrors with array of keys. 
