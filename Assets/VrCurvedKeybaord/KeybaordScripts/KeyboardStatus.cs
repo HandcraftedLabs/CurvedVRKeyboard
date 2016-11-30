@@ -22,6 +22,7 @@ public class KeyboardStatus : KeyboardComponent {
     public void HandleClick(KeyboardItem clicked) {
         string value = clicked.GetValue();
 
+
         if(value.Equals(QEH) || value.Equals(ABC)) { // special signs
             ChangeSpecialLetters();
         }

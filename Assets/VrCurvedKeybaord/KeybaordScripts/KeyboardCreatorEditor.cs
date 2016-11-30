@@ -18,14 +18,19 @@ public class KeyboardCreatorEditor: Editor {
     private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
     private KeyboardCreator keyboardCreator;
+    private ErrorReporter errorReporter;
     private Vector3 keyboardScale;
+    private GUIStyle style;
     private bool noCameraFound = false;
 
+
+    
 
 
     private void Awake () {
         keyboardCreator = target as KeyboardCreator;
         keyboardCreator.InitKeys();
+        style = new GUIStyle(EditorStyles.textField);
         if(keyboardCreator.RaycastingCamera != null) {
             keyboardCreator.ManageKeys();
         }
@@ -34,19 +39,37 @@ public class KeyboardCreatorEditor: Editor {
 
 
     public override void OnInspectorGUI () {
+        errorReporter = ErrorReporter.Instance;
+        keyboardCreator.checkErrors();
+
         keyboardCreator.RaycastingCamera = EditorGUILayout.ObjectField(CAMERA, keyboardCreator.RaycastingCamera, typeof(Camera), true) as Camera;
+
+      
+
         HandleScaleChange();
         if(keyboardCreator.RaycastingCamera != null) {// If there is a camera
             DrawMemebers();
+            NotifyErrors();
+
         } else {
             CameraFinderGui();
         }
+    
+
         if(GUI.changed) {
             EditorUtility.SetDirty(keyboardCreator);
         }
 
 
     }
+
+    private void NotifyErrors () {
+        if(errorReporter.ShouldMessageBeDisplayed()) {
+            GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
+            EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
+        }
+    }
+
     /// <summary>
     /// Checks if gameobject (whole keyboard) scale was changed
     /// </summary>

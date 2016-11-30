@@ -26,7 +26,7 @@ public abstract class KeyboardComponent : MonoBehaviour {
     // Remember to always have 30 values
     public static readonly string[] allLettersLowercase = new string[]
     {
-        "q","w","=","r","t","y","u","i","o","p",
+        "q","w","e","r","t","y","u","i","o","p",
         "a","s","d","f","g","h","j","k","l",
         UP,"z","x","c","v","b","n","m",
         QEH, SPACE, BACK
@@ -60,13 +60,13 @@ public abstract class KeyboardComponent : MonoBehaviour {
 
     public static bool CheckKeyArrays () {
         if(allLettersLowercase.Length != KEY_NUMBER) {
-            Debug.LogWarning("There is incorrect amount of letters in Lowercase array. Check KeyboardComponent class");
+            ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Lowercase array. Check KeyboardComponent class", ErrorReporter.Status.Error);
             return false;
         }else if(allLettersUppercase.Length != KEY_NUMBER) {
-            Debug.LogWarning("There is incorrect amount of letters in Uppercase array. Check KeyboardComponent class");
+            ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Uppercase array. Check KeyboardComponent class", ErrorReporter.Status.Error);
             return false;
         } else if(allSpecials.Length != KEY_NUMBER) {
-            Debug.LogWarning("There is incorrect amount of letters in Special array. Check KeyboardComponent class");
+            ErrorReporter.Instance.SetMessage("There is incorrect amount of letters in Special array. Check KeyboardComponent class", ErrorReporter.Status.Error);
             return false;
         }
         return true;

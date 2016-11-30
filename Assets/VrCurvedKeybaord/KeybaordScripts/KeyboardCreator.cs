@@ -25,14 +25,16 @@ public class KeyboardCreator: KeyboardComponent {
 
     private KeyboardItem[] keys;
     private int row;
-
     //-------private Calculations--------
     private readonly float defaultSpacingColumns = 56.3f;
     private readonly float defaultSpacingRows = 1.0f;
     private readonly float defaultRotation = 90f;
     public float centerPointDistance = -1f;
 
+    private ErrorReporter errorReporter;
+
     private static readonly string MESH_NAME_SEARCHED = "Quad";
+
 
 
     public void Start () {
@@ -44,6 +46,9 @@ public class KeyboardCreator: KeyboardComponent {
         if(keys == null) { 
              InitKeys();
         }
+
+        checkErrors();
+
         if(CanBuild()) {
             if(centerPointDistance == -1f) {
                 CurvatureToDistance();
@@ -66,6 +71,7 @@ public class KeyboardCreator: KeyboardComponent {
         rayCaster.SetTarget(gameObject);
         KeyboardStatus status = GetComponent<KeyboardStatus>();
         status.SetKeys(keys);
+        
     }
 
     /// <summary>
@@ -204,30 +210,34 @@ public class KeyboardCreator: KeyboardComponent {
         }
     }
 
+
+    public void checkErrors () {
+        errorReporter = ErrorReporter.Instance;
+        errorReporter.Reset();
+        if(keys.Length != 30) {//is there correct number of keys
+            errorReporter.SetMessage("Cannot procced. Number of keys is incorrect. Revert your changes to prefab", ErrorReporter.Status.Error);
+            return;
+        }
+        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
+            errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
+            return;
+        }
+        if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
+            errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+            
+        }
+        CheckKeyArrays();
+
+        
+    }
     /// <summary>
-    /// Checks if user didn't delete any items.
-    /// Also rises warnings
+    /// Checks if any errors were detected
     /// </summary>
     /// <returns></returns>
     public bool CanBuild () {
-        if(keys.Length != 30) {//is there correct number of keys
-            Debug.LogWarning("Can't procced. Number of keys is incorrect. Revert your changes to prefab");
-            return false;
-        }
-        if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
-            Debug.LogWarning("Can't procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence");
-            return false;
-        }
-        if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-            Debug.LogWarning("Please set output Text");
-            
-        }
-
-
-        return CheckKeyArrays();
+        return !errorReporter.IsErrorPresent();
     }
     //---------------PROPERTIES----------------
-
 
 
     public float Curvature {
