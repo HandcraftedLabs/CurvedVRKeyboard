@@ -199,7 +199,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void ChangeMaterialOnKeys () {
             foreach(KeyboardItem key in keys) {
-                key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
+                key.SetMaterials(KeyDefaultMaterial, KeySelectedMaterial, KeyPressedMaterial);
             }
         }
 
@@ -267,7 +267,7 @@ namespace CurvedVRKeyboard {
             }
         }
 
-        public Material KeyHoveringMaterial {
+        public Material KeySelectedMaterial {
             get {
                 return keySelectedMaterial;
             }
