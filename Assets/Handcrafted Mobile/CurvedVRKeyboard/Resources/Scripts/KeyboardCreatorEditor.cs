@@ -103,7 +103,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator.Curvature = clamped;
             keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
             keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
         }
 
