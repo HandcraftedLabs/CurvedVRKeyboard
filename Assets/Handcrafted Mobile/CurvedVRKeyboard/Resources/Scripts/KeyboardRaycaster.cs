@@ -4,10 +4,10 @@ namespace CurvedVRKeyboard {
     public class KeyboardRaycaster: KeyboardComponent {
 
         //------Raycasting----
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Transform raycastingSource;
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private GameObject target;
 
         private float rayLength;
@@ -19,7 +19,7 @@ namespace CurvedVRKeyboard {
         private KeyboardStatus keyboardStatus;
         private KeyboardItem keyItemCurrent;
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private string clickInputName;
 
 

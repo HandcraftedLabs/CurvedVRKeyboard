@@ -11,11 +11,11 @@ namespace CurvedVRKeyboard {
         private float clickHoldTimeLimit = 0.15f;
 
         //-----Materials-----
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Material keyNormalMaterial;
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Material KeySelectedMaterial;
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Material keyPressedMaterial;
 
         //--Mesh&Renderers---
