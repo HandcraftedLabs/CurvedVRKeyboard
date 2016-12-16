@@ -18,7 +18,7 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         private Material keyNormalMaterial;
         [SerializeField]
-        private Material KeySelectedMaterial;
+        private Material keySelectedMaterial;
         [SerializeField]
         private Material keyPressedMaterial;
 
@@ -269,11 +269,14 @@ namespace CurvedVRKeyboard {
 
         public Material KeyHoveringMaterial {
             get {
-                return KeySelectedMaterial;
+                return keySelectedMaterial;
             }
             set {
-                if(KeySelectedMaterial != value) {
-                    KeySelectedMaterial = value;
+                if(keySelectedMaterial != value) {
+                    keySelectedMaterial = value;
+                    foreach(KeyboardItem key in keys) {
+                        key.SetMaterial(KeyboardItem.KeyStateEnum.Selected, keySelectedMaterial);
+                    }                
                 }
 
             }
@@ -286,6 +289,9 @@ namespace CurvedVRKeyboard {
             set {
                 if(KeyPressedMaterial != value) {
                     keyPressedMaterial = value;
+                    foreach(KeyboardItem key in keys) {
+                        key.SetMaterial(KeyboardItem.KeyStateEnum.Pressed, keyPressedMaterial);
+                    }
                 }
             }
         }
@@ -298,6 +304,8 @@ namespace CurvedVRKeyboard {
                 if(raycastingSource != value) {
                     InitKeys();
                     raycastingSource = value;
+                    KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
+                    rayCaster.SetRaycastingTransform(RaycastingSource);
                 }
             }
         }
@@ -308,6 +316,8 @@ namespace CurvedVRKeyboard {
             }
             set {
                 clickHandle = value;
+                KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
+                rayCaster.SetClickButton(clickHandle);
             }
         }
     }

@@ -11,8 +11,11 @@ namespace CurvedVRKeyboard {
         private float clickHoldTimeLimit = 0.15f;
 
         //-----Materials-----
+        [SerializeField]
         private Material keyNormalMaterial;
+        [SerializeField]
         private Material KeySelectedMaterial;
+        [SerializeField]
         private Material keyPressedMaterial;
 
         //--Mesh&Renderers---
@@ -37,7 +40,10 @@ namespace CurvedVRKeyboard {
         public void Init () {
             if(letter == null || quadFront == null || quadBack == null) {  // Check if initialized
                 letter = gameObject.GetComponentInChildren<Text>();
-                quadBack = transform.Find(QUAD_BACK).GetComponent<Renderer>();
+
+                Transform back = transform.Find(QUAD_BACK);
+                if (back)
+                    quadBack = back.GetComponent<Renderer>();
                 quadFront = transform.Find(QUAD_FRONT).GetComponent<Renderer>();
             }
         }
@@ -104,7 +110,8 @@ namespace CurvedVRKeyboard {
         /// <param name="material">material to be displayed</param>
         private void ChangeMaterial ( Material material ) {
             quadFront.material = material;
-            quadBack.material = material;
+            if (quadBack)
+                quadBack.material = material;
         }
 
         /// <summary>
@@ -129,7 +136,8 @@ namespace CurvedVRKeyboard {
                 case KeyStateEnum.Normal:
                     keyNormalMaterial = newMaterial;
                     quadFront.material = newMaterial;
-                    quadBack.material = newMaterial;
+                    if (quadBack)
+                        quadBack.material = newMaterial;
                     break;
                 case KeyStateEnum.Selected:
                     KeySelectedMaterial = newMaterial;
@@ -148,7 +156,8 @@ namespace CurvedVRKeyboard {
             if(meshCreator == null) {//lazy initialization
                 meshCreator = new SpaceMeshCreator(creator);
             }
-            meshCreator.BuildFace(quadBack, false);
+            if (quadBack)
+                meshCreator.BuildFace(quadBack, false);
             meshCreator.BuildFace(quadFront, true);
         }
 
