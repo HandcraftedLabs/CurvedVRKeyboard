@@ -4,7 +4,6 @@ namespace CurvedVRKeyboard {
 
     public class SpaceMeshCreator {
 
-
         KeyboardCreator creator;
         List<Vector3> verticiesArray;
         private bool isFrontFace;
@@ -12,9 +11,9 @@ namespace CurvedVRKeyboard {
         //-----BuildingData-----
         private float boundaryY = 0.5f;
         private float boundaryX = 2f;
-        private int verticiesCount = 32;
+        private int verticiesCount = 16;
         private float rowSize = 4f;
-
+        private float verticiesSpacing;
 
 
 
@@ -28,6 +27,7 @@ namespace CurvedVRKeyboard {
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace ) {
+            verticiesSpacing = rowSize / ( verticiesCount / 2 );
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
@@ -41,11 +41,31 @@ namespace CurvedVRKeyboard {
         private void BuildVerticies () {
             if(verticiesArray == null) {//lazy initialization
                 verticiesArray = new List<Vector3>();
-                for(float i = -boundaryX;i <= boundaryX;i += 0.25f) {
+                for(float i = -boundaryX;i <= boundaryX;i += verticiesSpacing) {
                     verticiesArray.Add(new Vector3(i, boundaryY, 0));
                     verticiesArray.Add(new Vector3(i, -boundaryY, 0));
+
                 }
             }
+        }
+
+        private Vector2[] BuildUV () {
+            Vector2[] uv = new Vector2[verticiesCount + 2];
+            float border = 0.10f;
+            uv[0] = new Vector2(0f, 1f);
+            uv[1] = new Vector2(0, 0f);
+            uv[2] = new Vector2(border, 1);
+            uv[3] = new Vector2(border, 0f);
+            for(int i = 4;i < verticiesCount;i += 4) {
+                float uvPoint = border +  ((float)i / (float)verticiesCount) *( 1 - border *2);
+                uv[i] = new Vector2(uvPoint, 1);
+                uv[i + 1] = new Vector2(uvPoint, 0);
+                uv[i + 2] = new Vector2(uvPoint, 1);
+                uv[i + 3] = new Vector2(uvPoint, 0);
+            }
+            uv[verticiesCount] = new Vector2(1, 1);
+            uv[verticiesCount + 1] = new Vector2(1, 0);
+            return uv;
         }
 
         /// <summary>
@@ -92,7 +112,7 @@ namespace CurvedVRKeyboard {
                 calculatedVertex.y = -0.5f;
                 this.verticiesArray[i + 1] = calculatedVertex;
 
-                offset += 0.25f;
+                offset += verticiesSpacing;
             }
         }
 
@@ -106,6 +126,7 @@ namespace CurvedVRKeyboard {
         private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
             mesh.vertices = verticiesArray.ToArray();
             mesh.triangles = trainglesArray.ToArray();
+            mesh.uv = BuildUV();
             mesh.RecalculateNormals();
             return mesh;
         }
