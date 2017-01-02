@@ -225,7 +225,7 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
-                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard",ErrorReporter.Status.Info);
+                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard and its children",ErrorReporter.Status.Info);
                 return;
             }
             CheckKeyArrays();
