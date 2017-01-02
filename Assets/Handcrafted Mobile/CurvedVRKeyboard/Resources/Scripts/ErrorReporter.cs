@@ -9,10 +9,11 @@ namespace CurvedVRKeyboard {
         //----Comunication-----
         private bool isErrorPresent = false;
         private bool isWarningPresent = false;
+        private bool isInfoPresent = false;
         private string currentProblemMessage = "";
 
         public enum Status {
-            Error, Warning
+            Error, Warning, Info
         }
 
 
@@ -32,14 +33,17 @@ namespace CurvedVRKeyboard {
             currentProblemMessage = message;
             if(state == Status.Error) {
                 TriggerError();
-            } else {
+            } else if(state == Status.Warning){
                 TriggerWarning();
+            }else if (state == Status.Info) {
+
             }
         }
 
         public void Reset () {
             isErrorPresent = false;
             isWarningPresent = false;
+            isInfoPresent = false;
         }
 
         public string GetMessage () {
@@ -60,6 +64,14 @@ namespace CurvedVRKeyboard {
 
         public void TriggerWarning () {
             isWarningPresent = true;
+        }
+        
+        public void TriggerInfo () {
+            isInfoPresent = true;
+        }
+
+        public bool IsInfoPresent () {
+            return isInfoPresent;
         }
 
         public bool ShouldMessageBeDisplayed () {

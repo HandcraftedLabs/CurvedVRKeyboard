@@ -44,8 +44,8 @@ namespace CurvedVRKeyboard {
             if(!Application.isPlaying) { 
                 ManageKeys();
                 ChangeMaterialOnKeys();
-                SetComponents();
             }
+            SetComponents();
         }
 
         public void ManageKeys () {
@@ -221,6 +221,11 @@ namespace CurvedVRKeyboard {
             }
             if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
                 errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+                return;
+            }
+            if(gameObject.isStatic && Application.isPlaying) {
+                errorReporter.SetMessage("Keybaord is static it can't be edited in play mode",ErrorReporter.Status.Info);
+                return;
             }
             CheckKeyArrays();
         }

@@ -29,28 +29,26 @@ namespace CurvedVRKeyboard {
 
 
         private void Awake () {
-            if(!Application.isPlaying) { 
-                keyboardCreator = target as KeyboardCreator;
-                keyboardCreator.InitKeys();
-                style = new GUIStyle(EditorStyles.textField);
+            keyboardCreator = target as KeyboardCreator;
+            style = new GUIStyle(EditorStyles.textField);
+            keyboardCreator.InitKeys();
+            if(!Application.isPlaying) {
                 if(keyboardCreator.RaycastingSource != null) {
                     keyboardCreator.ManageKeys();
                 }
                 keyboardScale = keyboardCreator.transform.localScale;
-                }
+            }
         }
 
         public override void OnInspectorGUI () {
+            errorReporter = ErrorReporter.Instance;
+            keyboardCreator.checkErrors();
             if(!Application.isPlaying) {
-
-                errorReporter = ErrorReporter.Instance;
-                keyboardCreator.checkErrors();
                 keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
                 HandleScaleChange();
 
                 if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
                     DrawMemebers();
-                    NotifyErrors();
                 } else {
                     CameraFinderGui();
                 }
@@ -59,6 +57,11 @@ namespace CurvedVRKeyboard {
                     EditorUtility.SetDirty(keyboardCreator);
                 }
             }
+            if(keyboardCreator.RaycastingSource != null) {
+                NotifyErrors();
+            }
+
+
         }
 
         /// <summary>
