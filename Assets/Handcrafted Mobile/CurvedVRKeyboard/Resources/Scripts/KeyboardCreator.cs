@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
+
 namespace CurvedVRKeyboard {
 
     /// <summary>
@@ -38,9 +41,11 @@ namespace CurvedVRKeyboard {
 
 
         public void Start () {
-            ManageKeys();
-            ChangeMaterialOnKeys();
-            SetComponents();
+            if(!Application.isPlaying) { 
+                ManageKeys();
+                ChangeMaterialOnKeys();
+                SetComponents();
+            }
         }
 
         public void ManageKeys () {
@@ -322,5 +327,5 @@ namespace CurvedVRKeyboard {
         }
     }
 }
-
+#endif
 

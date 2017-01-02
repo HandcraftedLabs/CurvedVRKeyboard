@@ -109,9 +109,9 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="material">material to be displayed</param>
         private void ChangeMaterial ( Material material ) {
-            quadFront.material = material;
+            quadFront.sharedMaterial = material;
             if (quadBack)
-                quadBack.material = material;
+                quadBack.sharedMaterial = material;
         }
 
         /// <summary>
@@ -135,9 +135,9 @@ namespace CurvedVRKeyboard {
             switch(materialEnum) {
                 case KeyStateEnum.Normal:
                     keyNormalMaterial = newMaterial;
-                    quadFront.material = newMaterial;
+                    quadFront.sharedMaterial = newMaterial;
                     if (quadBack)
-                        quadBack.material = newMaterial;
+                        quadBack.sharedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Selected:
                     KeySelectedMaterial = newMaterial;

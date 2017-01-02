@@ -29,30 +29,35 @@ namespace CurvedVRKeyboard {
 
 
         private void Awake () {
-            keyboardCreator = target as KeyboardCreator;
-            keyboardCreator.InitKeys();
-            style = new GUIStyle(EditorStyles.textField);
-            if(keyboardCreator.RaycastingSource != null) {
-                keyboardCreator.ManageKeys();
-            }
-            keyboardScale = keyboardCreator.transform.localScale;
+            if(!Application.isPlaying) { 
+                keyboardCreator = target as KeyboardCreator;
+                keyboardCreator.InitKeys();
+                style = new GUIStyle(EditorStyles.textField);
+                if(keyboardCreator.RaycastingSource != null) {
+                    keyboardCreator.ManageKeys();
+                }
+                keyboardScale = keyboardCreator.transform.localScale;
+                }
         }
 
         public override void OnInspectorGUI () {
-            errorReporter = ErrorReporter.Instance;
-            keyboardCreator.checkErrors();
-            keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
-            HandleScaleChange();
+            if(!Application.isPlaying) {
 
-            if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
-                DrawMemebers();
-                NotifyErrors();
-            } else {
-                CameraFinderGui();
-            }
+                errorReporter = ErrorReporter.Instance;
+                keyboardCreator.checkErrors();
+                keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
+                HandleScaleChange();
 
-            if(GUI.changed) {
-                EditorUtility.SetDirty(keyboardCreator);
+                if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
+                    DrawMemebers();
+                    NotifyErrors();
+                } else {
+                    CameraFinderGui();
+                }
+
+                if(GUI.changed) {
+                    EditorUtility.SetDirty(keyboardCreator);
+                }
             }
         }
 
