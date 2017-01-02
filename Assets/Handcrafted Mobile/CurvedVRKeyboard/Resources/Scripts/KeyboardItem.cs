@@ -156,8 +156,11 @@ namespace CurvedVRKeyboard {
             if(spaceTexture != null) {
                 keyNormalMaterial = new Material(keyNormalMaterial);
                 keyNormalMaterial.SetTexture("_MainTex",spaceTexture);
-              //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
-              //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+                SetMaterial(KeyStateEnum.Normal, keyNormalMaterial);
+                //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+                //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+            }else {
+                SetMaterial(KeyStateEnum.Normal, creator.KeyNormalMaterial);
             }
             if(meshCreator == null) {//lazy initialization
                 meshCreator = new SpaceMeshCreator(creator);
@@ -165,7 +168,6 @@ namespace CurvedVRKeyboard {
             if (quadBack)
                 meshCreator.BuildFace(quadBack, false);
             meshCreator.BuildFace(quadFront, true);
-
         }
 
         public string GetMeshName () {

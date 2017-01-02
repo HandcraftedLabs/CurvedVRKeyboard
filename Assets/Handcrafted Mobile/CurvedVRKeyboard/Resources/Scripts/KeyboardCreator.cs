@@ -43,19 +43,16 @@ namespace CurvedVRKeyboard {
 
 
         public void Start () {
+            InitKeys();
+            ChangeMaterialOnKeys();
             if(!Application.isPlaying) {
                 ManageKeys();
             }
-            ChangeMaterialOnKeys();
             wasStaticOnStart = gameObject.isStatic;
             SetComponents();
         }
 
         public void ManageKeys () {
-            if(keys == null) {
-                InitKeys();
-            }
-
             checkErrors();
 
             if(CanBuild()) {
@@ -67,7 +64,10 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-            keys = GetComponentsInChildren<KeyboardItem>();
+            if(keys == null) {
+                keys = GetComponentsInChildren<KeyboardItem>();
+            }
+            
         }
 
         /// <summary>
@@ -316,6 +316,7 @@ namespace CurvedVRKeyboard {
             set {
                 if(SpaceTexture != value) {
                     spaceTexture = value;
+                    keys[28].ManipulateSpace(this, SpaceTexture);
                 }
             }
         }
