@@ -43,8 +43,8 @@ namespace CurvedVRKeyboard {
         public void Start () {
             if(!Application.isPlaying) {
                 ManageKeys();
-                ChangeMaterialOnKeys();
             }
+            ChangeMaterialOnKeys();
             wasStaticOnStart = gameObject.isStatic;
             SetComponents();
         }

@@ -23,6 +23,7 @@ namespace CurvedVRKeyboard {
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
         private GUIStyle style;
+        
 
         private bool noCameraFound = false;
 
@@ -112,6 +113,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
+            
         }
 
         /// <summary>
