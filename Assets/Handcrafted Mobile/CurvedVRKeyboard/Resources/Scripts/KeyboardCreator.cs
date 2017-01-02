@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
+
 namespace CurvedVRKeyboard {
 
     /// <summary>
@@ -18,9 +21,11 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         private Material keyNormalMaterial;
         [SerializeField]
-        private Material KeySelectedMaterial;
+        private Material keySelectedMaterial;
         [SerializeField]
         private Material keyPressedMaterial;
+        [SerializeField]
+        private Texture spaceTexture;
 
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
@@ -33,13 +38,16 @@ namespace CurvedVRKeyboard {
         //--------------others----------------
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
-
+        private bool wasStaticOnStart;
 
 
 
         public void Start () {
-            ManageKeys();
+            if(!Application.isPlaying) {
+                ManageKeys();
+            }
             ChangeMaterialOnKeys();
+            wasStaticOnStart = gameObject.isStatic;
             SetComponents();
         }
 
@@ -83,7 +91,7 @@ namespace CurvedVRKeyboard {
                 keys[i].SetKeyText(allLettersLowercase[i]);
                 PositionSingleLetter(i, keys[i].gameObject.transform);
                 if(i == 28) {// Space key
-                    keys[i].ManipulateMesh(this);
+                    keys[i].ManipulateSpace(this,SpaceTexture);
                 }
             }
         }
@@ -199,7 +207,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void ChangeMaterialOnKeys () {
             foreach(KeyboardItem key in keys) {
-                key.SetMaterials(KeyDefaultMaterial, KeyHoveringMaterial, KeyPressedMaterial);
+                key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             }
         }
 
@@ -216,6 +224,11 @@ namespace CurvedVRKeyboard {
             }
             if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
                 errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+                return;
+            }
+            if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
+                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard and its children",ErrorReporter.Status.Info);
+                return;
             }
             CheckKeyArrays();
         }
@@ -252,12 +265,12 @@ namespace CurvedVRKeyboard {
         }
 
 
-        public Material KeyDefaultMaterial {
+        public Material KeyNormalMaterial {
             get {
                 return keyNormalMaterial;
             }
             set {
-                if(KeyDefaultMaterial != value) {
+                if(KeyNormalMaterial != value) {
                     keyNormalMaterial = value;
                     foreach(KeyboardItem key in keys) {
                         key.SetMaterial(KeyboardItem.KeyStateEnum.Normal, keyNormalMaterial);
@@ -267,13 +280,16 @@ namespace CurvedVRKeyboard {
             }
         }
 
-        public Material KeyHoveringMaterial {
+        public Material KeySelectedMaterial {
             get {
-                return KeySelectedMaterial;
+                return keySelectedMaterial;
             }
             set {
-                if(KeySelectedMaterial != value) {
-                    KeySelectedMaterial = value;
+                if(keySelectedMaterial != value) {
+                    keySelectedMaterial = value;
+                    foreach(KeyboardItem key in keys) {
+                        key.SetMaterial(KeyboardItem.KeyStateEnum.Selected, keySelectedMaterial);
+                    }                
                 }
 
             }
@@ -286,6 +302,20 @@ namespace CurvedVRKeyboard {
             set {
                 if(KeyPressedMaterial != value) {
                     keyPressedMaterial = value;
+                    foreach(KeyboardItem key in keys) {
+                        key.SetMaterial(KeyboardItem.KeyStateEnum.Pressed, keyPressedMaterial);
+                    }
+                }
+            }
+        }
+
+        public Texture SpaceTexture {
+            get {
+                return spaceTexture;
+            }
+            set {
+                if(SpaceTexture != value) {
+                    spaceTexture = value;
                 }
             }
         }
@@ -298,6 +328,8 @@ namespace CurvedVRKeyboard {
                 if(raycastingSource != value) {
                     InitKeys();
                     raycastingSource = value;
+                    KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
+                    rayCaster.SetRaycastingTransform(RaycastingSource);
                 }
             }
         }
@@ -308,9 +340,11 @@ namespace CurvedVRKeyboard {
             }
             set {
                 clickHandle = value;
+                KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
+                rayCaster.SetClickButton(clickHandle);
             }
         }
     }
 }
-
+#endif
 

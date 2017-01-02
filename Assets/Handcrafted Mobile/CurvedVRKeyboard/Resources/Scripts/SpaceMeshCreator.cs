@@ -51,15 +51,16 @@ namespace CurvedVRKeyboard {
 
         private Vector2[] BuildUV () {
             Vector2[] uv = new Vector2[verticiesCount + 2];
-            float border = 0.10f;
+            float border = 1f / ( verticiesCount / 2f );
             uv[0] = new Vector2(0f, 1f);
             uv[1] = new Vector2(0, 0f);
             uv[2] = new Vector2(border, 1);
             uv[3] = new Vector2(border, 0f);
-            for(int i = 4;i < verticiesCount;i += 4) {
-                float uvPoint = border +  ((float)i / (float)verticiesCount) *( 1 - border *2);
+            for(int i = 0;i < verticiesCount;i += 4) {
+                float uvPoint = border * (i / 2f);
                 uv[i] = new Vector2(uvPoint, 1);
                 uv[i + 1] = new Vector2(uvPoint, 0);
+                uvPoint += border;
                 uv[i + 2] = new Vector2(uvPoint, 1);
                 uv[i + 3] = new Vector2(uvPoint, 0);
             }

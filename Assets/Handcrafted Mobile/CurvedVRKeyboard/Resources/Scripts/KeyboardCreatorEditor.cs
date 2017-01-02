@@ -10,19 +10,24 @@ namespace CurvedVRKeyboard {
     [CanEditMultipleObjects]
     public class KeyboardCreatorEditor: Editor {
 
-        private readonly string CURVATURE = "Curvature";
-        private readonly string RAYCASTING_SOURCE = "Raycasting source";
-        private readonly string CLICK_INPUT_COMMAND = "Click input name";
-        private readonly string DEFAULT_MATERIAL = "Normal material";
-        private readonly string SELECTED_MATERIAL = "Selected material";
-        private readonly string PRESSED_MATERIAL = "Pressed material";
-        private readonly string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
-        private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
+        private const string CURVATURE = "Curvature";
+        private const string RAYCASTING_SOURCE = "Raycasting source";
+        private const string CLICK_INPUT_COMMAND = "Click input name";
+        private const string DEFAULT_MATERIAL = "Normal material";
+        private const string SELECTED_MATERIAL = "Selected material";
+        private const string PRESSED_MATERIAL = "Pressed material";
+        private const string SPACE_TEXTURE = "Spacial space texture";
+        private const string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
+        private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
+        private const string ADDITIONAL_SETUP = "Additional setup";
+
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
         private GUIStyle style;
+
+        private bool foldoutVisible = true;
         private bool noCameraFound = false;
 
 
@@ -32,27 +37,33 @@ namespace CurvedVRKeyboard {
             keyboardCreator = target as KeyboardCreator;
             keyboardCreator.InitKeys();
             style = new GUIStyle(EditorStyles.textField);
-            if(keyboardCreator.RaycastingSource != null) {
-                keyboardCreator.ManageKeys();
+            if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
+                if(keyboardCreator.RaycastingSource != null) {
+                    keyboardCreator.ManageKeys();
+                }
+                keyboardScale = keyboardCreator.transform.localScale;
             }
-            keyboardScale = keyboardCreator.transform.localScale;
         }
 
         public override void OnInspectorGUI () {
             errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
-            keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
-            HandleScaleChange();
+            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
+                keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
+                HandleScaleChange();
 
-            if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
-                DrawMemebers();
-                NotifyErrors();
-            } else {
-                CameraFinderGui();
+                if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
+                    DrawMemebers();
+                } else {
+                    CameraFinderGui();
+                }
+
+                if(GUI.changed) {
+                    EditorUtility.SetDirty(keyboardCreator);
+                }
             }
-
-            if(GUI.changed) {
-                EditorUtility.SetDirty(keyboardCreator);
+            if(keyboardCreator.RaycastingSource != null) {
+                NotifyErrors();
             }
         }
 
@@ -61,7 +72,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void NotifyErrors () {
             if(errorReporter.ShouldMessageBeDisplayed()) {
-                GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
+                GUI.color = errorReporter.GetMessageColor();
                 EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
             }
         }
@@ -102,9 +113,14 @@ namespace CurvedVRKeyboard {
             float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
             keyboardCreator.Curvature = clamped;
             keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
-            keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeyHoveringMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeyHoveringMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
+
+            foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP);
+            if(foldoutVisible) {
+               keyboardCreator.SpaceTexture = EditorGUILayout.ObjectField(SPACE_TEXTURE, keyboardCreator.SpaceTexture, typeof(Texture), true) as Texture;
+            }
         }
 
         /// <summary>

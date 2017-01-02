@@ -11,8 +11,11 @@ namespace CurvedVRKeyboard {
         private float clickHoldTimeLimit = 0.15f;
 
         //-----Materials-----
+        [SerializeField, HideInInspector]
         private Material keyNormalMaterial;
-        private Material KeySelectedMaterial;
+        [SerializeField, HideInInspector]
+        private Material keySelectedMaterial;
+        [SerializeField, HideInInspector]
         private Material keyPressedMaterial;
 
         //--Mesh&Renderers---
@@ -37,7 +40,10 @@ namespace CurvedVRKeyboard {
         public void Init () {
             if(letter == null || quadFront == null || quadBack == null) {  // Check if initialized
                 letter = gameObject.GetComponentInChildren<Text>();
-                quadBack = transform.Find(QUAD_BACK).GetComponent<Renderer>();
+
+                Transform back = transform.Find(QUAD_BACK);
+                if (back)
+                    quadBack = back.GetComponent<Renderer>();
                 quadFront = transform.Find(QUAD_FRONT).GetComponent<Renderer>();
             }
         }
@@ -47,7 +53,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void Hovering () {
             if(!clicked) {// Is not already being clicked?
-                ChangeMaterial(KeySelectedMaterial);
+                ChangeMaterial(keySelectedMaterial);
             } else {
                 HoldClick();
             }
@@ -103,19 +109,20 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="material">material to be displayed</param>
         private void ChangeMaterial ( Material material ) {
-            quadFront.material = material;
-            quadBack.material = material;
+            quadFront.sharedMaterial = material;
+            if (quadBack)
+                quadBack.sharedMaterial = material;
         }
 
         /// <summary>
         /// Changes materials on all keys
         /// </summary>
-        /// <param name="keyDefaultMaterial"></param>
-        /// <param name="keyHoveringMaterial"></param>
+        /// <param name="keyNormalMaterial"></param>
+        /// <param name="keySelectedMaterial"></param>
         /// <param name="keyPressedMaterial"></param>
-        public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
-            this.keyNormalMaterial = keyDefaultMaterial;
-            this.KeySelectedMaterial = keyHoveringMaterial;
+        public void SetMaterials ( Material keyNormalMaterial, Material keySelectedMaterial, Material keyPressedMaterial ) {
+            this.keyNormalMaterial = keyNormalMaterial;
+            this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
         }
 
@@ -124,15 +131,16 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="materialEnum">state of which material will be changed</param>
         /// <param name="newMaterial">new material</param>
-        public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial ) {
+        public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial) {
             switch(materialEnum) {
                 case KeyStateEnum.Normal:
                     keyNormalMaterial = newMaterial;
-                    quadFront.material = newMaterial;
-                    quadBack.material = newMaterial;
+                    quadFront.sharedMaterial = newMaterial;
+                    if (quadBack)
+                        quadBack.sharedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Selected:
-                    KeySelectedMaterial = newMaterial;
+                    keySelectedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Pressed:
                     keyPressedMaterial = newMaterial;
@@ -144,12 +152,20 @@ namespace CurvedVRKeyboard {
         /// Changes 'space' bar mesh
         /// </summary>
         /// <param name="creator"></param>
-        public void ManipulateMesh ( KeyboardCreator creator ) {
+        public void ManipulateSpace ( KeyboardCreator creator, Texture spaceTexture) {
+            if(spaceTexture != null) {
+                keyNormalMaterial = new Material(keyNormalMaterial);
+                keyNormalMaterial.SetTexture("_MainTex",spaceTexture);
+              //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+              //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+            }
             if(meshCreator == null) {//lazy initialization
                 meshCreator = new SpaceMeshCreator(creator);
             }
-            meshCreator.BuildFace(quadBack, false);
+            if (quadBack)
+                meshCreator.BuildFace(quadBack, false);
             meshCreator.BuildFace(quadFront, true);
+
         }
 
         public string GetMeshName () {
