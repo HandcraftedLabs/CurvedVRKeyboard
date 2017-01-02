@@ -205,7 +205,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void ChangeMaterialOnKeys () {
             foreach(KeyboardItem key in keys) {
-                key.SetMaterials(KeyDefaultMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             }
         }
 
@@ -224,7 +224,7 @@ namespace CurvedVRKeyboard {
                 errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
                 return;
             }
-            if(wasStaticOnStart && Application.isPlaying) {
+            if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
                 errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard",ErrorReporter.Status.Info);
                 return;
             }
@@ -263,12 +263,12 @@ namespace CurvedVRKeyboard {
         }
 
 
-        public Material KeyDefaultMaterial {
+        public Material KeyNormalMaterial {
             get {
                 return keyNormalMaterial;
             }
             set {
-                if(KeyDefaultMaterial != value) {
+                if(KeyNormalMaterial != value) {
                     keyNormalMaterial = value;
                     foreach(KeyboardItem key in keys) {
                         key.SetMaterial(KeyboardItem.KeyStateEnum.Normal, keyNormalMaterial);

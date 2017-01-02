@@ -33,7 +33,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator = target as KeyboardCreator;
             keyboardCreator.InitKeys();
             style = new GUIStyle(EditorStyles.textField);
-            if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {
+            if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 if(keyboardCreator.RaycastingSource != null) {
                     keyboardCreator.ManageKeys();
                 }
@@ -44,7 +44,7 @@ namespace CurvedVRKeyboard {
         public override void OnInspectorGUI () {
             errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
-            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {
+            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
                 keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
                 HandleScaleChange();
 
@@ -109,7 +109,7 @@ namespace CurvedVRKeyboard {
             float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
             keyboardCreator.Curvature = clamped;
             keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
-            keyboardCreator.KeyDefaultMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyDefaultMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
         }
