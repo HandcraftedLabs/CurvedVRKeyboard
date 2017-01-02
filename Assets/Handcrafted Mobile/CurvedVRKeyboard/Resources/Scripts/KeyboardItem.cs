@@ -14,7 +14,7 @@ namespace CurvedVRKeyboard {
         [SerializeField, HideInInspector]
         private Material keyNormalMaterial;
         [SerializeField, HideInInspector]
-        private Material KeySelectedMaterial;
+        private Material keySelectedMaterial;
         [SerializeField, HideInInspector]
         private Material keyPressedMaterial;
 
@@ -53,7 +53,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void Hovering () {
             if(!clicked) {// Is not already being clicked?
-                ChangeMaterial(KeySelectedMaterial);
+                ChangeMaterial(keySelectedMaterial);
             } else {
                 HoldClick();
             }
@@ -109,20 +109,20 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="material">material to be displayed</param>
         private void ChangeMaterial ( Material material ) {
-            quadFront.material = material;
+            quadFront.sharedMaterial = material;
             if (quadBack)
-                quadBack.material = material;
+                quadBack.sharedMaterial = material;
         }
 
         /// <summary>
         /// Changes materials on all keys
         /// </summary>
-        /// <param name="keyDefaultMaterial"></param>
-        /// <param name="keyHoveringMaterial"></param>
+        /// <param name="keyNormalMaterial"></param>
+        /// <param name="keySelectedMaterial"></param>
         /// <param name="keyPressedMaterial"></param>
-        public void SetMaterials ( Material keyDefaultMaterial, Material keyHoveringMaterial, Material keyPressedMaterial ) {
-            this.keyNormalMaterial = keyDefaultMaterial;
-            this.KeySelectedMaterial = keyHoveringMaterial;
+        public void SetMaterials ( Material keyNormalMaterial, Material keySelectedMaterial, Material keyPressedMaterial ) {
+            this.keyNormalMaterial = keyNormalMaterial;
+            this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
         }
 
@@ -135,12 +135,12 @@ namespace CurvedVRKeyboard {
             switch(materialEnum) {
                 case KeyStateEnum.Normal:
                     keyNormalMaterial = newMaterial;
-                    quadFront.material = newMaterial;
+                    quadFront.sharedMaterial = newMaterial;
                     if (quadBack)
-                        quadBack.material = newMaterial;
+                        quadBack.sharedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Selected:
-                    KeySelectedMaterial = newMaterial;
+                    keySelectedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Pressed:
                     keyPressedMaterial = newMaterial;

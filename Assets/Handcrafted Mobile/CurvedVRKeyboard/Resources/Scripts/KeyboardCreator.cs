@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
+
 namespace CurvedVRKeyboard {
 
     /// <summary>
@@ -33,13 +36,16 @@ namespace CurvedVRKeyboard {
         //--------------others----------------
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
-
+        private bool wasStaticOnStart;
 
 
 
         public void Start () {
-            ManageKeys();
+            if(!Application.isPlaying) {
+                ManageKeys();
+            }
             ChangeMaterialOnKeys();
+            wasStaticOnStart = gameObject.isStatic;
             SetComponents();
         }
 
@@ -199,7 +205,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void ChangeMaterialOnKeys () {
             foreach(KeyboardItem key in keys) {
-                key.SetMaterials(KeyDefaultMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             }
         }
 
@@ -216,6 +222,11 @@ namespace CurvedVRKeyboard {
             }
             if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
                 errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+                return;
+            }
+            if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
+                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard",ErrorReporter.Status.Info);
+                return;
             }
             CheckKeyArrays();
         }
@@ -252,12 +263,12 @@ namespace CurvedVRKeyboard {
         }
 
 
-        public Material KeyDefaultMaterial {
+        public Material KeyNormalMaterial {
             get {
                 return keyNormalMaterial;
             }
             set {
-                if(KeyDefaultMaterial != value) {
+                if(KeyNormalMaterial != value) {
                     keyNormalMaterial = value;
                     foreach(KeyboardItem key in keys) {
                         key.SetMaterial(KeyboardItem.KeyStateEnum.Normal, keyNormalMaterial);
@@ -322,5 +333,5 @@ namespace CurvedVRKeyboard {
         }
     }
 }
-
+#endif
 
