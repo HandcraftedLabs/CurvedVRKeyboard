@@ -36,15 +36,16 @@ namespace CurvedVRKeyboard {
         //--------------others----------------
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
-
+        private bool wasStaticOnStart;
 
 
 
         public void Start () {
-            if(!Application.isPlaying) { 
+            if(!Application.isPlaying) {
                 ManageKeys();
                 ChangeMaterialOnKeys();
             }
+            wasStaticOnStart = gameObject.isStatic;
             SetComponents();
         }
 
@@ -223,8 +224,8 @@ namespace CurvedVRKeyboard {
                 errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
                 return;
             }
-            if(gameObject.isStatic && Application.isPlaying) {
-                errorReporter.SetMessage("Keybaord is static it can't be edited in play mode",ErrorReporter.Status.Info);
+            if(wasStaticOnStart && Application.isPlaying) {
+                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard",ErrorReporter.Status.Info);
                 return;
             }
             CheckKeyArrays();

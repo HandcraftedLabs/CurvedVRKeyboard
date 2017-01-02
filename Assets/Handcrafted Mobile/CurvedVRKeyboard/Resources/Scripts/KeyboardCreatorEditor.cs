@@ -23,6 +23,7 @@ namespace CurvedVRKeyboard {
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
         private GUIStyle style;
+
         private bool noCameraFound = false;
 
 
@@ -30,9 +31,9 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            style = new GUIStyle(EditorStyles.textField);
             keyboardCreator.InitKeys();
-            if(!Application.isPlaying) {
+            style = new GUIStyle(EditorStyles.textField);
+            if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {
                 if(keyboardCreator.RaycastingSource != null) {
                     keyboardCreator.ManageKeys();
                 }
@@ -43,7 +44,7 @@ namespace CurvedVRKeyboard {
         public override void OnInspectorGUI () {
             errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
-            if(!Application.isPlaying) {
+            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {
                 keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
                 HandleScaleChange();
 
@@ -60,8 +61,6 @@ namespace CurvedVRKeyboard {
             if(keyboardCreator.RaycastingSource != null) {
                 NotifyErrors();
             }
-
-
         }
 
         /// <summary>
@@ -69,7 +68,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void NotifyErrors () {
             if(errorReporter.ShouldMessageBeDisplayed()) {
-                GUI.color = ( errorReporter.IsErrorPresent() ) ? Color.red : Color.yellow;
+                GUI.color = errorReporter.GetMessageColor();
                 EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
             }
         }
