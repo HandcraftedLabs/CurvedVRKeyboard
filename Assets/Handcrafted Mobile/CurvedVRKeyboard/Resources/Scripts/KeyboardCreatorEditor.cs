@@ -16,7 +16,7 @@ namespace CurvedVRKeyboard {
         private const string DEFAULT_MATERIAL = "Normal material";
         private const string SELECTED_MATERIAL = "Selected material";
         private const string PRESSED_MATERIAL = "Pressed material";
-        private const string SPACE_TEXTURE = "Spacial space texture";
+        private const string SPACE_USE_9SLICE = "Use 9 slice of image?";
         private const string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
         private const string ADDITIONAL_SETUP = "Additional setup";
@@ -119,7 +119,7 @@ namespace CurvedVRKeyboard {
 
             foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP);
             if(foldoutVisible) {
-               keyboardCreator.SpaceTexture = EditorGUILayout.ObjectField(SPACE_TEXTURE, keyboardCreator.SpaceTexture, typeof(Texture), true) as Texture;
+               keyboardCreator.SpaceTexture = EditorGUILayout.ObjectField(SPACE_USE_9SLICE, keyboardCreator.SpaceTexture, typeof(Texture), true) as Texture;
             }
         }
 
