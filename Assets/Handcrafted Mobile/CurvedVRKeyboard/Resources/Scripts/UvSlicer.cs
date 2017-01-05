@@ -41,7 +41,7 @@ namespace CurvedVRKeyboard {
                 VerticalVector = new Vector3(left, 0, 0);
                 return true;
             }
-            if(current < right && right < current + right) {
+            if(right > current && right < current + spacing) {
                 VerticalVector = new Vector3(right, 0, 0);
                 return true;
             }

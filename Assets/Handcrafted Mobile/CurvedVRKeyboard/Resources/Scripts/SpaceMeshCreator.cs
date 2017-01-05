@@ -9,9 +9,6 @@ namespace CurvedVRKeyboard {
         KeyboardCreator creator;
         UvSlicer uvSlicer; 
 
-
-      
-
         List<Vector3> verticiesArray;
         private bool isFrontFace;
 
@@ -23,7 +20,7 @@ namespace CurvedVRKeyboard {
         private float verticiesSpacing;
 
 
-
+        
         public SpaceMeshCreator (KeyboardCreator creator,Sprite texture = null) {
             this.creator = creator;
             if(texture != null) {
@@ -37,7 +34,7 @@ namespace CurvedVRKeyboard {
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace ) {
-            verticiesSpacing = rowSize / ( verticiesCount / 4 );
+            verticiesSpacing = rowSize / ( verticiesCount / rowSize  );
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
@@ -50,21 +47,19 @@ namespace CurvedVRKeyboard {
 
 
         private void BuildVerticies () {
+           //TODO uncoment this in futuere 
            // if(verticiesArray == null) {//lazy initialization
                 verticiesArray = new List<Vector3>();
-                for(float i = -boundaryX;i <= boundaryX;i += verticiesSpacing) {
-
-                Add4Rows(new Vector3(i, 0, 0));
-
-                if(uvSlicer.CheckVerticalBorders(i,verticiesSpacing)) {
-                    Add4Rows(uvSlicer.GetVerticalVector());
-                }
-                
+                for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
+                    AddWholeColumn(new Vector3(currentX, 0, 0));
+                    if(uvSlicer.CheckVerticalBorders(currentX,verticiesSpacing)) {
+                        AddWholeColumn(uvSlicer.GetVerticalVector());
+                    }
             }
             //}
         }
 
-        private void Add4Rows (Vector3 toAdd ) {
+        private void AddWholeColumn (Vector3 toAdd ) {
             for(int row=0;row<rowSize;row++) {
                 verticiesArray.Add(toAdd);
             }
@@ -77,7 +72,7 @@ namespace CurvedVRKeyboard {
         /// <param name="trianglesArray"> Array to be builded</param>
         private void BuildQuads ( List<int> trianglesArray ) {
             if(isFrontFace) {
-                for(int i = 0;i < verticiesCount ;i++) {
+                for(int i = 0;i < 39 ;i++) {
                         trianglesArray.Add(i + 4);
                         trianglesArray.Add(i + 1);
                         trianglesArray.Add(i);
@@ -90,6 +85,7 @@ namespace CurvedVRKeyboard {
                     }
                 }
             }
+            //TODO MAKE A BACKQUADS
             //else {
             //    for(int i = 0;i < verticiesCount;i += 2) {
             //        trianglesArray.Add(i);
@@ -136,7 +132,7 @@ namespace CurvedVRKeyboard {
                 Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
                 calculatedVertex.z -= creator.centerPointDistance;
 
-                calculatedVertex.y = 0.5f;
+                calculatedVertex.y = boundaryY;
                 this.verticiesArray[i] = calculatedVertex;
 
                 calculatedVertex.y = uvSlicer.top;
@@ -145,7 +141,7 @@ namespace CurvedVRKeyboard {
                 calculatedVertex.y = uvSlicer.bot;
                 this.verticiesArray[i + 2] = calculatedVertex;
 
-                calculatedVertex.y = -0.5f;
+                calculatedVertex.y = -boundaryY;
                 this.verticiesArray[i + 3] = calculatedVertex;
 
                 offset += verticiesSpacing;
