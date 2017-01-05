@@ -7,11 +7,10 @@ namespace CurvedVRKeyboard {
     public class SpaceMeshCreator {
 
         KeyboardCreator creator;
+        UvSlicer uvSlicer; 
 
-        float left = 0.214f;
-        float right = 1 - 0.214f ;
-        float top = 0.4f;
-        float bot = -0.4f;
+
+      
 
         List<Vector3> verticiesArray;
         private bool isFrontFace;
@@ -27,7 +26,9 @@ namespace CurvedVRKeyboard {
 
         public SpaceMeshCreator (KeyboardCreator creator,Sprite texture = null) {
             this.creator = creator;
-            
+            if(texture != null) {
+                Change9Slices(texture);
+            }
         }
 
         /// <summary>
@@ -48,16 +49,25 @@ namespace CurvedVRKeyboard {
         }
 
 
-        private void BuildVerticies (float upper = 0.05f,float lower = -0.05f) {
-
+        private void BuildVerticies () {
            // if(verticiesArray == null) {//lazy initialization
                 verticiesArray = new List<Vector3>();
                 for(float i = -boundaryX;i <= boundaryX;i += verticiesSpacing) {
-                    for(int row = 0;row < 4;row++) {
-                        verticiesArray.Add(new Vector3(i, 0, 0));
-                    }
+
+                Add4Rows(new Vector3(i, 0, 0));
+
+                if(uvSlicer.CheckVerticalBorders(i,verticiesSpacing)) {
+                    Add4Rows(uvSlicer.GetVerticalVector());
                 }
+                
+            }
             //}
+        }
+
+        private void Add4Rows (Vector3 toAdd ) {
+            for(int row=0;row<rowSize;row++) {
+                verticiesArray.Add(toAdd);
+            }
         }
 
 
@@ -75,7 +85,7 @@ namespace CurvedVRKeyboard {
                         trianglesArray.Add(i + 1);
                         trianglesArray.Add(i + 4);
                         trianglesArray.Add(i + 5);
-                    if(i % 4 == 2) {//we must skip every 3rd iteration
+                    if(i % rowSize == 2) {//we must skip every 3rd iteration
                         i++; 
                     }
                 }
@@ -120,7 +130,7 @@ namespace CurvedVRKeyboard {
         /// Calculates position for verticies
         /// </summary>
         /// <param name="verticiesArray"> Array of verticies</param>
-        private void CalculatePosition ( List<Vector3> verticiesArray, float upper = 0.5f, float lower = -0.5f ) {
+        private void CalculatePosition ( List<Vector3> verticiesArray) {
             float offset = 0;
             for(int i = 0;i < verticiesArray.Count;i += 4) {
                 Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
@@ -129,10 +139,10 @@ namespace CurvedVRKeyboard {
                 calculatedVertex.y = 0.5f;
                 this.verticiesArray[i] = calculatedVertex;
 
-                calculatedVertex.y = upper;
+                calculatedVertex.y = uvSlicer.top;
                 this.verticiesArray[i + 1] = calculatedVertex;
 
-                calculatedVertex.y = lower;
+                calculatedVertex.y = uvSlicer.bot;
                 this.verticiesArray[i + 2] = calculatedVertex;
 
                 calculatedVertex.y = -0.5f;
@@ -158,8 +168,8 @@ namespace CurvedVRKeyboard {
         }
 
         public void Change9Slices (Sprite mainTexture) {
-            //mainTexture.
-            //left = mainTexture.border.x / mainTexture
+            uvSlicer = new UvSlicer(mainTexture);
+            
         }
 
         private void LogList ( List<Vector3> list ) {
@@ -169,6 +179,7 @@ namespace CurvedVRKeyboard {
                 output += " :: ";
             }
             Debug.Log(output);
+            Debug.Log(list.Count);
         }
     }
 }
