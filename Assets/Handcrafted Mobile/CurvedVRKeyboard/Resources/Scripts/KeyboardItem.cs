@@ -153,16 +153,17 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="creator"></param>
         public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceTexture) {
-            //if(spaceTexture != null) {
-            //    keyNormalMaterial = new Material(keyNormalMaterial);
-            //    keyNormalMaterial.SetTexture("_MainTex",spaceTexture);
-            //    SetMaterial(KeyStateEnum.Normal, keyNormalMaterial);
-            //    //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
-            //    //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
-            //}else {
-            //    SetMaterial(KeyStateEnum.Normal, creator.KeyNormalMaterial);
-            //}
-            //if(meshCreator == null) {//lazy initialization
+            if(spaceTexture != null) {
+                keyNormalMaterial = new Material(keyNormalMaterial);
+                keyNormalMaterial.SetTexture("_MainTex", spaceTexture.texture);
+                SetMaterial(KeyStateEnum.Normal, keyNormalMaterial);
+                //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+                //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
+                }
+                //}else {
+                //    SetMaterial(KeyStateEnum.Normal, creator.KeyNormalMaterial);
+                //}
+                //if(meshCreator == null) {//lazy initialization
                 meshCreator = new SpaceMeshCreator(creator,spaceTexture);
             // }
             if (quadBack)

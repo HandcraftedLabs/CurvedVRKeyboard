@@ -34,14 +34,17 @@ namespace CurvedVRKeyboard {
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace ) {
-            verticiesSpacing = rowSize / ( verticiesCount / rowSize  );
+            verticiesSpacing = rowSize / ( verticiesCount / rowSize);
+            
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
             BuildVerticies();
-            LogList(verticiesArray);
+            // LogList(verticiesArray);
             BuildQuads(trainglesArray);
             CalculatePosition(verticiesArray);
+            //Debug.Log("after");
+            //LogList(verticiesArray);
             renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
         }
 
@@ -143,8 +146,10 @@ namespace CurvedVRKeyboard {
 
                 calculatedVertex.y = -boundaryY;
                 this.verticiesArray[i + 3] = calculatedVertex;
-
-                offset += verticiesSpacing;
+                if(i + 4 < verticiesArray.Count) {//if there is next value in array
+                    offset += verticiesArray[i+4].x - verticiesArray[i].x;
+                }
+                
             }
         }
 
@@ -158,14 +163,16 @@ namespace CurvedVRKeyboard {
         private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
             mesh.vertices = verticiesArray.ToArray();
             mesh.triangles = trainglesArray.ToArray();
-            // mesh.uv = BuildUV();
+            mesh.uv = uvSlicer.BuildUV(verticiesArray,boundaryX,boundaryY);
+           
+            LogArray(mesh.uv);
             mesh.RecalculateNormals();
+           
             return mesh;
         }
 
         public void Change9Slices (Sprite mainTexture) {
             uvSlicer = new UvSlicer(mainTexture);
-            
         }
 
         private void LogList ( List<Vector3> list ) {
@@ -177,5 +184,17 @@ namespace CurvedVRKeyboard {
             Debug.Log(output);
             Debug.Log(list.Count);
         }
+
+        private void LogArray ( Vector2[] list ) {
+            String output = "";
+            foreach(Vector3 element in list) {
+                output += element.ToString();
+                output += " :: ";
+            }
+            Debug.Log(output);
+            Debug.Log(list.Length);
+        }
     }
+
+
 }

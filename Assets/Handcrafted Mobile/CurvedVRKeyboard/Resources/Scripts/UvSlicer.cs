@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CurvedVRKeyboard {
@@ -50,6 +51,41 @@ namespace CurvedVRKeyboard {
         
         public Vector3 GetVerticalVector () {
             return VerticalVector;
+        }
+
+
+        public Vector2[] BuildUV (List<Vector3> verticiesArray, float boundaryX ,float boundaryY) {
+            Vector2[] calculatedUV = new Vector2[verticiesArray.Count];
+            float xRange = boundaryX * 2f;
+            float leftSize = Mathf.Abs(-boundaryX - left);
+            float midSize = boundaryX - Mathf.Abs(left) - Mathf.Abs(right);
+            calculatedUV[0] = new Vector2(0f, 1f);
+            calculatedUV[1] = new Vector2(0f, percentageTop);
+            calculatedUV[2] = new Vector2(0f, percentageBot);
+            calculatedUV[3] = new Vector2(0f, 0f);
+
+            for(int row=4; row<verticiesArray.Count; row+=4) {
+                
+                if(verticiesArray[row].x <= left) {
+                    float positionInLowScale =  verticiesArray[row].x + boundaryX ;
+                    float percentageInLowScale = positionInLowScale / leftSize;
+                    float percentageReal = percentageInLowScale * percentageLeft;
+                    calculatedUV[row] = new Vector2(percentageReal, 1f);
+                    calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);
+                    calculatedUV[row + 2] = new Vector2(percentageReal, percentageBot);
+                    calculatedUV[row + 3] = new Vector2(percentageReal, 0f);
+                }else if (verticiesArray[row].x <= right) {
+                    float percentageReal = ( verticiesArray[row].x + 2 ) / 4;
+                    calculatedUV[row] = new Vector2(percentageReal, 1f);
+                    calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);
+                    calculatedUV[row + 2] = new Vector2(percentageReal, percentageBot);
+                    calculatedUV[row + 3] = new Vector2(percentageReal, 0f);
+                }
+
+                
+            }
+
+            return calculatedUV;
         }
     }
 }
