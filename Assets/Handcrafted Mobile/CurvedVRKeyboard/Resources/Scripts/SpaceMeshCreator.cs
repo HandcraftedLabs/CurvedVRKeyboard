@@ -24,7 +24,7 @@ namespace CurvedVRKeyboard {
         public SpaceMeshCreator (KeyboardCreator creator,Sprite texture = null) {
             this.creator = creator;
             if(texture != null) {
-                Change9Slices(texture);
+                Change9Slices(texture,creator.SpaceWidth,creator.SpaceHeight);
             }
         }
 
@@ -42,7 +42,6 @@ namespace CurvedVRKeyboard {
             BuildVerticies();
             // LogList(verticiesArray);
             BuildQuads(trainglesArray);
-            CalculatePosition(verticiesArray);
             //Debug.Log("after");
             //LogList(verticiesArray);
             renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
@@ -161,18 +160,20 @@ namespace CurvedVRKeyboard {
         /// <param name="trainglesArray"> Calculated triangles </param>
         /// <returns></returns>
         private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
-            mesh.vertices = verticiesArray.ToArray();
+            
             mesh.triangles = trainglesArray.ToArray();
             mesh.uv = uvSlicer.BuildUV(verticiesArray,boundaryX,boundaryY);
-           
+
+            CalculatePosition(verticiesArray);
+            mesh.vertices = verticiesArray.ToArray();
             LogArray(mesh.uv);
             mesh.RecalculateNormals();
            
             return mesh;
         }
 
-        public void Change9Slices (Sprite mainTexture) {
-            uvSlicer = new UvSlicer(mainTexture);
+        public void Change9Slices (Sprite mainTexture,int width, int height) {
+            uvSlicer = new UvSlicer(mainTexture,width,height);
         }
 
         private void LogList ( List<Vector3> list ) {

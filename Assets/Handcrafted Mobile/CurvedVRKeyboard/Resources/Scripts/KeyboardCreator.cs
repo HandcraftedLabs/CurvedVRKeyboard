@@ -26,6 +26,10 @@ namespace CurvedVRKeyboard {
         private Material keyPressedMaterial;
         [SerializeField]
         private Sprite spaceTexture;
+        [SerializeField]
+        private int spaceWidth;
+        [SerializeField]
+        private int spaceHeight;
 
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
@@ -321,6 +325,34 @@ namespace CurvedVRKeyboard {
             }
         }
 
+        public int SpaceHeight {
+            get {
+                return spaceHeight;
+            }
+
+            set {
+                if(spaceHeight != value) {
+                    spaceHeight = value;
+                    keys[28].ManipulateSpace(this, SpaceSprite);
+                }
+                
+            }
+        }
+
+        public int SpaceWidth {
+            get {
+                return spaceWidth;
+            }
+
+            set {
+                if(spaceWidth != value) {
+                spaceWidth = value;
+                keys[28].ManipulateSpace(this, SpaceSprite);
+                }
+            }
+        }
+
+
         public Transform RaycastingSource {
             get {
                 return raycastingSource;
@@ -345,7 +377,7 @@ namespace CurvedVRKeyboard {
                 rayCaster.SetClickButton(clickHandle);
             }
         }
-    }
+    } 
 }
 #endif
 
