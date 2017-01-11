@@ -25,7 +25,7 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         private Material keyPressedMaterial;
         [SerializeField]
-        private Sprite spaceTexture;
+        private Sprite spaceSprite;
         [SerializeField]
         private int spaceWidth;
         [SerializeField]
@@ -43,8 +43,12 @@ namespace CurvedVRKeyboard {
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
         private bool wasStaticOnStart;
-
-
+        
+        //--------------borders of sprite  -----
+        private float leftBorder;
+        private float rightBorder;
+        private float topBorder;
+        private float bottomBorder;
 
         public void Start () {
             InitKeys();
@@ -315,11 +319,12 @@ namespace CurvedVRKeyboard {
 
         public Sprite SpaceSprite {
             get {
-                return spaceTexture;
+                return spaceSprite;
             }
             set {
-                if(SpaceSprite != value) {
-                    spaceTexture = value;
+                if(SpaceSprite != value || AreBordersChanged(value)) {
+                    Debug.Log("Changed");
+                    spaceSprite = value;
                     keys[28].ManipulateSpace(this, SpaceSprite);
                 }
             }
@@ -377,7 +382,23 @@ namespace CurvedVRKeyboard {
                 rayCaster.SetClickButton(clickHandle);
             }
         }
+
+        private bool AreBordersChanged (Sprite newSprite) {
+            Vector4 newBorder = newSprite.border;
+            if(leftBorder != newBorder.x || bottomBorder != newBorder.y || rightBorder != newBorder.z || topBorder != newBorder.w) {
+                leftBorder = newBorder.x;
+                bottomBorder = newBorder.y;
+                rightBorder = newBorder.z;
+                topBorder = newBorder.w;
+                return true;
+            }
+            return false;
+        }
+
+
+
     } 
 }
+
 #endif
 

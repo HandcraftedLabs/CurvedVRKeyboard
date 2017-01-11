@@ -139,12 +139,13 @@ namespace CurvedVRKeyboard {
             float offset = 0;
             for(int i = 0;i < verticiesArray.Count;i += 4) {
                 Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
+
                 if(i + 4 < verticiesArray.Count) {//if there is next value in array
                     offset += verticiesArray[i + 4].x - verticiesArray[i].x;
                 }
 
                 calculatedVertex.z -= creator.centerPointDistance;
-
+          
                 calculatedVertex.y = boundaryY;
                 this.verticiesArray[i] = calculatedVertex;
 
@@ -156,8 +157,7 @@ namespace CurvedVRKeyboard {
 
                 calculatedVertex.y = -boundaryY;
                 this.verticiesArray[i + 3] = calculatedVertex;
-              
-                
+      
             }
         }
 
