@@ -39,12 +39,19 @@ namespace CurvedVRKeyboard {
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
+
             BuildVerticies();
-            // LogList(verticiesArray);
+
             BuildQuads(trainglesArray);
-            //Debug.Log("after");
-            //LogList(verticiesArray);
+
             renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
+
+            CalculatePosition(verticiesArray);
+
+            mesh.vertices = verticiesArray.ToArray();
+            LogList(verticiesArray);
+
+            mesh.RecalculateNormals();
         }
 
 
@@ -132,6 +139,10 @@ namespace CurvedVRKeyboard {
             float offset = 0;
             for(int i = 0;i < verticiesArray.Count;i += 4) {
                 Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
+                if(i + 4 < verticiesArray.Count) {//if there is next value in array
+                    offset += verticiesArray[i + 4].x - verticiesArray[i].x;
+                }
+
                 calculatedVertex.z -= creator.centerPointDistance;
 
                 calculatedVertex.y = boundaryY;
@@ -145,9 +156,7 @@ namespace CurvedVRKeyboard {
 
                 calculatedVertex.y = -boundaryY;
                 this.verticiesArray[i + 3] = calculatedVertex;
-                if(i + 4 < verticiesArray.Count) {//if there is next value in array
-                    offset += verticiesArray[i+4].x - verticiesArray[i].x;
-                }
+              
                 
             }
         }
@@ -162,13 +171,7 @@ namespace CurvedVRKeyboard {
         private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
             
             mesh.triangles = trainglesArray.ToArray();
-            mesh.uv = uvSlicer.BuildUV(verticiesArray,boundaryX,boundaryY);
-
-            CalculatePosition(verticiesArray);
-            mesh.vertices = verticiesArray.ToArray();
-            LogArray(mesh.uv);
-            mesh.RecalculateNormals();
-           
+            mesh.uv = uvSlicer.BuildUV(verticiesArray,boundaryX,boundaryY);         
             return mesh;
         }
 
@@ -179,8 +182,7 @@ namespace CurvedVRKeyboard {
         private void LogList ( List<Vector3> list ) {
             String output = "";
             foreach(Vector3 element in list) {
-                output += element.ToString();
-                output += " :: ";
+                output += string.Format("x:{0}, y{1}:, z{2} \n", element.x,element.y,element.z);
             }
             Debug.Log(output);
             Debug.Log(list.Count);

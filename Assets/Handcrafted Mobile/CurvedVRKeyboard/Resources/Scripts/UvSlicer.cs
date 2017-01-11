@@ -88,11 +88,9 @@ namespace CurvedVRKeyboard {
             calculatedUV[1] = new Vector2(0f, percentageTop);
             calculatedUV[2] = new Vector2(0f, percentageBot);
             calculatedUV[3] = new Vector2(0f, 0f);
-            int l = 0;
-            int m = 0;
-            int r = 0;
-            for(int row=4; row<verticiesArray.Count; row+=4) {
-                
+
+
+            for(int row=4; row<verticiesArray.Count; row+=4) { 
                 if(verticiesArray[row].x <= left) {
                     float positionInLowScale =  verticiesArray[row].x + boundaryX ;
                     float percentageInLowScale = positionInLowScale / leftSize;
@@ -101,7 +99,6 @@ namespace CurvedVRKeyboard {
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);
                     calculatedUV[row + 2] = new Vector2(percentageReal, percentageBot);
                     calculatedUV[row + 3] = new Vector2(percentageReal, 0f);
-                    l++;
                 }else if (verticiesArray[row].x >= right) {
                     float positionInLowScale = verticiesArray[row].x - right;
                     float percentageInLowScale = positionInLowScale / rightSize;
@@ -110,7 +107,6 @@ namespace CurvedVRKeyboard {
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);
                     calculatedUV[row + 2] = new Vector2(percentageReal, percentageBot);
                     calculatedUV[row + 3] = new Vector2(percentageReal, 0f);
-                    r++;
                 }else {
                     float positionInLowScale = verticiesArray[row].x - left;
                     float percentageInLowScale = positionInLowScale / midSize;
@@ -119,11 +115,9 @@ namespace CurvedVRKeyboard {
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);
                     calculatedUV[row + 2] = new Vector2(percentageReal, percentageBot);
                     calculatedUV[row + 3] = new Vector2(percentageReal, 0f);
-                    m++;
                 }
 
             }
-            Debug.Log(string.Format("vars l:{0} m:{1} r:{2})", l, m, r));
             return calculatedUV;
         }
     }
