@@ -28,6 +28,10 @@ namespace CurvedVRKeyboard {
             }
         }
 
+        public void ChangeTexture (Sprite texture) {
+            Change9Slices(texture, creator.SpaceWidth, creator.SpaceHeight);
+        }
+
         /// <summary>
         /// Builds mesh for space bar
         /// </summary>

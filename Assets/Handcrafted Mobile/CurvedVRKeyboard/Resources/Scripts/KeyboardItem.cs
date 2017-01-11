@@ -22,8 +22,9 @@ namespace CurvedVRKeyboard {
         private SpaceMeshCreator meshCreator;
         public Renderer quadFront;
         private Renderer quadBack;
-        private static readonly string QUAD_FRONT = "Front";
-        private static readonly string QUAD_BACK = "Back";
+        private const string QUAD_FRONT = "Front";
+        private const string QUAD_BACK = "Back";
+        private const string MAIN_TEXURE = "_MainTex";
 
         //---MaterialEnums---
         public enum KeyStateEnum {
@@ -42,7 +43,7 @@ namespace CurvedVRKeyboard {
                 letter = gameObject.GetComponentInChildren<Text>();
 
                 Transform back = transform.Find(QUAD_BACK);
-                if (back)
+                if(back)
                     quadBack = back.GetComponent<Renderer>();
                 quadFront = transform.Find(QUAD_FRONT).GetComponent<Renderer>();
             }
@@ -110,7 +111,7 @@ namespace CurvedVRKeyboard {
         /// <param name="material">material to be displayed</param>
         private void ChangeMaterial ( Material material ) {
             quadFront.sharedMaterial = material;
-            if (quadBack)
+            if(quadBack)
                 quadBack.sharedMaterial = material;
         }
 
@@ -131,12 +132,12 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="materialEnum">state of which material will be changed</param>
         /// <param name="newMaterial">new material</param>
-        public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial) {
+        public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial ) {
             switch(materialEnum) {
                 case KeyStateEnum.Normal:
                     keyNormalMaterial = newMaterial;
                     quadFront.sharedMaterial = newMaterial;
-                    if (quadBack)
+                    if(quadBack)
                         quadBack.sharedMaterial = newMaterial;
                     break;
                 case KeyStateEnum.Selected:
@@ -152,23 +153,27 @@ namespace CurvedVRKeyboard {
         /// Changes 'space' bar mesh
         /// </summary>
         /// <param name="creator"></param>
-        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceTexture) {
+        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceTexture ) {
             if(spaceTexture != null) {
-                keyNormalMaterial = new Material(keyNormalMaterial);
-                keyNormalMaterial.SetTexture("_MainTex", spaceTexture.texture);
+                ChangeMaterialProperties(spaceTexture, keyNormalMaterial);
+                ChangeMaterialProperties(spaceTexture, keySelectedMaterial);
+                ChangeMaterialProperties(spaceTexture, keyPressedMaterial);
                 SetMaterial(KeyStateEnum.Normal, keyNormalMaterial);
-                //  keySelectedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
-                //  keyPressedMaterial.SetTexture(Shader.PropertyToID("_MainTex"), spaceTexture);
-                }
-                //}else {
-                //    SetMaterial(KeyStateEnum.Normal, creator.KeyNormalMaterial);
-                //}
-                //if(meshCreator == null) {//lazy initialization
-                meshCreator = new SpaceMeshCreator(creator,spaceTexture);
-            // }
-            if (quadBack)
+            }
+            if(meshCreator == null) {
+                meshCreator = new SpaceMeshCreator(creator, spaceTexture);
+            } else {
+                meshCreator.ChangeTexture(spaceTexture);
+            }
+
+            if(quadBack)
                 meshCreator.BuildFace(quadBack, false);
             meshCreator.BuildFace(quadFront, true);
+        }
+
+        private void ChangeMaterialProperties ( Sprite spaceTexture, Material materialToChange ) {
+            materialToChange = new Material(materialToChange);
+            materialToChange.SetTexture(MAIN_TEXURE, spaceTexture.texture);
         }
 
         public string GetMeshName () {
