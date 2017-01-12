@@ -9,10 +9,10 @@ namespace CurvedVRKeyboard {
         private Sprite spaceSprite;
         private Vector3 VerticalVector;
 
-        public float left = 0.214f;
-        public float right = 1 - 0.214f;
-        public float top = 0.4f;
-        public float bot = -0.4f;
+        public float left = -2;
+        public float right = 2;
+        public float top = 0.5f;
+        public float bot = -0.5f;
 
         public float percentageLeft;
         public float percentageRight;
@@ -27,21 +27,34 @@ namespace CurvedVRKeyboard {
             this.virtualX = virtualX; 
             this.virtualY = virtualY;
             CalculateBorders(spaceSprite);
-
         }
 
+
         private void CalculateBorders ( Sprite spaceSprite ) {
-            percentageLeft = ( spaceSprite.border.x / spaceSprite.bounds.size.x ) / 100f;
-            left = (spaceSprite.border.x/virtualX * 4f) -2f;
 
-            percentageRight = 1f - ( ( spaceSprite.border.z ) / spaceSprite.bounds.size.x ) / 100f;
-            right = (1f - spaceSprite.border.z/virtualX) * 4f - 2f;
+            if(spaceSprite != null) {
+                percentageLeft = ( spaceSprite.border.x / spaceSprite.bounds.size.x ) / 100f;
+                left = (spaceSprite.border.x/virtualX * 4f) -2f;
 
-            percentageBot = ( spaceSprite.border.y / spaceSprite.bounds.size.y ) / 100f;
-            bot = (spaceSprite.border.y )/ virtualY - 0.5f;
+                percentageRight = 1f - ( ( spaceSprite.border.z ) / spaceSprite.bounds.size.x ) / 100f;
+                right = (1f - spaceSprite.border.z/virtualX) * 4f - 2f;
 
-            percentageTop = 1f - ( ( spaceSprite.border.w ) / spaceSprite.bounds.size.y ) / 100f;
-            top = (1f - spaceSprite.border.w / virtualY )- 0.5f;
+                percentageBot = ( spaceSprite.border.y / spaceSprite.bounds.size.y ) / 100f;
+                bot = (spaceSprite.border.y )/ virtualY - 0.5f;
+
+                percentageTop = 1f - ( ( spaceSprite.border.w ) / spaceSprite.bounds.size.y ) / 100f;
+                top = (1f - spaceSprite.border.w / virtualY )- 0.5f;
+            }else {
+                left = -2;
+                right = 2;
+                top = 0.5f;
+                bot = -0.5f;
+                percentageLeft = 0;
+                percentageRight = 1f;
+                top = 0f;
+                bot = 1f;
+            }
+
             
 
             //TODO Change this fast fix to better sollution
@@ -93,7 +106,7 @@ namespace CurvedVRKeyboard {
             for(int row=4; row<verticiesArray.Count; row+=4) { 
                 if(verticiesArray[row].x <= left) {
                     float positionInLowScale =  verticiesArray[row].x + boundaryX ;
-                    float percentageInLowScale = positionInLowScale / leftSize;
+                    float percentageInLowScale = positionInLowScale / leftSize; //dzielenie Przez jebane 0 kurwa
                     float percentageReal = Mathf.Lerp(0f, percentageLeft, percentageInLowScale);
                     calculatedUV[row] = new Vector2(percentageReal, 1f);
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);

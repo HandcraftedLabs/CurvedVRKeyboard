@@ -5,6 +5,7 @@ namespace CurvedVRKeyboard {
     public class KeyboardItem: KeyboardComponent {
 
         private Text letter;
+        public int position;
         //------Click-------
         private bool clicked = false;
         private float clickHoldTimer = 0f;
@@ -26,11 +27,12 @@ namespace CurvedVRKeyboard {
         private const string QUAD_BACK = "Back";
         private const string MAIN_TEXURE = "_MainTex";
 
-        //---MaterialEnums---
-        public enum KeyStateEnum {
+       
+        public enum KeyMaterialEnum {
             Normal, Selected, Pressed
         }
-
+       
+     
 
 
 
@@ -98,8 +100,20 @@ namespace CurvedVRKeyboard {
         /// <summary>
         /// Changes value of key text
         /// </summary>
-        /// <param name="value"></param>
-        public void SetKeyText ( string value ) {
+        
+        public void SetKeyText (KeyLetterEnum letterType ) {
+            string value="";
+            switch(letterType) {
+                case KeyLetterEnum.Small:
+                    value = allLettersLowercase[position];
+                    break;
+                case KeyLetterEnum.Big:
+                    value = allLettersUppercase[position];
+                    break;
+                case KeyLetterEnum.NonLetters:
+                    value = allSpecials[position];
+                    break;
+            }
             if(!letter.text.Equals(value)) {
                 letter.text = value;
             }
@@ -132,20 +146,23 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="materialEnum">state of which material will be changed</param>
         /// <param name="newMaterial">new material</param>
-        public void SetMaterial ( KeyStateEnum materialEnum, Material newMaterial ) {
+        public void SetMaterial ( KeyMaterialEnum materialEnum, Material newMaterial) {
             switch(materialEnum) {
-                case KeyStateEnum.Normal:
+                case KeyMaterialEnum.Normal:
                     keyNormalMaterial = newMaterial;
                     quadFront.sharedMaterial = newMaterial;
                     if(quadBack)
                         quadBack.sharedMaterial = newMaterial;
                     break;
-                case KeyStateEnum.Selected:
+                case KeyMaterialEnum.Selected:
                     keySelectedMaterial = newMaterial;
                     break;
-                case KeyStateEnum.Pressed:
+                case KeyMaterialEnum.Pressed:
                     keyPressedMaterial = newMaterial;
                     break;
+            }
+            if(position == POSITION_SPACE) {
+                
             }
         }
 
@@ -155,10 +172,12 @@ namespace CurvedVRKeyboard {
         /// <param name="creator"></param>
         public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceTexture ) {
             if(spaceTexture != null) {
-                ChangeMaterialProperties(spaceTexture, keyNormalMaterial);
-                ChangeMaterialProperties(spaceTexture, keySelectedMaterial);
-                ChangeMaterialProperties(spaceTexture, keyPressedMaterial);
-                SetMaterial(KeyStateEnum.Normal, keyNormalMaterial);
+                keyNormalMaterial = ChangeMaterialProperties(spaceTexture, keyNormalMaterial);
+                keySelectedMaterial = ChangeMaterialProperties(spaceTexture, keySelectedMaterial);
+                keyPressedMaterial = ChangeMaterialProperties(spaceTexture, keyPressedMaterial);
+                SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
+                SetMaterial(KeyMaterialEnum.Selected, keySelectedMaterial);
+                SetMaterial(KeyMaterialEnum.Pressed, keyPressedMaterial);
             }
             if(meshCreator == null) {
                 meshCreator = new SpaceMeshCreator(creator, spaceTexture);
@@ -171,9 +190,10 @@ namespace CurvedVRKeyboard {
             meshCreator.BuildFace(quadFront, true);
         }
 
-        private void ChangeMaterialProperties ( Sprite spaceTexture, Material materialToChange ) {
+        private Material ChangeMaterialProperties ( Sprite spaceTexture, Material materialToChange ) {
             materialToChange = new Material(materialToChange);
             materialToChange.SetTexture(MAIN_TEXURE, spaceTexture.texture);
+            return materialToChange;
         }
 
         public string GetMeshName () {
