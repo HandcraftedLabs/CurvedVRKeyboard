@@ -58,12 +58,14 @@ namespace CurvedVRKeyboard {
 
 
         private void BuildVerticies () {
+             if(verticiesArray == null) {//lazy initialization
             verticiesArray = new List<Vector3>();
             for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
                 AddWholeColumn(new Vector3(currentX, 0, 0));
                 if(uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing)) {
                     AddWholeColumn(uvSlicer.GetVerticalVector());
                 }
+            }
             }
         }
 
