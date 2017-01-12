@@ -39,7 +39,7 @@ namespace CurvedVRKeyboard {
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace) {
-            verticiesSpacing = rowSize / ( verticiesCount / rowSize );
+
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
@@ -61,6 +61,7 @@ namespace CurvedVRKeyboard {
             //TODO uncoment this in futuere 
             // if(verticiesArray == null) {//lazy initialization
             verticiesArray = new List<Vector3>();
+            verticiesSpacing = rowSize / ( verticiesCount / rowSize );
             for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
                 AddWholeColumn(new Vector3(currentX, 0, 0));
                 if(uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing)) {
@@ -75,6 +76,8 @@ namespace CurvedVRKeyboard {
         
 
         private void AddWholeColumn (Vector3 toAdd ) {
+            
+
             for(int row=0;row<rowSize;row++) {
                 verticiesArray.Add(toAdd);
             }
@@ -89,7 +92,7 @@ namespace CurvedVRKeyboard {
 
 
             if(isFrontFace) {
-                for(int i = 0;i < 39 ;i++) {
+                for(int i = 0;i < verticiesArray.Count ;i++) {
                         trianglesArray.Add(i + 4);
                         trianglesArray.Add(i + 1);
                         trianglesArray.Add(i);

@@ -7,3 +7,5 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: Assets/VrCurvedKeybaord/KeyboardExamples/ExampleMouse.unity
+  - enabled: 1
+    path: Assets/Handcrafted Mobile/CurvedVRKeyboard/Examples/ExampleTextured.unity

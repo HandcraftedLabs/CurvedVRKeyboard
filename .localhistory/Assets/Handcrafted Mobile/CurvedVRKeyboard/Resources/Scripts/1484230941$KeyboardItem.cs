@@ -140,11 +140,9 @@ namespace CurvedVRKeyboard {
             this.keyNormalMaterial = keyNormalMaterial;
             this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
-
             if(position == POSITION_SPACE) {
-                SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
+                int x = 0;
             }
-            
             if(IfSpaceWithSprite()) {
                 AddSpriteToMaterial(spaceSprite);
             }

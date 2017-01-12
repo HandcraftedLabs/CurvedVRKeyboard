@@ -88,7 +88,7 @@ namespace CurvedVRKeyboard {
             for(int row=4; row<verticiesArray.Count; row+=4) { 
                 if(verticiesArray[row].x <= left) {
                     float positionInLowScale =  verticiesArray[row].x + boundaryX ;
-                    float percentageInLowScale = positionInLowScale / leftSize; 
+                    float percentageInLowScale = positionInLowScale / leftSize; //dzielenie Przez jebane 0 kurwa
                     float percentageReal = Mathf.Lerp(0f, percentageLeft, percentageInLowScale);
                     calculatedUV[row] = new Vector2(percentageReal, 1f);
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);

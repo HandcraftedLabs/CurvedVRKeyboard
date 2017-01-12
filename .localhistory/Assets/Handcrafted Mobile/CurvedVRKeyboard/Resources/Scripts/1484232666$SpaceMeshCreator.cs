@@ -39,11 +39,11 @@ namespace CurvedVRKeyboard {
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace) {
-            verticiesSpacing = rowSize / ( verticiesCount / rowSize );
+            verticiesSpacing = rowSize / ( verticiesCount / rowSize);
+            
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
-
             BuildVerticies();
             BuildQuads(trainglesArray);
 
@@ -58,21 +58,18 @@ namespace CurvedVRKeyboard {
 
 
         private void BuildVerticies () {
-            //TODO uncoment this in futuere 
-            // if(verticiesArray == null) {//lazy initialization
-            verticiesArray = new List<Vector3>();
-            for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
-                AddWholeColumn(new Vector3(currentX, 0, 0));
-                if(uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing)) {
-                    AddWholeColumn(uvSlicer.GetVerticalVector());
-                }
+           //TODO uncoment this in futuere 
+           // if(verticiesArray == null) {//lazy initialization
+                verticiesArray = new List<Vector3>();
+
+                for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
+                    AddWholeColumn(new Vector3(currentX, 0, 0));
+                    if(uvSlicer.CheckVerticalBorders(currentX,verticiesSpacing)) {
+                        AddWholeColumn(uvSlicer.GetVerticalVector());
+                    }
             }
             //}
         }
-
-
-         
-        
 
         private void AddWholeColumn (Vector3 toAdd ) {
             for(int row=0;row<rowSize;row++) {
@@ -86,8 +83,6 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="trianglesArray"> Array to be builded</param>
         private void BuildQuads ( List<int> trianglesArray ) {
-
-
             if(isFrontFace) {
                 for(int i = 0;i < 39 ;i++) {
                         trianglesArray.Add(i + 4);

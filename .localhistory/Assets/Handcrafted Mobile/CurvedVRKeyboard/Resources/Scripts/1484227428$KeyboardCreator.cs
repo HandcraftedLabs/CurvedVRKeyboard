@@ -31,8 +31,6 @@ namespace CurvedVRKeyboard {
         private int spaceWidth;
         [SerializeField]
         private int spaceHeight;
-        [SerializeField]
-        private KeyboardItem space;
 
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
@@ -40,6 +38,7 @@ namespace CurvedVRKeyboard {
         private readonly float defaultRotation = 90f;
         public float centerPointDistance = -1f;
         private KeyboardItem[] keys;
+        private KeyboardItem space;
         private int row;
 
         //--------------others----------------
@@ -76,6 +75,7 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
+            keys = null;
             if(keys == null) {
                 List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                 for (int i = 0; i < allKeys.Count;i++) {
@@ -84,7 +84,6 @@ namespace CurvedVRKeyboard {
                 space = allKeys[spaceKeyNumber];
                 keys = allKeys.ToArray();
             }
-            space.ManipulateSpace(this,SpaceSprite);
             
         }
 
@@ -104,12 +103,16 @@ namespace CurvedVRKeyboard {
         /// Fills key with text and calculates position 
         /// </summary>
         private void FillAndPlaceKeys () {
-            foreach(KeyboardItem key in keys) {
-                key.Init();
-                key.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
-                PositionSingleLetter(key);
+            for(int i = 0;i < keys.Length;i++) {
+                keys[i].Init();
+                keys[i].SetKeyText(KeyboardItem.KeyLetterEnum.Small);
+                PositionSingleLetter(keys[i]);
             }
-            
+            space.Init();
+            space.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
+            PositionSingleLetter(space);
+            space.ManipulateSpace(this, SpaceSprite);
+
         }
 
         /// <summary>
@@ -264,7 +267,6 @@ namespace CurvedVRKeyboard {
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
-                    space.ManipulateSpace(this, spaceSprite);
                 }
             }
         }

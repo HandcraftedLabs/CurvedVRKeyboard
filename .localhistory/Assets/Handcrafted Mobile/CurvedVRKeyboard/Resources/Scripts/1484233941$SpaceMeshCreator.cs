@@ -89,7 +89,7 @@ namespace CurvedVRKeyboard {
 
 
             if(isFrontFace) {
-                for(int i = 0;i < 39 ;i++) {
+                for(int i = 0;i < verticiesArray.Count ;i++) {
                         trianglesArray.Add(i + 4);
                         trianglesArray.Add(i + 1);
                         trianglesArray.Add(i);

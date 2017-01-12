@@ -104,12 +104,16 @@ namespace CurvedVRKeyboard {
         /// Fills key with text and calculates position 
         /// </summary>
         private void FillAndPlaceKeys () {
-            foreach(KeyboardItem key in keys) {
-                key.Init();
-                key.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
-                PositionSingleLetter(key);
+            for(int i = 0;i < keys.Length;i++) {
+                keys[i].Init();
+                keys[i].SetKeyText(KeyboardItem.KeyLetterEnum.Small);
+                PositionSingleLetter(keys[i]);
             }
-            
+            space.Init();
+            space.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
+            PositionSingleLetter(space);
+            //space.ManipulateSpace(this, SpaceSprite);
+
         }
 
         /// <summary>
@@ -264,7 +268,6 @@ namespace CurvedVRKeyboard {
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
-                    space.ManipulateSpace(this, spaceSprite);
                 }
             }
         }

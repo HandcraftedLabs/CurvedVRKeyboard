@@ -140,11 +140,9 @@ namespace CurvedVRKeyboard {
             this.keyNormalMaterial = keyNormalMaterial;
             this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
-
             if(position == POSITION_SPACE) {
-                SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
+                int x = 0;
             }
-            
             if(IfSpaceWithSprite()) {
                 AddSpriteToMaterial(spaceSprite);
             }
@@ -184,7 +182,7 @@ namespace CurvedVRKeyboard {
         /// Changes 'space' bar mesh
         /// </summary>
         /// <param name="creator"></param>
-        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceSprite) {
+        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceSprite ) {
             this.spaceSprite = spaceSprite;
             if(meshCreator == null) {
                 meshCreator = new SpaceMeshCreator(creator, spaceSprite);

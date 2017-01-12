@@ -40,6 +40,7 @@ namespace CurvedVRKeyboard {
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
         public void BuildFace ( Renderer renderer, bool frontFace) {
             verticiesSpacing = rowSize / ( verticiesCount / rowSize );
+
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
@@ -89,7 +90,7 @@ namespace CurvedVRKeyboard {
 
 
             if(isFrontFace) {
-                for(int i = 0;i < 39 ;i++) {
+                for(int i = 0;i < verticiesArray.Count ;i++) {
                         trianglesArray.Add(i + 4);
                         trianglesArray.Add(i + 1);
                         trianglesArray.Add(i);

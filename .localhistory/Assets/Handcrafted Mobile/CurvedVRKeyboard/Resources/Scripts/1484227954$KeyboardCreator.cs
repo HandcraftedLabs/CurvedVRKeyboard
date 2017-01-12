@@ -107,9 +107,8 @@ namespace CurvedVRKeyboard {
             foreach(KeyboardItem key in keys) {
                 key.Init();
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
-                PositionSingleLetter(key);
+                PositionSingleLetter(keys);
             }
-            
         }
 
         /// <summary>
@@ -264,7 +263,6 @@ namespace CurvedVRKeyboard {
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
-                    space.ManipulateSpace(this, spaceSprite);
                 }
             }
         }

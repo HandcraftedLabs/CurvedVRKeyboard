@@ -19,6 +19,10 @@ namespace CurvedVRKeyboard {
         public float percentageTop = 1;
         public float percentageBot = 0;
 
+        public bool buildLeft = false;
+        public bool buildRight = false;
+        public bool buildTop = false;
+        public bool buildBot = false;
 
         private float virtualX ;
         private float virtualY ;
@@ -36,17 +40,40 @@ namespace CurvedVRKeyboard {
             if(spaceSprite != null) {
                 percentageLeft = ( spaceSprite.border.x / spaceSprite.bounds.size.x ) / 100f;
                 left = (spaceSprite.border.x/virtualX * 4f) -2f;
-
+                if(percentageLeft != 0) {
+                    buildLeft = true;
+                }
                 percentageRight = 1f - ( ( spaceSprite.border.z ) / spaceSprite.bounds.size.x ) / 100f;
                 right = (1f - spaceSprite.border.z/virtualX) * 4f - 2f;
-
+                if(percentageRight != 1f) {
+                    buildRight = true;
+                }
+                
                 percentageBot = ( spaceSprite.border.y / spaceSprite.bounds.size.y ) / 100f;
                 bot = (spaceSprite.border.y )/ virtualY - 0.5f;
-
+                if(percentageBot != 0) {
+                    buildBot = true;
+                }
 
                 percentageTop = 1f - ( ( spaceSprite.border.w ) / spaceSprite.bounds.size.y ) / 100f;
                 top = (1f - spaceSprite.border.w / virtualY )- 0.5f;
+                if(percentageTop != 1) {
+                    buildTop = true;
+                }
+            }
 
+         
+
+            
+
+            //TODO Change this fast fix to better sollution
+            if(left == right) {
+                left -=  1;
+                right += 1;
+            }
+            if(top == bot) {
+                top -= 1;
+                bot += 1;
             }
             //Debug.Log("");
             //Debug.Log("");
@@ -61,7 +88,7 @@ namespace CurvedVRKeyboard {
                 VerticalVector = new Vector3(left, 0, 0);
                 return true;
             }
-            if(right > current && right <= current + spacing) {
+            if(right >= current && right <= current + spacing) {
                 VerticalVector = new Vector3(right, 0, 0);
                 return true;
             }
@@ -76,8 +103,8 @@ namespace CurvedVRKeyboard {
         public Vector2[] BuildUV (List<Vector3> verticiesArray, float boundaryX ,float boundaryY) {
             Vector2[] calculatedUV = new Vector2[verticiesArray.Count];
             float xRange = boundaryX * 2f;
-            float leftSize = Mathf.Abs(left - (-boundaryX)) + Mathf.Epsilon;
-            float rightSize = Mathf.Abs(boundaryX - right) + Mathf.Epsilon;
+            float leftSize = Mathf.Abs(left - (-boundaryX));
+            float rightSize = Mathf.Abs(boundaryX - right);
             float midSize = boundaryX * 2 - leftSize - rightSize;
             calculatedUV[0] = new Vector2(0f, 1f);
             calculatedUV[1] = new Vector2(0f, percentageTop);
@@ -88,7 +115,7 @@ namespace CurvedVRKeyboard {
             for(int row=4; row<verticiesArray.Count; row+=4) { 
                 if(verticiesArray[row].x <= left) {
                     float positionInLowScale =  verticiesArray[row].x + boundaryX ;
-                    float percentageInLowScale = positionInLowScale / leftSize; 
+                    float percentageInLowScale = positionInLowScale / leftSize; //dzielenie Przez jebane 0 kurwa
                     float percentageReal = Mathf.Lerp(0f, percentageLeft, percentageInLowScale);
                     calculatedUV[row] = new Vector2(percentageReal, 1f);
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);

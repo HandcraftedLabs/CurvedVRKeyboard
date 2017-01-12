@@ -19,15 +19,11 @@ namespace CurvedVRKeyboard {
         [SerializeField, HideInInspector]
         private Material keyPressedMaterial;
 
-
-
         //--Mesh&Renderers---
-        [SerializeField, HideInInspector]
-        private Sprite spaceSprite;
-
         private SpaceMeshCreator meshCreator;
         public Renderer quadFront;
         private Renderer quadBack;
+        private Sprite spaceSprite;
         private const string QUAD_FRONT = "Front";
         private const string QUAD_BACK = "Back";
         private const string MAIN_TEXURE = "_MainTex";
@@ -140,11 +136,6 @@ namespace CurvedVRKeyboard {
             this.keyNormalMaterial = keyNormalMaterial;
             this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
-
-            if(position == POSITION_SPACE) {
-                SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
-            }
-            
             if(IfSpaceWithSprite()) {
                 AddSpriteToMaterial(spaceSprite);
             }
@@ -184,8 +175,11 @@ namespace CurvedVRKeyboard {
         /// Changes 'space' bar mesh
         /// </summary>
         /// <param name="creator"></param>
-        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceSprite) {
+        public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceSprite ) {
             this.spaceSprite = spaceSprite;
+            if(spaceSprite != null) {
+                AddSpriteToMaterial(spaceSprite);
+            }
             if(meshCreator == null) {
                 meshCreator = new SpaceMeshCreator(creator, spaceSprite);
             } else {
@@ -207,9 +201,6 @@ namespace CurvedVRKeyboard {
         }
 
         private Material ChangeMaterialTexture ( Sprite spaceTexture, Material materialToChange ) {
-            if(materialToChange == null) {
-                return materialToChange;
-            }
             materialToChange = new Material(materialToChange);
             materialToChange.SetTexture(MAIN_TEXURE, spaceTexture.texture);
             return materialToChange;

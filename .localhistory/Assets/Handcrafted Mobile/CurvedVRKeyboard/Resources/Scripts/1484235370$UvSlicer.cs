@@ -76,8 +76,8 @@ namespace CurvedVRKeyboard {
         public Vector2[] BuildUV (List<Vector3> verticiesArray, float boundaryX ,float boundaryY) {
             Vector2[] calculatedUV = new Vector2[verticiesArray.Count];
             float xRange = boundaryX * 2f;
-            float leftSize = Mathf.Abs(left - (-boundaryX)) + Mathf.Epsilon;
-            float rightSize = Mathf.Abs(boundaryX - right) + Mathf.Epsilon;
+            float leftSize = Mathf.Abs(left - (-boundaryX));
+            float rightSize = Mathf.Abs(boundaryX - right);
             float midSize = boundaryX * 2 - leftSize - rightSize;
             calculatedUV[0] = new Vector2(0f, 1f);
             calculatedUV[1] = new Vector2(0f, percentageTop);
@@ -88,7 +88,7 @@ namespace CurvedVRKeyboard {
             for(int row=4; row<verticiesArray.Count; row+=4) { 
                 if(verticiesArray[row].x <= left) {
                     float positionInLowScale =  verticiesArray[row].x + boundaryX ;
-                    float percentageInLowScale = positionInLowScale / leftSize; 
+                    float percentageInLowScale = positionInLowScale / leftSize; //dzielenie Przez jebane 0 kurwa
                     float percentageReal = Mathf.Lerp(0f, percentageLeft, percentageInLowScale);
                     calculatedUV[row] = new Vector2(percentageReal, 1f);
                     calculatedUV[row + 1] = new Vector2(percentageReal, percentageTop);

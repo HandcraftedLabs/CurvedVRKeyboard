@@ -12,12 +12,11 @@ namespace CurvedVRKeyboard {
         List<Vector3> verticiesArray;
         private bool isFrontFace;
 
-
         //-----BuildingData-----
         private float boundaryY = 0.5f;
         private float boundaryX = 2f;
         private int verticiesCount = 32;
-        private float rowSize = 4;
+        private float rowSize = 4f;
         private float verticiesSpacing;
 
 
@@ -38,18 +37,21 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="renderer"> Renderer to get nesh from</param>
         /// <param name="frontFace"> True if front face needs to be rendered. False if back face</param>
-        public void BuildFace ( Renderer renderer, bool frontFace) {
-            verticiesSpacing = rowSize / ( verticiesCount / rowSize );
+        public void BuildFace ( Renderer renderer, bool frontFace ) {
+            verticiesSpacing = rowSize / ( verticiesCount / rowSize);
+            
             isFrontFace = frontFace;
             Mesh mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
             List<int> trainglesArray = new List<int>();
 
             BuildVerticies();
+
             BuildQuads(trainglesArray);
 
             renderer.gameObject.GetComponent<MeshFilter>().sharedMesh = RebuildMesh(mesh, verticiesArray, trainglesArray);
 
             CalculatePosition(verticiesArray);
+
             mesh.vertices = verticiesArray.ToArray();
             LogList(verticiesArray);
 
@@ -58,21 +60,17 @@ namespace CurvedVRKeyboard {
 
 
         private void BuildVerticies () {
-            //TODO uncoment this in futuere 
-            // if(verticiesArray == null) {//lazy initialization
-            verticiesArray = new List<Vector3>();
-            for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
-                AddWholeColumn(new Vector3(currentX, 0, 0));
-                if(uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing)) {
-                    AddWholeColumn(uvSlicer.GetVerticalVector());
-                }
+           //TODO uncoment this in futuere 
+           // if(verticiesArray == null) {//lazy initialization
+                verticiesArray = new List<Vector3>();
+                for(float currentX = -boundaryX;currentX <= boundaryX;currentX += verticiesSpacing) {
+                    AddWholeColumn(new Vector3(currentX, 0, 0));
+                    if(uvSlicer.CheckVerticalBorders(currentX,verticiesSpacing)) {
+                        AddWholeColumn(uvSlicer.GetVerticalVector());
+                    }
             }
             //}
         }
-
-
-         
-        
 
         private void AddWholeColumn (Vector3 toAdd ) {
             for(int row=0;row<rowSize;row++) {
@@ -86,8 +84,6 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="trianglesArray"> Array to be builded</param>
         private void BuildQuads ( List<int> trianglesArray ) {
-
-
             if(isFrontFace) {
                 for(int i = 0;i < 39 ;i++) {
                         trianglesArray.Add(i + 4);
@@ -177,6 +173,7 @@ namespace CurvedVRKeyboard {
         /// <param name="trainglesArray"> Calculated triangles </param>
         /// <returns></returns>
         private Mesh RebuildMesh ( Mesh mesh, List<Vector3> verticiesArray, List<int> trainglesArray ) {
+            
             mesh.triangles = trainglesArray.ToArray();
             mesh.uv = uvSlicer.BuildUV(verticiesArray,boundaryX,boundaryY);         
             return mesh;
