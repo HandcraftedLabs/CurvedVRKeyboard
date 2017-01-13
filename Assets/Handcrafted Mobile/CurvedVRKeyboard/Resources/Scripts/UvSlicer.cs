@@ -16,7 +16,14 @@ namespace CurvedVRKeyboard {
             this.top = top;
             this.bottom = bottom;
         }
-    }
+
+        public void reset (float left, float right, float top, float bottom) {
+            this.left = left;
+            this.right = right;
+            this.top = top;
+            this.bottom = bottom;
+        }
+}
 
     public class UvSlicer {
         public Vector3 verticalVector { get; private set; }
@@ -38,7 +45,8 @@ namespace CurvedVRKeyboard {
         }
 
         private void CalculateBorders(Sprite spaceSprite) {
-            if(spaceSprite != null) {
+            if (spaceSprite != null)
+            {
                 uvBorderInPercent.left = (spaceSprite.border.x / spaceSprite.bounds.size.x) / 100f;
                 objectBorderInUnits.left = (spaceSprite.border.x / size.x * 4f) - 2f;
 
@@ -50,6 +58,10 @@ namespace CurvedVRKeyboard {
 
                 uvBorderInPercent.top = 1f - ((spaceSprite.border.w) / spaceSprite.bounds.size.y) / 100f;
                 objectBorderInUnits.top = (1f - spaceSprite.border.w / size.y) - 0.5f;
+            }
+            else{
+                objectBorderInUnits.reset(-2f,2f,0.5f,-0.5f);
+                uvBorderInPercent.reset(0,1f,1f,0);
             }
 
 #if DEBUG_UV_SLICER
