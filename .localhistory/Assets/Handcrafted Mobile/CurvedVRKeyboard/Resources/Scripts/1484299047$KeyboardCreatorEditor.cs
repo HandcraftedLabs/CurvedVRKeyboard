@@ -36,6 +36,7 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
+            keyboardCreator.InitKeys();
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 if(keyboardCreator.RaycastingSource != null) {

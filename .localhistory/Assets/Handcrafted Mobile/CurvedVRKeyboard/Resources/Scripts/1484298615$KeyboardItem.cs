@@ -191,13 +191,11 @@ namespace CurvedVRKeyboard {
             } else {
                 meshCreator.ChangeTexture(spaceSprite);
             }
-            if(!Application.isPlaying){
-                if(quadBack)
-                    meshCreator.BuildFace(quadBack, false);
-                meshCreator.BuildFace(quadFront, true);
-            }
+            if(Application.isPlaying)
+            if(quadBack)
+                meshCreator.BuildFace(quadBack, false);
+            meshCreator.BuildFace(quadFront, true);
         }
-            
 
         private void AddSpriteToMaterial ( Sprite spaceSprite ) {
             keyNormalMaterial = ChangeMaterialTexture(spaceSprite, keyNormalMaterial);

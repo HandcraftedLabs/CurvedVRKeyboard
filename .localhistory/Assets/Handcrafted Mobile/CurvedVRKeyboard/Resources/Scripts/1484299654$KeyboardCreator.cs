@@ -84,7 +84,6 @@ namespace CurvedVRKeyboard {
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
                 }
-                space.ManipulateSpace(this,SpaceSprite);
             
             
             

@@ -72,6 +72,8 @@ namespace CurvedVRKeyboard {
                     CurvatureToDistance();
                 }
                 FillAndPlaceKeys();
+                space.ManipulateSpace(this, SpaceSprite);
+
             }
         }
 
@@ -84,7 +86,6 @@ namespace CurvedVRKeyboard {
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
                 }
-                space.ManipulateSpace(this,SpaceSprite);
             
             
             

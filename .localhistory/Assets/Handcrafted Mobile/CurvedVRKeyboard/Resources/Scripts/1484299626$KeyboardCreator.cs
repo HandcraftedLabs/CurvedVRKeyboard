@@ -56,7 +56,7 @@ namespace CurvedVRKeyboard {
 
         public void Awake () {
             InitKeys();
-            ChangeMaterialOnKeys();
+            //ChangeMaterialOnKeys();
             if(!Application.isPlaying) {
                 ManageKeys();
             }

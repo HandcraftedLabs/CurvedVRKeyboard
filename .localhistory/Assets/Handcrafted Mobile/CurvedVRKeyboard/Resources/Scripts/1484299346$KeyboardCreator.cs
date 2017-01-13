@@ -54,7 +54,7 @@ namespace CurvedVRKeyboard {
         private float topBorder;
         private float bottomBorder;
 
-        public void Awake () {
+        public void Start () {
             InitKeys();
             ChangeMaterialOnKeys();
             if(!Application.isPlaying) {

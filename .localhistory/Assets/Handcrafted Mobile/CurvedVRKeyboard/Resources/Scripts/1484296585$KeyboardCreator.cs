@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,7 +53,7 @@ namespace CurvedVRKeyboard {
         private float topBorder;
         private float bottomBorder;
 
-        public void Awake () {
+        public void Start () {
             InitKeys();
             ChangeMaterialOnKeys();
             if(!Application.isPlaying) {
@@ -76,17 +75,15 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-                if(keys == null) {
-                    List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
-                    for (int i = 0; i < allKeys.Count;i++) {
-                        allKeys[i].position = i;
-                    }
-                    space = allKeys[spaceKeyNumber];
-                    keys = allKeys.ToArray();
+            if(keys == null) {
+                List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
+                for (int i = 0; i < allKeys.Count;i++) {
+                    allKeys[i].position = i;
                 }
-                space.ManipulateSpace(this,SpaceSprite);
-            
-            
+                space = allKeys[spaceKeyNumber];
+                keys = allKeys.ToArray();
+            }
+            space.ManipulateSpace(this,SpaceSprite);
             
         }
 
@@ -227,7 +224,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         public void ChangeMaterialOnKeys () {
                 foreach(KeyboardItem key in keys) {
-                    key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                   // key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
                 }
         }
 
@@ -335,13 +332,13 @@ namespace CurvedVRKeyboard {
                 if(spaceSprite != value && value == null) { //if new null
                     spaceSprite = value;
                     space.ManipulateSpace(this, SpaceSprite);
-                    space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                    //space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
                 } else if(value != null) {
                     if(SpaceSprite != value || AreBordersChanged(value)) {//if new or borders changed
                         spaceSprite = value;
                         ChangeBorders(SpaceSprite.border);
                         space.ManipulateSpace(this, SpaceSprite);
-                        space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                       // space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
                     }
                 }
             }
@@ -420,5 +417,4 @@ namespace CurvedVRKeyboard {
     } 
 }
 
-#endif
 

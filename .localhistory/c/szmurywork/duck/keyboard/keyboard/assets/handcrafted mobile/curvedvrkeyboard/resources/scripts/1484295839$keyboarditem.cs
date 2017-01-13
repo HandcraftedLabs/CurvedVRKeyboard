@@ -185,19 +185,20 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="creator"></param>
         public void ManipulateSpace ( KeyboardCreator creator, Sprite spaceSprite) {
+            if(!Application.isPlaying) {
             this.spaceSprite = spaceSprite;
             if(meshCreator == null) {
                 meshCreator = new SpaceMeshCreator(creator, spaceSprite);
             } else {
                 meshCreator.ChangeTexture(spaceSprite);
             }
-            if(!Application.isPlaying){
-                if(quadBack)
-                    meshCreator.BuildFace(quadBack, false);
-                meshCreator.BuildFace(quadFront, true);
+
+            if(quadBack)
+                meshCreator.BuildFace(quadBack, false);
+            meshCreator.BuildFace(quadFront, true);
+
             }
         }
-            
 
         private void AddSpriteToMaterial ( Sprite spaceSprite ) {
             keyNormalMaterial = ChangeMaterialTexture(spaceSprite, keyNormalMaterial);

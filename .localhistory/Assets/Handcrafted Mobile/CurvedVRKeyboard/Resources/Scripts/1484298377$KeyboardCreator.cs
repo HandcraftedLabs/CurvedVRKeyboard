@@ -54,7 +54,7 @@ namespace CurvedVRKeyboard {
         private float topBorder;
         private float bottomBorder;
 
-        public void Awake () {
+        public void Start () {
             InitKeys();
             ChangeMaterialOnKeys();
             if(!Application.isPlaying) {
@@ -76,6 +76,7 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
+            if(Application.isPlaying) {
                 if(keys == null) {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
@@ -85,8 +86,7 @@ namespace CurvedVRKeyboard {
                     keys = allKeys.ToArray();
                 }
                 space.ManipulateSpace(this,SpaceSprite);
-            
-            
+            }
             
         }
 
