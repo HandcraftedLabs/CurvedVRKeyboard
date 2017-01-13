@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -62,6 +61,7 @@ namespace CurvedVRKeyboard {
             }
             wasStaticOnStart = gameObject.isStatic;
             SetComponents();
+
         }
 
         public void ManageKeys () {
@@ -85,6 +85,8 @@ namespace CurvedVRKeyboard {
                     keys = allKeys.ToArray();
                 }
                 space.ManipulateSpace(this,SpaceSprite);
+
+            
             
             
             
@@ -415,10 +417,8 @@ namespace CurvedVRKeyboard {
             rightBorder = newBorder.z;
             topBorder = newBorder.w;
         }
-
-
     } 
 }
 
-#endif
+
 

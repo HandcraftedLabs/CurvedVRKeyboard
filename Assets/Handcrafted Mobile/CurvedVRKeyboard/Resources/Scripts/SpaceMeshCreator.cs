@@ -25,7 +25,7 @@ namespace CurvedVRKeyboard {
         public SpaceMeshCreator (KeyboardCreator creator,Sprite texture = null) {
             this.creator = creator;
             if(texture != null) {
-                Change9Slices(texture,creator.SpaceWidth,creator.SpaceHeight);
+               Change9Slices(texture,creator.SpaceWidth,creator.SpaceHeight);
             }
         }
 
