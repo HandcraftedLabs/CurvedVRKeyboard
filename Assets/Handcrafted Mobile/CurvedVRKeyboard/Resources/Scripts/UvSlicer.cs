@@ -34,19 +34,21 @@ namespace CurvedVRKeyboard {
 
         private Vector2 size;
 
-        public UvSlicer(Sprite spaceSprite, Vector2 size) {
-            ChangeSprite(spaceSprite, size);
+        public UvSlicer(Sprite spaceSprite) {
+            ChangeSprite(spaceSprite);
         }
 
-        public void ChangeSprite(Sprite spaceSprite, Vector2 size) {
+        public void ChangeSprite(Sprite spaceSprite) {
             this.spaceSprite = spaceSprite;
-            this.size = size;
-            CalculateBorders(spaceSprite);
+            CalculateBordersAndSize(spaceSprite);
         }
 
-        private void CalculateBorders(Sprite spaceSprite) {
+        private void CalculateBordersAndSize(Sprite spaceSprite) {
             if (spaceSprite != null)
             {
+                size = new Vector2(spaceSprite.bounds.size.x, spaceSprite.bounds.size.y);
+                size = size * 100;
+
                 uvBorderInPercent.left = (spaceSprite.border.x / spaceSprite.bounds.size.x) / 100f;
                 objectBorderInUnits.left = (spaceSprite.border.x / size.x * 4f) - 2f;
 

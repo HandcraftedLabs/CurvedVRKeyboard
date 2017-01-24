@@ -22,11 +22,10 @@ namespace CurvedVRKeyboard {
         }
 
         public void ChangeTexture(Sprite texture) {
-            Vector2 size = new Vector2(creator.SpaceWidth, creator.SpaceHeight);
             if(uvSlicer == null)
-                uvSlicer = new UvSlicer(texture, size);
+                uvSlicer = new UvSlicer(texture);
             else
-                uvSlicer.ChangeSprite(texture, size);
+                uvSlicer.ChangeSprite(texture);
         }
 
         /// <summary>

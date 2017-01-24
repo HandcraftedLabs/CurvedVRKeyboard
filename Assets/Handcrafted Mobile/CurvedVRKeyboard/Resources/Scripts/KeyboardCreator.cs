@@ -79,7 +79,7 @@ namespace CurvedVRKeyboard {
                 if(keys == null) {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
-                        allKeys[i].position = i;
+                        allKeys[i].Position = i;
                     }
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
@@ -122,7 +122,7 @@ namespace CurvedVRKeyboard {
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
         private void PositionSingleLetter ( KeyboardItem key) {
-            int iteration = key.position;
+            int iteration = key.Position;
             Transform keyTransform = key.transform;
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);

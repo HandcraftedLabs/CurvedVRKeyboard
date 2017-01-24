@@ -120,8 +120,8 @@ namespace CurvedVRKeyboard {
             foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP);
             if(foldoutVisible) {
                 keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
-                keyboardCreator.SpaceWidth = EditorGUILayout.IntField(WIDTH, keyboardCreator.SpaceWidth);
-                keyboardCreator.SpaceHeight = EditorGUILayout.IntField(HEIGHT, keyboardCreator.SpaceHeight);
+                //keyboardCreator.SpaceWidth = EditorGUILayout.IntField(WIDTH, keyboardCreator.SpaceWidth);
+                //keyboardCreator.SpaceHeight = EditorGUILayout.IntField(HEIGHT, keyboardCreator.SpaceHeight);
             }
         }
 
