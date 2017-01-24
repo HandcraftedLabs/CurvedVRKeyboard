@@ -44,7 +44,7 @@ namespace CurvedVRKeyboard {
         //--------------others----------------
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
-        private bool wasStaticOnStart;
+        public bool wasStaticOnStart;
         private const int spaceKeyNumber = 28;
 
         //--------------borders of sprite  -----

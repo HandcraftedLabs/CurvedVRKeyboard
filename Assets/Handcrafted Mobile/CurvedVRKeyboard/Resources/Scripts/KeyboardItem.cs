@@ -176,9 +176,8 @@ namespace CurvedVRKeyboard {
             this.spaceSprite = spaceSprite;
             if(meshCreator == null)
                 meshCreator = new SpaceMeshCreator(creator);
-
             meshCreator.ChangeTexture(spaceSprite);
-            if (!Application.isPlaying)
+            if (!creator.wasStaticOnStart)
             {
                 meshCreator.BuildFace(quadFront, true);
             }
