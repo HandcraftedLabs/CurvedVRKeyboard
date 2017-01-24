@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 namespace CurvedVRKeyboard {
-
+    [SelectionBase]
     public class KeyboardStatus: KeyboardComponent {
 
         //------SET IN UNITY-------

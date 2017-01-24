@@ -369,11 +369,12 @@ namespace CurvedVRKeyboard {
 
         public float ReferencedPixels {
             get {
-                return referencedPixels <= 1f ? 1f : referencedPixels;
+                return referencedPixels;
             }
             set {
                 if(ReferencedPixels != value) {
-                    referencedPixels =  value;
+                    //referencedPixels = value <= 0f ? 0.01f : value;
+                    referencedPixels = value;
                     space.ManipulateSpace(this, SpaceSprite);
                 }
             }

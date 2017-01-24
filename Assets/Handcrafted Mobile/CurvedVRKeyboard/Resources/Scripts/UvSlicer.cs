@@ -28,7 +28,7 @@ namespace CurvedVRKeyboard {
     public class UvSlicer {
         public Vector3 verticalVector { get; private set; }
 
-        public float referencedPixels = 1f;
+        public float referencedPixels = 10f;
         private Sprite spaceSprite;
 
         public Border objectBorderInUnits = new Border(-2f, 2f, 0.5f, -0.5f);
@@ -45,20 +45,26 @@ namespace CurvedVRKeyboard {
         private void CalculateBordersAndSize(Sprite spaceSprite) {
             if (spaceSprite != null)
             {
+                
                 size = new Vector2(spaceSprite.bounds.size.x, spaceSprite.bounds.size.y);
-                size = size * 100 * referencedPixels;
+                size = size * 100 * referencedPixels ;
+              
 
                 uvBorderInPercent.left = (spaceSprite.border.x / spaceSprite.bounds.size.x) / 100f;
-                objectBorderInUnits.left = (spaceSprite.border.x / size.x * 4f) - 2f;
+                objectBorderInUnits.left = (spaceSprite.border.x / size.x) - 2f;
 
                 uvBorderInPercent.right = 1f - ((spaceSprite.border.z) / spaceSprite.bounds.size.x) / 100f;
-                objectBorderInUnits.right = (1f - spaceSprite.border.z / size.x) * 4f - 2f;
+                objectBorderInUnits.right = (1f - spaceSprite.border.z / size.x)+1f;
 
                 uvBorderInPercent.bottom = (spaceSprite.border.y / spaceSprite.bounds.size.y) / 100f;
                 objectBorderInUnits.bottom = (spaceSprite.border.y) / size.y - 0.5f;
 
                 uvBorderInPercent.top = 1f - ((spaceSprite.border.w) / spaceSprite.bounds.size.y) / 100f;
                 objectBorderInUnits.top = (1f - spaceSprite.border.w / size.y) - 0.5f;
+                Debug.Log(string.Format("Top {0} : bottom {1} ", objectBorderInUnits.top, objectBorderInUnits.bottom));
+                if(objectBorderInUnits.top < objectBorderInUnits.bottom) {
+                    float bordersRatio = uvBorderInPercent.bottom / uvBorderInPercent.top;
+                }
             }
             else{
                 objectBorderInUnits.reset(-2f,2f,0.5f,-0.5f);
