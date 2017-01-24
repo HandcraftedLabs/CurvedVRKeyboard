@@ -20,7 +20,7 @@ namespace CurvedVRKeyboard {
         private const string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
         private const string ADDITIONAL_SETUP = "Additional setup";
-        private const string WIDTH = "Width";
+        private const string REFERENCED_PIXELS = "Referenced pixels per unit";
         private const string HEIGHT = "Height";
 
         private KeyboardCreator keyboardCreator;
@@ -120,8 +120,11 @@ namespace CurvedVRKeyboard {
             foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP);
             if(foldoutVisible) {
                 keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
-                //keyboardCreator.SpaceWidth = EditorGUILayout.IntField(WIDTH, keyboardCreator.SpaceWidth);
-                //keyboardCreator.SpaceHeight = EditorGUILayout.IntField(HEIGHT, keyboardCreator.SpaceHeight);
+                if(keyboardCreator.SpaceSprite != null) {
+                    keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(REFERENCED_PIXELS, keyboardCreator.ReferencedPixels);
+                }
+                
+                
             }
         }
 

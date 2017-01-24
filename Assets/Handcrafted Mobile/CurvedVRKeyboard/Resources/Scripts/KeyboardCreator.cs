@@ -27,12 +27,9 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         private Sprite spaceSprite;
         [SerializeField]
-        private int spaceWidth;
-        [SerializeField]
-        private int spaceHeight;
-        [SerializeField]
         private KeyboardItem space;
-
+        [SerializeField]
+        private float referencedPixels = 1f;
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
         private readonly float defaultSpacingRows = 1.0f;
@@ -84,12 +81,7 @@ namespace CurvedVRKeyboard {
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
                 }
-                space.ManipulateSpace(this,SpaceSprite);
-
-            
-            
-            
-            
+                space.ManipulateSpace(this,SpaceSprite);      
         }
 
         /// <summary>
@@ -349,33 +341,6 @@ namespace CurvedVRKeyboard {
             }
         }
 
-        public int SpaceHeight {
-            get {
-                return spaceHeight;
-            }
-
-            set {
-                if(spaceHeight != value) {
-                    spaceHeight = value;
-                    space.ManipulateSpace(this, SpaceSprite);
-                }
-                
-            }
-        }
-
-        public int SpaceWidth {
-            get {
-                return spaceWidth;
-            }
-
-            set {
-                if(spaceWidth != value) {
-                spaceWidth = value;
-                space.ManipulateSpace(this, SpaceSprite);
-                }
-            }
-        }
-
 
         public Transform RaycastingSource {
             get {
@@ -399,6 +364,18 @@ namespace CurvedVRKeyboard {
                 clickHandle = value;
                 KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
                 rayCaster.SetClickButton(clickHandle);
+            }
+        }
+
+        public float ReferencedPixels {
+            get {
+                return referencedPixels <= 1f ? 1f : referencedPixels;
+            }
+            set {
+                if(ReferencedPixels != value) {
+                    referencedPixels =  value;
+                    space.ManipulateSpace(this, SpaceSprite);
+                }
             }
         }
 

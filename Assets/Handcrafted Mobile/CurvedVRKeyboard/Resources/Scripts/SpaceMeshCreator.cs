@@ -21,11 +21,14 @@ namespace CurvedVRKeyboard {
             this.creator = creator;
         }
 
-        public void ChangeTexture(Sprite texture) {
-            if(uvSlicer == null)
-                uvSlicer = new UvSlicer(texture);
-            else
-                uvSlicer.ChangeSprite(texture);
+        public void ChangeTexture(Sprite texture,float referencedPixels) {
+            if(uvSlicer == null) {
+                uvSlicer = new UvSlicer();
+            } 
+            uvSlicer.ChangeSprite(texture);
+            uvSlicer.referencedPixels = referencedPixels;
+           
+                
         }
 
         /// <summary>
