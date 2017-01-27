@@ -20,7 +20,7 @@ namespace CurvedVRKeyboard {
         private const string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
         private const string ADDITIONAL_SETUP = "Additional setup";
-        private const string REFERENCED_PIXELS = "Referenced pixels per unit";
+        private const string REFERENCED_PIXELS = "Slice proportions";
         private const string HEIGHT = "Height";
 
         private KeyboardCreator keyboardCreator;
