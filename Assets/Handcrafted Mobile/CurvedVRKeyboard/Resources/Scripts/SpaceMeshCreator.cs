@@ -58,13 +58,11 @@ namespace CurvedVRKeyboard {
             verticiesArray = new List<Vector3>();
             for(float currentX = -boundary.x; currentX <= boundary.x; currentX += verticiesSpacing) {
                 AddWholeColumn(new Vector3(currentX, 0, 0));
-                if(uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing)) {
-                    AddWholeColumn(uvSlicer.verticalVector);
-                }
+                uvSlicer.CheckVerticalBorders(currentX, verticiesSpacing, this);
             }
         }
 
-        private void AddWholeColumn(Vector3 toAdd) {
+        public void AddWholeColumn(Vector3 toAdd) {
             for(int row = 0; row < rowSize; row++) {
                 verticiesArray.Add(toAdd);
             }

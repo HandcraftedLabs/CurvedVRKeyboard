@@ -373,8 +373,7 @@ namespace CurvedVRKeyboard {
             }
             set {
                 if(ReferencedPixels != value) {
-                    //referencedPixels = value <= 0f ? 0.01f : value;
-                    referencedPixels = value;
+                    referencedPixels = value <= 0.01f ? 0.01f : value;
                     space.ManipulateSpace(this, SpaceSprite);
                 }
             }
