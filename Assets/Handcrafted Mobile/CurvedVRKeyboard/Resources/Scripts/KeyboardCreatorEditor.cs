@@ -10,21 +10,26 @@ namespace CurvedVRKeyboard {
     [CanEditMultipleObjects]
     public class KeyboardCreatorEditor: Editor {
 
-        private readonly string CURVATURE = "Curvature";
-        private readonly string RAYCASTING_SOURCE = "Raycasting source";
-        private readonly string CLICK_INPUT_COMMAND = "Click input name";
-        private readonly string DEFAULT_MATERIAL = "Normal material";
-        private readonly string SELECTED_MATERIAL = "Selected material";
-        private readonly string PRESSED_MATERIAL = "Pressed material";
-        private readonly string FIND_SOURCE = "Raycasting source missing. Press to set default camera";
-        private readonly string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
+        private const string CURVATURE_LABEL = "Curvature";
+        private const string RAYCASTING_SOURCE_LABEL = "Raycasting source";
+        private const string CLICK_INPUT_COMMAND_LABEL = "Click input name";
+        private const string DEFAULT_MATERIAL_LABEL = "Normal material";
+        private const string SELECTED_MATERIAL_LABEL = "Selected material";
+        private const string PRESSED_MATERIAL_LABEL = "Pressed material";
+        private const string SPACE_USE_9SLICE_LABEL = "Use 9 slice of image?";
+        private const string FIND_SOURCE_LABEL = "Raycasting source missing. Press to set default camera";
+        private const string SLICE_PROPORTIONS_LABEL = "Slice proportions";
+
+        private const string ADDITIONAL_SETUP_DROPDOWN= "Additional setup";
+
+        private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
         private GUIStyle style;
-        
 
+        private bool foldoutVisible = true;
         private bool noCameraFound = false;
 
 
@@ -32,7 +37,6 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            keyboardCreator.InitKeys();
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 if(keyboardCreator.RaycastingSource != null) {
@@ -43,10 +47,12 @@ namespace CurvedVRKeyboard {
         }
 
         public override void OnInspectorGUI () {
+            keyboardCreator = target as KeyboardCreator;
+
             errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
-                keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
+                keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_LABEL, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
                 HandleScaleChange();
 
                 if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
@@ -106,21 +112,30 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void DrawMemebers () {
             // Value of curvature is always between [0,1]
-            float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
+            float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE_LABEL + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
             float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
             keyboardCreator.Curvature = clamped;
-            keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND, keyboardCreator.ClickHandle);
-            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
-            
+            keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND_LABEL, keyboardCreator.ClickHandle);
+            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL_LABEL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL_LABEL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL_LABEL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
+
+            foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP_DROPDOWN);
+            if(foldoutVisible) {
+                keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE_LABEL, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
+                if(keyboardCreator.SpaceSprite != null) {
+                    keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
+                }
+                
+                
+            }
         }
 
         /// <summary>
         /// Draws camera find button
         /// </summary>
         private void CameraFinderGui () {
-            bool clicked = GUILayout.Button(FIND_SOURCE);
+            bool clicked = GUILayout.Button(FIND_SOURCE_LABEL);
             if(clicked) {
                 SearchForCamera();
             }

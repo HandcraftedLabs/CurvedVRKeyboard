@@ -1,5 +1,5 @@
-﻿#if UNITY_EDITOR
-
+﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CurvedVRKeyboard {
@@ -24,7 +24,12 @@ namespace CurvedVRKeyboard {
         private Material keySelectedMaterial;
         [SerializeField]
         private Material keyPressedMaterial;
-
+        [SerializeField]
+        private Sprite spaceSprite;
+        [SerializeField]
+        private KeyboardItem space;
+        [SerializeField]
+        private float referencedPixels = 1f;
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
         private readonly float defaultSpacingRows = 1.0f;
@@ -36,27 +41,30 @@ namespace CurvedVRKeyboard {
         //--------------others----------------
         private ErrorReporter errorReporter;
         private const string MESH_NAME_SEARCHED = "Quad";
-        private bool wasStaticOnStart;
+        public bool wasStaticOnStart;
+        private const int spaceKeyNumber = 28;
 
+        //--------------borders of sprite  -----
+        private float leftBorder;
+        private float rightBorder;
+        private float topBorder;
+        private float bottomBorder;
 
-
-        public void Start () {
+        public void Awake () {
+            InitKeys();
+            ChangeMaterialOnKeys();
             if(!Application.isPlaying) {
                 ManageKeys();
             }
-            ChangeMaterialOnKeys();
             wasStaticOnStart = gameObject.isStatic;
             SetComponents();
+
         }
 
         public void ManageKeys () {
-            if(keys == null) {
-                InitKeys();
-            }
-
             checkErrors();
 
-            if(CanBuild()) {
+            if(!errorReporter.IsErrorPresent()) {
                 if(centerPointDistance == -1f) {
                     CurvatureToDistance();
                 }
@@ -65,7 +73,15 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-            keys = GetComponentsInChildren<KeyboardItem>();
+                if(keys == null) {
+                    List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
+                    for (int i = 0; i < allKeys.Count;i++) {
+                        allKeys[i].Position = i;
+                    }
+                    space = allKeys[spaceKeyNumber];
+                    keys = allKeys.ToArray();
+                }
+                space.ManipulateSpace(this,SpaceSprite);      
         }
 
         /// <summary>
@@ -84,14 +100,12 @@ namespace CurvedVRKeyboard {
         /// Fills key with text and calculates position 
         /// </summary>
         private void FillAndPlaceKeys () {
-            for(int i = 0;i < keys.Length;i++) {
-                keys[i].Init();
-                keys[i].SetKeyText(allLettersLowercase[i]);
-                PositionSingleLetter(i, keys[i].gameObject.transform);
-                if(i == 28) {// Space key
-                    keys[i].ManipulateMesh(this);
-                }
+            foreach(KeyboardItem key in keys) {
+                key.Init();
+                key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
+                PositionSingleLetter(key);
             }
+            
         }
 
         /// <summary>
@@ -99,10 +113,12 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
-        private void PositionSingleLetter ( int iteration, Transform keyTransform ) {
+        private void PositionSingleLetter ( KeyboardItem key) {
+            int iteration = key.Position;
+            Transform keyTransform = key.transform;
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
-            Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[(int)row] - 1, iteration - keysPlaced);
+            Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
             positionOnCylinder = AdditionalTransformations(keyTransform, positionOnCylinder);
             LookAtTransformation(keyTransform, positionOnCylinder.y);
             RotationTransformation(keyTransform);
@@ -204,19 +220,19 @@ namespace CurvedVRKeyboard {
         /// Changes materials for all keys
         /// </summary>
         public void ChangeMaterialOnKeys () {
-            foreach(KeyboardItem key in keys) {
-                key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-            }
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                }
         }
 
         public void checkErrors () {
             errorReporter = ErrorReporter.Instance;
             errorReporter.Reset();
-            if(keys.Length != 30) {//is there correct number of keys
+            if(keys.Length != KEY_NUMBER) {//is there correct number of keys
                 errorReporter.SetMessage("Cannot procced. Number of keys is incorrect. Revert your changes to prefab", ErrorReporter.Status.Error);
                 return;
             }
-            if(keys[28].GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
+            if(space.GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
                 errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
                 return;
             }
@@ -231,9 +247,7 @@ namespace CurvedVRKeyboard {
             CheckKeyArrays();
         }
 
-        public bool CanBuild () {
-            return !errorReporter.IsErrorPresent();
-        }
+
 
         //---------------PROPERTIES----------------
         public float Curvature {
@@ -246,6 +260,7 @@ namespace CurvedVRKeyboard {
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
+                    space.ManipulateSpace(this, spaceSprite);
                 }
             }
         }
@@ -271,9 +286,8 @@ namespace CurvedVRKeyboard {
                 if(KeyNormalMaterial != value) {
                     keyNormalMaterial = value;
                     foreach(KeyboardItem key in keys) {
-                        key.SetMaterial(KeyboardItem.KeyStateEnum.Normal, keyNormalMaterial);
+                        key.SetMaterial(KeyboardItem.KeyMaterialEnum.Normal, keyNormalMaterial);
                     }
-
                 }
             }
         }
@@ -286,8 +300,8 @@ namespace CurvedVRKeyboard {
                 if(keySelectedMaterial != value) {
                     keySelectedMaterial = value;
                     foreach(KeyboardItem key in keys) {
-                        key.SetMaterial(KeyboardItem.KeyStateEnum.Selected, keySelectedMaterial);
-                    }                
+                        key.SetMaterial(KeyboardItem.KeyMaterialEnum.Selected, keySelectedMaterial);
+                    }
                 }
 
             }
@@ -301,11 +315,32 @@ namespace CurvedVRKeyboard {
                 if(KeyPressedMaterial != value) {
                     keyPressedMaterial = value;
                     foreach(KeyboardItem key in keys) {
-                        key.SetMaterial(KeyboardItem.KeyStateEnum.Pressed, keyPressedMaterial);
+                        key.SetMaterial(KeyboardItem.KeyMaterialEnum.Pressed, keyPressedMaterial);
                     }
                 }
             }
         }
+
+        public Sprite SpaceSprite {
+            get {
+                return spaceSprite;
+            }
+            set {
+                if(spaceSprite != value && value == null) { //if new null
+                    spaceSprite = value;
+                    space.ManipulateSpace(this, SpaceSprite);
+                    space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                } else if(value != null) {
+                    if(SpaceSprite != value || AreBordersChanged(value)) {//if new or borders changed
+                        spaceSprite = value;
+                        ChangeBorders(SpaceSprite.border);
+                        space.ManipulateSpace(this, SpaceSprite);
+                        space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+                    }
+                }
+            }
+        }
+
 
         public Transform RaycastingSource {
             get {
@@ -331,7 +366,36 @@ namespace CurvedVRKeyboard {
                 rayCaster.SetClickButton(clickHandle);
             }
         }
-    }
+
+        public float ReferencedPixels {
+            get {
+                return referencedPixels;
+            }
+            set {
+                if(ReferencedPixels != value) {
+                    referencedPixels = value <= 0.01f ? 0.01f : value;
+                    space.ManipulateSpace(this, SpaceSprite);
+                }
+            }
+        }
+
+        private bool AreBordersChanged (Sprite newSprite) {
+            Vector4 newBorder = newSprite.border;
+            if(leftBorder != newBorder.x || bottomBorder != newBorder.y || rightBorder != newBorder.z || topBorder != newBorder.w) {
+                ChangeBorders(newBorder);
+                return true;
+            }
+            return false;
+        }
+
+        private void ChangeBorders ( Vector4 newBorder ) {
+            leftBorder = newBorder.x;
+            bottomBorder = newBorder.y;
+            rightBorder = newBorder.z;
+            topBorder = newBorder.w;
+        }
+    } 
 }
-#endif
+
+
 
