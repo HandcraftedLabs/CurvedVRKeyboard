@@ -14,6 +14,7 @@ namespace CurvedVRKeyboard {
         //-----BuildingData-----
         private Vector2 boundary = new Vector2(2f, 0.5f);
         private int verticiesCount = 32;
+        private int trianglesIteration = 39;
         private float rowSize = 4;
         private float verticiesSpacing;
 
@@ -74,7 +75,7 @@ namespace CurvedVRKeyboard {
         /// <param name="trianglesArray"> Array to be builded</param>
         private void BuildQuads(List<int> trianglesArray) {
             if(isFrontFace) {
-                for(int i = 0; i < 39; i++) {
+                for(int i = 0; i < trianglesIteration; i++) {
                     trianglesArray.Add(i + 4);
                     trianglesArray.Add(i + 1);
                     trianglesArray.Add(i);

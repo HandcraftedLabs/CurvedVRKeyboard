@@ -20,7 +20,7 @@ namespace CurvedVRKeyboard {
         public const int POSITION_SPACE = 28;
 
         public enum KeyLetterEnum {
-            Small, Big, NonLetters
+            LowerCase, UpperCase, NonLetters
         }
 
 

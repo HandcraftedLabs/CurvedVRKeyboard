@@ -102,7 +102,7 @@ namespace CurvedVRKeyboard {
         private void FillAndPlaceKeys () {
             foreach(KeyboardItem key in keys) {
                 key.Init();
-                key.SetKeyText(KeyboardItem.KeyLetterEnum.Small);
+                key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
             

@@ -27,7 +27,7 @@ namespace CurvedVRKeyboard {
         private SpaceMeshCreator meshCreator;
         private Renderer quadFront;
         private const string QUAD_FRONT = "Front";
-        private const string MAIN_TEXURE = "_MainTex";
+        private const string MAIN_TEXURE_NAME_IN_SHADER = "_MainTex";
 
 
 
@@ -99,10 +99,10 @@ namespace CurvedVRKeyboard {
         public void SetKeyText(KeyLetterEnum letterType) {
             string value = "";
             switch(letterType) {
-                case KeyLetterEnum.Small:
+                case KeyLetterEnum.LowerCase:
                     value = allLettersLowercase[Position];
                     break;
-                case KeyLetterEnum.Big:
+                case KeyLetterEnum.UpperCase:
                     value = allLettersUppercase[Position];
                     break;
                 case KeyLetterEnum.NonLetters:
@@ -203,7 +203,7 @@ namespace CurvedVRKeyboard {
             }
 
             materialToChange = new Material(materialToChange);
-            materialToChange.SetTexture(MAIN_TEXURE, spaceTexture.texture);
+            materialToChange.SetTexture(MAIN_TEXURE_NAME_IN_SHADER, spaceTexture.texture);
 
             return materialToChange;
         }
