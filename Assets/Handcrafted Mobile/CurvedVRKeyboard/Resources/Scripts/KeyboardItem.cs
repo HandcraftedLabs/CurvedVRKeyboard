@@ -4,7 +4,8 @@ using UnityEngine.UI;
 namespace CurvedVRKeyboard {
     public class KeyboardItem : KeyboardComponent {
         private Text letter;
-        public int position;
+        
+        private int position;
 
         //------Click-------
         private bool clicked = false;
@@ -24,9 +25,10 @@ namespace CurvedVRKeyboard {
         private Sprite spaceSprite;
 
         private SpaceMeshCreator meshCreator;
-        public Renderer quadFront;
+        private Renderer quadFront;
         private const string QUAD_FRONT = "Front";
         private const string MAIN_TEXURE = "_MainTex";
+
 
 
         public enum KeyMaterialEnum {
@@ -98,13 +100,13 @@ namespace CurvedVRKeyboard {
             string value = "";
             switch(letterType) {
                 case KeyLetterEnum.Small:
-                    value = allLettersLowercase[position];
+                    value = allLettersLowercase[Position];
                     break;
                 case KeyLetterEnum.Big:
-                    value = allLettersUppercase[position];
+                    value = allLettersUppercase[Position];
                     break;
                 case KeyLetterEnum.NonLetters:
-                    value = allSpecials[position];
+                    value = allSpecials[Position];
                     break;
             }
             if(!letter.text.Equals(value)) {
@@ -131,7 +133,7 @@ namespace CurvedVRKeyboard {
             this.keySelectedMaterial = keySelectedMaterial;
             this.keyPressedMaterial = keyPressedMaterial;
 
-            if(position == POSITION_SPACE) {
+            if(Position == POSITION_SPACE) {
                 SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
             }
 
@@ -176,9 +178,11 @@ namespace CurvedVRKeyboard {
             this.spaceSprite = spaceSprite;
             if(meshCreator == null)
                 meshCreator = new SpaceMeshCreator(creator);
-            meshCreator.ChangeTexture(spaceSprite);
+            meshCreator.ChangeTexture(spaceSprite,creator.ReferencedPixels);
+            
             if (!creator.wasStaticOnStart)
             {
+                Init();
                 meshCreator.BuildFace(quadFront, true);
             }
         }
@@ -211,6 +215,17 @@ namespace CurvedVRKeyboard {
 
             return quadFront.GetComponent<MeshFilter>().sharedMesh.name;
         }
+
+        public int Position {
+            get {
+                return position;
+            }
+
+            set {
+                position = value;
+            }
+        }
+
     }
 }
 

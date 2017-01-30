@@ -27,6 +27,8 @@ namespace CurvedVRKeyboard {
 
     public class UvSlicer {
         public Vector3 verticalVector { get; private set; }
+
+        public float referencedPixels = 10f;
         private Sprite spaceSprite;
 
         public Border objectBorderInUnits = new Border(-2f, 2f, 0.5f, -0.5f);
@@ -34,34 +36,54 @@ namespace CurvedVRKeyboard {
 
         private Vector2 size;
 
-        public UvSlicer(Sprite spaceSprite, Vector2 size) {
-            ChangeSprite(spaceSprite, size);
-        }
 
-        public void ChangeSprite(Sprite spaceSprite, Vector2 size) {
+        public void ChangeSprite(Sprite spaceSprite) {
             this.spaceSprite = spaceSprite;
-            this.size = size;
-            CalculateBorders(spaceSprite);
+            CalculateBordersAndSize(spaceSprite);
         }
 
-        private void CalculateBorders(Sprite spaceSprite) {
-            if (spaceSprite != null)
-            {
-                uvBorderInPercent.left = (spaceSprite.border.x / spaceSprite.bounds.size.x) / 100f;
-                objectBorderInUnits.left = (spaceSprite.border.x / size.x * 4f) - 2f;
+        private void CalculateBordersAndSize(Sprite spaceSprite) {
+            if(spaceSprite != null) {
+                
+                size = new Vector2(spaceSprite.bounds.size.x, spaceSprite.bounds.size.y);
+                size = size * 10 * referencedPixels ;
 
-                uvBorderInPercent.right = 1f - ((spaceSprite.border.z) / spaceSprite.bounds.size.x) / 100f;
-                objectBorderInUnits.right = (1f - spaceSprite.border.z / size.x) * 4f - 2f;
 
-                uvBorderInPercent.bottom = (spaceSprite.border.y / spaceSprite.bounds.size.y) / 100f;
-                objectBorderInUnits.bottom = (spaceSprite.border.y) / size.y - 0.5f;
+                uvBorderInPercent.left = ( spaceSprite.border.x / spaceSprite.bounds.size.x ) / 100f;
+                objectBorderInUnits.left = ( spaceSprite.border.x / size.x ) - 2f;
 
-                uvBorderInPercent.top = 1f - ((spaceSprite.border.w) / spaceSprite.bounds.size.y) / 100f;
-                objectBorderInUnits.top = (1f - spaceSprite.border.w / size.y) - 0.5f;
-            }
-            else{
-                objectBorderInUnits.reset(-2f,2f,0.5f,-0.5f);
-                uvBorderInPercent.reset(0,1f,1f,0);
+                uvBorderInPercent.right = 1f - ( ( spaceSprite.border.z ) / spaceSprite.bounds.size.x ) / 100f;
+                objectBorderInUnits.right = ( 1f - spaceSprite.border.z / size.x ) + 1f;
+
+                uvBorderInPercent.bottom = ( spaceSprite.border.y / spaceSprite.bounds.size.y ) / 100f;
+                objectBorderInUnits.bottom = ( spaceSprite.border.y ) / size.y - 0.5f;
+
+                uvBorderInPercent.top = 1f - ( ( spaceSprite.border.w ) / spaceSprite.bounds.size.y ) / 100f;
+                objectBorderInUnits.top = ( 1f - spaceSprite.border.w / size.y ) - 0.5f;
+
+                if(objectBorderInUnits.top < objectBorderInUnits.bottom) {
+                    float borderTopPerc = 1f - uvBorderInPercent.top;
+                    float borderSum = borderTopPerc + uvBorderInPercent.bottom;
+                    float borderTopRatio = borderTopPerc / borderSum;
+                    objectBorderInUnits.top = 1f -( 1f * borderTopRatio) - 0.51f;
+                    objectBorderInUnits.bottom = objectBorderInUnits.top + 0.02f;
+                }
+                if(objectBorderInUnits.left > objectBorderInUnits.right) {
+                    float borderLeftPerc = 1f - uvBorderInPercent.left;
+                    float borderSum = borderLeftPerc + uvBorderInPercent.right;
+                    float borderLeftRatio = borderLeftPerc / borderSum;
+                    objectBorderInUnits.left = (1f - ( 1f * borderLeftRatio )) * 4f - 2.01f;
+                    objectBorderInUnits.right = objectBorderInUnits.left + 0.02f;
+                }
+                if(objectBorderInUnits.left % 1.00f == 0) {
+                    objectBorderInUnits.left -= 0.01f;
+                }
+                if(objectBorderInUnits.right % 1.00f == 0) {
+                    objectBorderInUnits.right += 0.01f;
+                }
+            } else {
+                objectBorderInUnits.reset(-2f, 2f, 0.5f, -0.5f);
+                uvBorderInPercent.reset(0, 1f, 1f, 0);
             }
 
 #if DEBUG_UV_SLICER
@@ -72,17 +94,14 @@ namespace CurvedVRKeyboard {
 #endif
         }
 
-        public bool CheckVerticalBorders(float current, float spacing) {
+        public void CheckVerticalBorders(float current, float spacing,SpaceMeshCreator spaceMeshCreator) {
             if(current <= objectBorderInUnits.left && objectBorderInUnits.left <= current + spacing) { // left border shall be added??
-                verticalVector = new Vector3(objectBorderInUnits.left, 0, 0);
-                return true;
+                spaceMeshCreator.AddWholeColumn(new Vector3(objectBorderInUnits.left, 0, 0));
             }
             if(objectBorderInUnits.right > current && objectBorderInUnits.right <= current + spacing) {
-                verticalVector = new Vector3(objectBorderInUnits.right, 0, 0);
-                return true;
+                spaceMeshCreator.AddWholeColumn(new Vector3(objectBorderInUnits.right, 0, 0));
             }
 
-            return false;
         }
 
         public Vector2[] BuildUV(List<Vector3> verticiesArray, Vector2 boundary) {
@@ -123,5 +142,6 @@ namespace CurvedVRKeyboard {
 
             return calculatedUV;
         }
+
     }
 }

@@ -27,12 +27,9 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         private Sprite spaceSprite;
         [SerializeField]
-        private int spaceWidth;
-        [SerializeField]
-        private int spaceHeight;
-        [SerializeField]
         private KeyboardItem space;
-
+        [SerializeField]
+        private float referencedPixels = 1f;
         //-------private Calculations---------
         private readonly float defaultSpacingColumns = 56.3f;
         private readonly float defaultSpacingRows = 1.0f;
@@ -79,17 +76,12 @@ namespace CurvedVRKeyboard {
                 if(keys == null) {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
-                        allKeys[i].position = i;
+                        allKeys[i].Position = i;
                     }
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
                 }
-                space.ManipulateSpace(this,SpaceSprite);
-
-            
-            
-            
-            
+                space.ManipulateSpace(this,SpaceSprite);      
         }
 
         /// <summary>
@@ -122,7 +114,7 @@ namespace CurvedVRKeyboard {
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
         private void PositionSingleLetter ( KeyboardItem key) {
-            int iteration = key.position;
+            int iteration = key.Position;
             Transform keyTransform = key.transform;
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
@@ -349,33 +341,6 @@ namespace CurvedVRKeyboard {
             }
         }
 
-        public int SpaceHeight {
-            get {
-                return spaceHeight;
-            }
-
-            set {
-                if(spaceHeight != value) {
-                    spaceHeight = value;
-                    space.ManipulateSpace(this, SpaceSprite);
-                }
-                
-            }
-        }
-
-        public int SpaceWidth {
-            get {
-                return spaceWidth;
-            }
-
-            set {
-                if(spaceWidth != value) {
-                spaceWidth = value;
-                space.ManipulateSpace(this, SpaceSprite);
-                }
-            }
-        }
-
 
         public Transform RaycastingSource {
             get {
@@ -399,6 +364,18 @@ namespace CurvedVRKeyboard {
                 clickHandle = value;
                 KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
                 rayCaster.SetClickButton(clickHandle);
+            }
+        }
+
+        public float ReferencedPixels {
+            get {
+                return referencedPixels;
+            }
+            set {
+                if(ReferencedPixels != value) {
+                    referencedPixels = value <= 0.01f ? 0.01f : value;
+                    space.ManipulateSpace(this, SpaceSprite);
+                }
             }
         }
 
