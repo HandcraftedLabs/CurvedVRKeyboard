@@ -250,7 +250,6 @@ namespace CurvedVRKeyboard {
         public void ReloadSpaceMaterials () {
             space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             space.ManipulateSpace(this, SpaceSprite);
-
         }
 
 
