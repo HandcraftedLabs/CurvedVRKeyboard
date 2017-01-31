@@ -76,10 +76,10 @@ namespace CurvedVRKeyboard {
                     objectBorderInUnits.right = objectBorderInUnits.left + 0.02f;
                 }
                 if(objectBorderInUnits.left % 1.00f == 0) {
-                    objectBorderInUnits.left -= 0.01f;
+                    objectBorderInUnits.left += 0.01f;
                 }
                 if(objectBorderInUnits.right % 1.00f == 0) {
-                    objectBorderInUnits.right += 0.01f;
+                    objectBorderInUnits.right -= 0.01f;
                 }
             } else {
                 objectBorderInUnits.reset(-2f, 2f, 0.5f, -0.5f);
