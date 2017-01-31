@@ -247,7 +247,7 @@ namespace CurvedVRKeyboard {
             CheckKeyArrays();
         }
 
-        public void setSpaceMaterials () {
+        public void ReloadSpaceMaterials () {
             space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             space.ManipulateSpace(this, SpaceSprite);
 

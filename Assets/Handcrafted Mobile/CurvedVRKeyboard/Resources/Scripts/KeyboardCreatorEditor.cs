@@ -132,7 +132,7 @@ namespace CurvedVRKeyboard {
                 keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
                 if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
                         Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRES_SPACE_UNDO);
-                        keyboardCreator.setSpaceMaterials();
+                        keyboardCreator.ReloadSpaceMaterials();
                     }
                 GUI.enabled = true;
             }
