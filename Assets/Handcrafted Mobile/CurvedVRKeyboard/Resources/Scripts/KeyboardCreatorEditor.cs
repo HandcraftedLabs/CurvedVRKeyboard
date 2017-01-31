@@ -28,7 +28,7 @@ namespace CurvedVRKeyboard {
 
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
-        private const string REFRES_SPACE_UNDO = "refresh space";
+        private const string REFRESH_SPACE_UNDO = "refresh space";
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
@@ -133,7 +133,7 @@ namespace CurvedVRKeyboard {
                 GUI.enabled = isSpritePresent;
                 keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
                 if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
-                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRES_SPACE_UNDO);
+                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRESH_SPACE_UNDO);
                         keyboardCreator.ReloadSpaceMaterials();
                     }
                 GUI.enabled = true;
