@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿
 #if UNITY_EDITOR
+using UnityEngine;
+using UnityEditor.SceneManagement;
 using UnityEditor;
 namespace CurvedVRKeyboard {
 
@@ -26,7 +28,7 @@ namespace CurvedVRKeyboard {
 
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
 
-        private const string REFRESH_SPACE_UNDO = "refresh space";
+        private const string REFRES_SPACE_UNDO = "refresh space";
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
@@ -52,7 +54,6 @@ namespace CurvedVRKeyboard {
 
         public override void OnInspectorGUI () {
             keyboardCreator = target as KeyboardCreator;
-
             errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
@@ -66,7 +67,8 @@ namespace CurvedVRKeyboard {
                 }
 
                 if(GUI.changed) {
-                    EditorUtility.SetDirty(keyboardCreator);
+                   EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                   EditorUtility.SetDirty(keyboardCreator);
                 }
             }
             if(keyboardCreator.RaycastingSource != null) {
@@ -131,7 +133,7 @@ namespace CurvedVRKeyboard {
                 GUI.enabled = isSpritePresent;
                 keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
                 if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
-                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRESH_SPACE_UNDO);
+                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRES_SPACE_UNDO);
                         keyboardCreator.ReloadSpaceMaterials();
                     }
                 GUI.enabled = true;
