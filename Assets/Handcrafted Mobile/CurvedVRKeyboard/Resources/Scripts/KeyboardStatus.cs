@@ -43,8 +43,9 @@ namespace CurvedVRKeyboard {
         /// Displays special signs
         /// </summary>
         private void ChangeSpecialLetters () {
-            areLettersActive = !areLettersActive;
             KeyLetterEnum ToDisplay = areLettersActive ? KeyLetterEnum.NonLetters : KeyLetterEnum.LowerCase;
+            areLettersActive =! areLettersActive;
+            isLowercase = true;
             for(int i = 0;i < keys.Length;i++) {
                 keys[i].SetKeyText(ToDisplay);
             }
@@ -54,8 +55,8 @@ namespace CurvedVRKeyboard {
         /// Changes between lower and upper keys
         /// </summary>
         private void LowerUpperKeys () {
-            isLowercase = !isLowercase;
             KeyLetterEnum ToDisplay = isLowercase ? KeyLetterEnum.UpperCase : KeyLetterEnum.LowerCase;
+            isLowercase = !isLowercase;
             for(int i = 0;i < keys.Length;i++) {
                 keys[i].SetKeyText(ToDisplay);
             }
