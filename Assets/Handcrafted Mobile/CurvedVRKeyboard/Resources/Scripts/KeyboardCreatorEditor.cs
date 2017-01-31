@@ -20,6 +20,8 @@ namespace CurvedVRKeyboard {
         private const string FIND_SOURCE_LABEL = "Raycasting source missing. Press to set default camera";
         private const string SLICE_PROPORTIONS_LABEL = "Slice proportions";
 
+        private const string REFRESH_SPACE_MATERIAL_BUTTON = "Refresh space material";
+
         private const string ADDITIONAL_SETUP_DROPDOWN= "Additional setup";
 
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
@@ -125,6 +127,10 @@ namespace CurvedVRKeyboard {
                 keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE_LABEL, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
                 if(keyboardCreator.SpaceSprite != null) {
                     keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
+                    if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
+                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, "refresh space");
+                        keyboardCreator.setSpaceMaterials();
+                    }
                 }
                 
                 
