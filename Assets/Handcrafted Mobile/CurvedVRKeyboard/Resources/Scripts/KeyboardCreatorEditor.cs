@@ -29,12 +29,11 @@ namespace CurvedVRKeyboard {
         private static GUIContent SELECTED_MATERIAL_CONTENT = new GUIContent("Selected material", "Material used with keys selected state");
         private static GUIContent PRESSED_MATERIAL_CONTENT = new GUIContent("Pressed material", "Material used with keys pressed state");
 
-        private static GUIContent SPACE_9SLICE_CONTENT = new GUIContent("9sliced sprite","If you want to set different image for space \nor setup 9slice put here sliced sprite");
-        private static GUIContent SLICE_PROPORTIONS_CONTENT = new GUIContent("Slice proportions", "Change values to adjust proper size of sprite");
+        private static GUIContent SPACE_9SLICE_CONTENT = new GUIContent("9sliced sprite","If different image for space is required\nor setup 9slice, put here sliced sprite");
+        private static GUIContent SLICE_PROPORTIONS_CONTENT = new GUIContent("Slice proportions", "Change values to adjust proper size of sprite on space");
         private static GUIContent REFRESH_SPACE_MATERIAL_BUTTON = new GUIContent("Refresh space material","Use this if material colors or other properties were changed");
 
         private const string FIND_SOURCE_BUTTON = "Raycasting source missing. Press to set default camera";
-
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
         private const string REFRESH_SPACE_UNDO = "Refresh Space";
 
@@ -45,7 +44,7 @@ namespace CurvedVRKeyboard {
 
         private bool foldoutVisible = true;
         private bool noCameraFound = false;
-        private bool isRAycastingSourceSet = false;
+        private bool isRaycastingSourceSet = false;
 
 
 
@@ -70,17 +69,13 @@ namespace CurvedVRKeyboard {
                 DrawPrimary();
                 GUILayout.Space(SPACING_MATERIALS);
                 DrawMaterials();
-
                 GUILayout.Space(SPACING_OPTIONAL_SETUP);
                 GUILayout.Label(OPTIONAL_SETUP, EditorStyles.boldLabel);
-
                 DrawSpace();
-
                 GUI.enabled = true;
-                if(!isRAycastingSourceSet) {
+                if(!isRaycastingSourceSet) {
                     CameraFinderGui();
                 }
-
                 if(GUI.changed) {
                     EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
                     EditorUtility.SetDirty(keyboardCreator);
@@ -97,8 +92,8 @@ namespace CurvedVRKeyboard {
 
             keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_CONTENT, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
 
-            isRAycastingSourceSet = keyboardCreator.RaycastingSource != null;
-            GUI.enabled = isRAycastingSourceSet;
+            isRaycastingSourceSet = (keyboardCreator.RaycastingSource != null);
+            GUI.enabled = isRaycastingSourceSet;
 
             float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE_CONTENT), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
             float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
@@ -122,7 +117,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_9SLICE_CONTENT, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
 
             bool isSpritePresent = keyboardCreator.SpaceSprite != null;
-            GUI.enabled = isSpritePresent && GUI.enabled; // if reaycast source && space sprite are set
+            GUI.enabled = isSpritePresent && GUI.enabled; // if raycasting source && space sprite are set
 
             keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_CONTENT, keyboardCreator.ReferencedPixels);
 

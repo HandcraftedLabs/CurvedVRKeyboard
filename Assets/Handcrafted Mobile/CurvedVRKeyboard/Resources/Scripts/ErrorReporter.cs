@@ -74,7 +74,7 @@ namespace CurvedVRKeyboard {
             return currentStatus != Status.None;
         }
 
-        public MessageType GetMessageColor () {
+        public MessageType GetMessageType () {
             if(IsErrorPresent()) {
                 return MessageType.Error;
             }else if(IsWarningPresent()) {
