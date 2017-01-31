@@ -12,23 +12,30 @@ namespace CurvedVRKeyboard {
     [CanEditMultipleObjects]
     public class KeyboardCreatorEditor: Editor {
 
-        private const string CURVATURE_LABEL = "Curvature";
-        private const string RAYCASTING_SOURCE_LABEL = "Raycasting source";
-        private const string CLICK_INPUT_COMMAND_LABEL = "Click input name";
-        private const string DEFAULT_MATERIAL_LABEL = "Normal material";
-        private const string SELECTED_MATERIAL_LABEL = "Selected material";
-        private const string PRESSED_MATERIAL_LABEL = "Pressed material";
-        private const string SPACE_USE_9SLICE_LABEL = "Use 9 slice of image?";
-        private const string FIND_SOURCE_LABEL = "Raycasting source missing. Press to set default camera";
-        private const string SLICE_PROPORTIONS_LABEL = "Slice proportions";
+        private const string PRIMARY_SETUP = "Primary setup";
+        private const string MATERIALS = "Materials";
+        private const string OPTIONAL_SETUP = "Optional setup";
+        private const string SPACE_SETUP = "Space setup";
 
-        private const string REFRESH_SPACE_MATERIAL_BUTTON = "Refresh space material";
+        private const int SPACING_MATERIALS = 10;
+        private const int SPACING_OPTIONAL_SETUP = 20;
+        private const int SPACING_WARINING = 20;
 
-        private const string ADDITIONAL_SETUP_DROPDOWN= "Additional setup";
+        private static GUIContent RAYCASTING_SOURCE_CONTENT = new GUIContent("Raycasting source","Object from which raycasting will take place");
+        private static GUIContent CURVATURE_CONTENT = new GUIContent ("Curvature(%)","Curvature of keyboard in range [0,1]");
+        private static GUIContent CLICK_INPUT_COMMAND_CONTENT = new GUIContent("Click input name","Input from Edit -> ProjectSettings -> Input");
 
+        private static GUIContent DEFAULT_MATERIAL_CONTENT = new GUIContent("Normal material","Material used with keys normal state");
+        private static GUIContent SELECTED_MATERIAL_CONTENT = new GUIContent("Selected material", "Material used with keys selected state");
+        private static GUIContent PRESSED_MATERIAL_CONTENT = new GUIContent("Pressed material", "Material used with keys pressed state");
+
+        private static GUIContent SPACE_9SLICE_CONTENT = new GUIContent("9sliced sprite","If different image for space is required\nor setup 9slice, put here sliced sprite");
+        private static GUIContent SLICE_PROPORTIONS_CONTENT = new GUIContent("Slice proportions", "Change values to adjust proper size of sprite on space");
+        private static GUIContent REFRESH_SPACE_MATERIAL_BUTTON = new GUIContent("Refresh space material","Use this if material colors or other properties were changed");
+
+        private const string FIND_SOURCE_BUTTON = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
-
-        private const string REFRESH_SPACE_UNDO = "refresh space";
+        private const string REFRESH_SPACE_UNDO = "Refresh Space";
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
@@ -37,7 +44,7 @@ namespace CurvedVRKeyboard {
 
         private bool foldoutVisible = true;
         private bool noCameraFound = false;
-
+        private bool isRaycastingSourceSet = false;
 
 
 
@@ -54,26 +61,72 @@ namespace CurvedVRKeyboard {
 
         public override void OnInspectorGUI () {
             keyboardCreator = target as KeyboardCreator;
-            errorReporter = ErrorReporter.Instance;
             keyboardCreator.checkErrors();
-            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
-                keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_LABEL, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
-                HandleScaleChange();
+            errorReporter = ErrorReporter.Instance;
+            HandleScaleChange();
 
-                if(keyboardCreator.RaycastingSource != null) {// If there is a raycast source
-                    DrawMemebers();
-                } else {
+            if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
+                DrawPrimary();
+                GUILayout.Space(SPACING_MATERIALS);
+                DrawMaterials();
+                GUILayout.Space(SPACING_OPTIONAL_SETUP);
+                GUILayout.Label(OPTIONAL_SETUP, EditorStyles.boldLabel);
+                DrawSpace();
+                GUI.enabled = true;
+                if(!isRaycastingSourceSet) {
                     CameraFinderGui();
                 }
-
                 if(GUI.changed) {
-                   EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                   EditorUtility.SetDirty(keyboardCreator);
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                    EditorUtility.SetDirty(keyboardCreator);
                 }
             }
             if(keyboardCreator.RaycastingSource != null) {
+                GUILayout.Space(SPACING_MATERIALS);
                 NotifyErrors();
             }
+        }
+
+        private void DrawPrimary () {
+            GUILayout.Label(PRIMARY_SETUP, EditorStyles.boldLabel);
+
+            keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_CONTENT, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
+
+            isRaycastingSourceSet = (keyboardCreator.RaycastingSource != null);
+            GUI.enabled = isRaycastingSourceSet;
+
+            float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE_CONTENT), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
+            float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
+            keyboardCreator.Curvature = clamped;
+
+            keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND_CONTENT, keyboardCreator.ClickHandle);
+        }
+
+        private void DrawMaterials () {
+            GUILayout.Label(MATERIALS, EditorStyles.boldLabel);
+            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL_CONTENT, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL_CONTENT, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
+            keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL_CONTENT, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
+        }
+
+        private void DrawSpace () {
+
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label(SPACE_SETUP, EditorStyles.boldLabel);
+
+            keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_9SLICE_CONTENT, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
+
+            bool isSpritePresent = keyboardCreator.SpaceSprite != null;
+            GUI.enabled = isSpritePresent && GUI.enabled; // if raycasting source && space sprite are set
+
+            keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_CONTENT, keyboardCreator.ReferencedPixels);
+
+            if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
+                Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRESH_SPACE_UNDO);
+                keyboardCreator.ReloadSpaceMaterials();
+            }
+            GUILayout.EndVertical();
+
         }
 
         /// <summary>
@@ -81,8 +134,7 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void NotifyErrors () {
             if(errorReporter.ShouldMessageBeDisplayed()) {
-                GUI.color = errorReporter.GetMessageColor();
-                EditorGUILayout.LabelField(errorReporter.GetMessage(), style);
+                EditorGUILayout.HelpBox(errorReporter.GetMessage(), MessageType.Warning);
             }
         }
 
@@ -113,38 +165,14 @@ namespace CurvedVRKeyboard {
             keyboardCreator.transform.localScale = keyboardScale;
         }
 
-        /// <summary>
-        /// Draw all fields in inspector (if raycast source is set)
-        /// </summary>
-        private void DrawMemebers () {
-            // Value of curvature is always between [0,1]
-            float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE_LABEL + " (%)"), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
-            float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
-            keyboardCreator.Curvature = clamped;
-            keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND_LABEL, keyboardCreator.ClickHandle);
-            keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL_LABEL, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL_LABEL, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
-            keyboardCreator.KeyPressedMaterial = EditorGUILayout.ObjectField(PRESSED_MATERIAL_LABEL, keyboardCreator.KeyPressedMaterial, typeof(Material), true) as Material;
 
-            foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP_DROPDOWN);
-            if(foldoutVisible) {
-                keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE_LABEL, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
-                bool isSpritePresent = keyboardCreator.SpaceSprite != null;
-                GUI.enabled = isSpritePresent;
-                keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
-                if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
-                        Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, REFRESH_SPACE_UNDO);
-                        keyboardCreator.ReloadSpaceMaterials();
-                    }
-                GUI.enabled = true;
-            }
-        }
+    
 
         /// <summary>
         /// Draws camera find button
         /// </summary>
         private void CameraFinderGui () {
-            bool clicked = GUILayout.Button(FIND_SOURCE_LABEL);
+            bool clicked = GUILayout.Button(FIND_SOURCE_BUTTON);
             if(clicked) {
                 SearchForCamera();
             }

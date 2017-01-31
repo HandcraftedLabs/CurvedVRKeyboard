@@ -1,4 +1,5 @@
 ﻿
+using UnityEditor;
 using UnityEngine;
 
 namespace CurvedVRKeyboard {
@@ -73,13 +74,13 @@ namespace CurvedVRKeyboard {
             return currentStatus != Status.None;
         }
 
-        public Color GetMessageColor () {
+        public MessageType GetMessageType () {
             if(IsErrorPresent()) {
-                return Color.red;
+                return MessageType.Error;
             }else if(IsWarningPresent()) {
-                return Color.yellow;
+                return MessageType.Warning;
             }else {
-                return Color.cyan;
+                return MessageType.Info;
             }
 
         }
