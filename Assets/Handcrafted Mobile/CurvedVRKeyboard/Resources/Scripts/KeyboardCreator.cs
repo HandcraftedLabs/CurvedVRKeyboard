@@ -220,9 +220,9 @@ namespace CurvedVRKeyboard {
         /// Changes materials for all keys
         /// </summary>
         public void ChangeMaterialOnKeys () {
-               // foreach(KeyboardItem key in keys) {
-                    keys[0].SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-               // }
+                foreach(KeyboardItem key in keys) {
+                    key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+               }
         }
 
         public void checkErrors () {

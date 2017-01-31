@@ -125,15 +125,14 @@ namespace CurvedVRKeyboard {
             foldoutVisible = EditorGUILayout.Foldout(foldoutVisible, ADDITIONAL_SETUP_DROPDOWN);
             if(foldoutVisible) {
                 keyboardCreator.SpaceSprite = EditorGUILayout.ObjectField(SPACE_USE_9SLICE_LABEL, keyboardCreator.SpaceSprite, typeof(Sprite), true) as Sprite;
-                if(keyboardCreator.SpaceSprite != null) {
-                    keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
-                    if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
+                bool isSpritePresent = keyboardCreator.SpaceSprite != null;
+                GUI.enabled = isSpritePresent;
+                keyboardCreator.ReferencedPixels = EditorGUILayout.FloatField(SLICE_PROPORTIONS_LABEL, keyboardCreator.ReferencedPixels);
+                if(GUILayout.Button(REFRESH_SPACE_MATERIAL_BUTTON)) {
                         Undo.RegisterCompleteObjectUndo(keyboardCreator.gameObject, "refresh space");
                         keyboardCreator.setSpaceMaterials();
                     }
-                }
-                
-                
+                GUI.enabled = true;
             }
         }
 
