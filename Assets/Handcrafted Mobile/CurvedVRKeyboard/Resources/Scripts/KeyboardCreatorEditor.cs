@@ -15,7 +15,7 @@ namespace CurvedVRKeyboard {
         private const string PRIMARY_SETUP = "Primary setup";
         private const string MATERIALS = "Materials";
         private const string OPTIONAL_SETUP = "Optional setup";
-        private const string SPACE_SETUP = "Space setup";
+        private const string SPACE_SETUP = "Space button setup";
 
         private const int SPACING_MATERIALS = 10;
         private const int SPACING_OPTIONAL_SETUP = 20;
