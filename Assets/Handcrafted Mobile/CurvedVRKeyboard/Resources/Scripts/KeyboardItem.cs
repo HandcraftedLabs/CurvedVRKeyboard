@@ -178,7 +178,7 @@ namespace CurvedVRKeyboard {
             this.spaceSprite = spaceSprite;
             if(meshCreator == null)
                 meshCreator = new SpaceMeshCreator(creator);
-            meshCreator.ChangeTexture(spaceSprite,creator.ReferencedPixels);
+            meshCreator.Recalculate9Slice(spaceSprite,creator.ReferencedPixels);
             
             if (!creator.wasStaticOnStart)
             {
@@ -195,7 +195,7 @@ namespace CurvedVRKeyboard {
             SetMaterial(KeyMaterialEnum.Normal, keyNormalMaterial);
             SetMaterial(KeyMaterialEnum.Selected, keySelectedMaterial);
             SetMaterial(KeyMaterialEnum.Pressed, keyPressedMaterial);
-            quadFront.sharedMaterial.SetTexture(MAIN_TEXURE_NAME_IN_SHADER, spaceSprite.texture);
+            //quadFront.sharedMaterial.SetTexture(MAIN_TEXURE_NAME_IN_SHADER, spaceSprite.texture);
         }
 
         private Material ChangeMaterialTexture(Sprite spaceTexture, Material materialToChange) {
