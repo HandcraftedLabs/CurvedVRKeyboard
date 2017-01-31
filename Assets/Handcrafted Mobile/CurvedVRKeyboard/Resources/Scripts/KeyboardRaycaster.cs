@@ -22,9 +22,6 @@ namespace CurvedVRKeyboard {
         [SerializeField, HideInInspector]
         private string clickInputName;
 
-
-
-
         void Start () {
             keyboardStatus = gameObject.GetComponent<KeyboardStatus>();
             int layerNumber = gameObject.layer;

@@ -222,7 +222,7 @@ namespace CurvedVRKeyboard {
         public void ChangeMaterialOnKeys () {
                 foreach(KeyboardItem key in keys) {
                     key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-                }
+               }
         }
 
         public void checkErrors () {
@@ -247,6 +247,10 @@ namespace CurvedVRKeyboard {
             CheckKeyArrays();
         }
 
+        public void ReloadSpaceMaterials () {
+            space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+            space.ManipulateSpace(this, SpaceSprite);
+        }
 
 
         //---------------PROPERTIES----------------

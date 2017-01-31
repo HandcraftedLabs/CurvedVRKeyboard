@@ -22,7 +22,7 @@ namespace CurvedVRKeyboard {
             this.creator = creator;
         }
 
-        public void ChangeTexture(Sprite texture,float referencedPixels) {
+        public void Recalculate9Slice(Sprite texture,float referencedPixels) {
             if(uvSlicer == null) {
                 uvSlicer = new UvSlicer();
             }
