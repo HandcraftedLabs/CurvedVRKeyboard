@@ -13,5 +13,5 @@ Version 1.0.1
 - Minor fixes
 	- Sometimes clicking UP or ?!# wasn't changing keyboard display. It required double press
 	- Changing scenes wasn't saving keyboard variables
-	- All keys images except space were flipped against Y axis
-	- key with ?!# displays now 123?!# 
+	- Visual glitches fixed
+	- key with ?!# displays now 123?!#
