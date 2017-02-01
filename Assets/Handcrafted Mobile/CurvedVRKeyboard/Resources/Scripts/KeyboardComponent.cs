@@ -11,7 +11,7 @@ namespace CurvedVRKeyboard {
         public const string SPACE = "  ";
         public const string BACK = "Back";
         public const string ABC = "ABC";
-        public const string QEH = "?!#";
+        public const string QEH = "123\n?!#";
         public const string UP = "UP";
         public const string LOW = "low";
 

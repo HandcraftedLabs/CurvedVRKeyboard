@@ -249,9 +249,9 @@ namespace CurvedVRKeyboard {
         }
 
         /// <summary>
-        /// When space material is set it is set as NEW
-        /// so there is lost reference and changing oryginal material wont work
-        /// user has to manualy reload material if he changed them in editor
+        /// When spacebar material is set it is created as a new material so the reference 
+        /// to buttons' material is lost and changing them do not affect spacebar. 
+        /// User has to manualy reload material if he changed them in editor
         /// </summary>
         public void ReloadSpaceMaterials () {
             space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
@@ -336,13 +336,13 @@ namespace CurvedVRKeyboard {
                 return spaceSprite;
             }
             set {
-                //if there was some sprite and now its changed to null
+                //if there was a sprite and now it changed to null
                 if(spaceSprite != value && value == null) { 
                     spaceSprite = value;
                     space.ManipulateSpace(this, SpaceSprite);
                     space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
                 }
-                //if value has changed and its not null 
+                //if value has changed and it's not null 
                 else if(value != null) {
                     if(SpaceSprite != value || AreBordersChanged(value)) {//if new or borders changed
                         spaceSprite = value;
@@ -392,8 +392,7 @@ namespace CurvedVRKeyboard {
             }
         }
         /// <summary>
-        /// There is no way to detect change of borders at least i don't know it
-        /// so there is script to check it
+        ///  Borders setup changes cannot be automatically detected so we have to do this manually
         /// </summary>
         /// <param name="newBorder"></param>
         private bool AreBordersChanged (Sprite newSprite) {

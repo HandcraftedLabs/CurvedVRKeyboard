@@ -1,6 +1,6 @@
 Version 1.0.1
 
-- New interface look and feel
+- New interface's look and feel
 
 - Added support for static flag on keyboard
 
@@ -14,3 +14,4 @@ Version 1.0.1
 	- Sometimes clicking UP or ?!# wasn't changing keyboard display. It required double press
 	- Changing scenes wasn't saving keyboard variables
 	- All keys images except space were flipped against Y axis
+	- key with ?!# displays now 123?!# 
