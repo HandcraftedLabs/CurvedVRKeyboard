@@ -1,0 +1,7 @@
+Version 1.0.1
+
+- New interface look and feel
+- Added support for static flag on keyboard
+- Added option to set different image for space button
+	- Space buttton image can be 9sliced
+	- User is able to manipulate 9sliced image on space button

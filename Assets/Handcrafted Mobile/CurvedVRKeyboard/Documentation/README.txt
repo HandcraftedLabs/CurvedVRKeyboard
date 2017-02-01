@@ -6,6 +6,15 @@ Full setup:
 - Create canvas with UI text for output
 - Set UI text object in „Output" field in „Keyboard Status" script.
 
+Optional setup:
+- Changing space image
+	- Set keybaord materials rendering mode to "Fade"
+	- Set desired texture to sprite
+	- Add some borders in "Sprite Editor"
+	- Set sprite in "9sliced sprite" field in "Keyboard Creator"
+	- Use "slice proportions" to get desired look (try ranges from 0.01 to 20)
+	- If any material was edited during process and You can't see changes press "Refresh space material" button
+
 Changing key colors:
 You can change color or transparency by editing materials in "Handcrafted Mobile/CurvedVRKeyboard/Resources/Materials"
 just as you would do with any other materials.
@@ -14,6 +23,6 @@ Changing keys values:
 To change values used on keyboard open
 "Handcrafted Mobile/CurvedVRKeyboard/Resources/Scripts/KeyboardComponent"
 script and edit values you would like to change.
- 
+
 Need more help?
 https://handcraftedmobile.com/ or contact@handcraftedmobile.com
