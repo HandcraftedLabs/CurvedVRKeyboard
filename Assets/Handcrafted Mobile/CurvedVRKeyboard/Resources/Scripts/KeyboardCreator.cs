@@ -77,6 +77,7 @@ namespace CurvedVRKeyboard {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
                         allKeys[i].Position = i;
+                        allKeys[i].Init();
                     }
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
@@ -101,7 +102,6 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void FillAndPlaceKeys () {
             foreach(KeyboardItem key in keys) {
-                key.Init();
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
@@ -241,12 +241,18 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
-                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard and its children",ErrorReporter.Status.Info);
+                errorReporter.SetMessage("If edits during gameplay are necessary quit gameplay and remove static flag from keyboard and its children." 
+                    + " Reamember to set keyboard to static when building", ErrorReporter.Status.Info);
                 return;
             }
             CheckKeyArrays();
         }
 
+        /// <summary>
+        /// When space material is set it is set as NEW
+        /// so there is lost reference and changing oryginal material wont work
+        /// user has to manualy reload material if he changed them in editor
+        /// </summary>
         public void ReloadSpaceMaterials () {
             space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             space.ManipulateSpace(this, SpaceSprite);
@@ -330,11 +336,14 @@ namespace CurvedVRKeyboard {
                 return spaceSprite;
             }
             set {
-                if(spaceSprite != value && value == null) { //if new null
+                //if there was some sprite and now its changed to null
+                if(spaceSprite != value && value == null) { 
                     spaceSprite = value;
                     space.ManipulateSpace(this, SpaceSprite);
                     space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-                } else if(value != null) {
+                }
+                //if value has changed and its not null 
+                else if(value != null) {
                     if(SpaceSprite != value || AreBordersChanged(value)) {//if new or borders changed
                         spaceSprite = value;
                         ChangeBorders(SpaceSprite.border);
@@ -382,7 +391,11 @@ namespace CurvedVRKeyboard {
                 }
             }
         }
-
+        /// <summary>
+        /// There is no way to detect change of borders at least i don't know it
+        /// so there is script to check it
+        /// </summary>
+        /// <param name="newBorder"></param>
         private bool AreBordersChanged (Sprite newSprite) {
             Vector4 newBorder = newSprite.border;
             if(leftBorder != newBorder.x || bottomBorder != newBorder.y || rightBorder != newBorder.z || topBorder != newBorder.w) {
@@ -391,7 +404,7 @@ namespace CurvedVRKeyboard {
             }
             return false;
         }
-
+        
         private void ChangeBorders ( Vector4 newBorder ) {
             leftBorder = newBorder.x;
             bottomBorder = newBorder.y;

@@ -50,6 +50,7 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
+            keyboardCreator.wasStaticOnStart = false;
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 if(keyboardCreator.RaycastingSource != null) {
@@ -67,24 +68,13 @@ namespace CurvedVRKeyboard {
 
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
                 DrawPrimary();
-                GUILayout.Space(SPACING_MATERIALS);
                 DrawMaterials();
-                GUILayout.Space(SPACING_OPTIONAL_SETUP);
-                GUILayout.Label(OPTIONAL_SETUP, EditorStyles.boldLabel);
                 DrawSpace();
                 GUI.enabled = true;
-                if(!isRaycastingSourceSet) {
-                    CameraFinderGui();
-                }
-                if(GUI.changed) {
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                    EditorUtility.SetDirty(keyboardCreator);
-                }
+                CameraFinder();
+                HandleValuesChanges();
             }
-            if(keyboardCreator.RaycastingSource != null) {
-                GUILayout.Space(SPACING_MATERIALS);
-                NotifyErrors();
-            }
+            DisplayWarnings();
         }
 
         private void DrawPrimary () {
@@ -103,6 +93,7 @@ namespace CurvedVRKeyboard {
         }
 
         private void DrawMaterials () {
+            GUILayout.Space(SPACING_MATERIALS);
             GUILayout.Label(MATERIALS, EditorStyles.boldLabel);
             keyboardCreator.KeyNormalMaterial = EditorGUILayout.ObjectField(DEFAULT_MATERIAL_CONTENT, keyboardCreator.KeyNormalMaterial, typeof(Material), true) as Material;
             keyboardCreator.KeySelectedMaterial = EditorGUILayout.ObjectField(SELECTED_MATERIAL_CONTENT, keyboardCreator.KeySelectedMaterial, typeof(Material), true) as Material;
@@ -110,6 +101,8 @@ namespace CurvedVRKeyboard {
         }
 
         private void DrawSpace () {
+            GUILayout.Space(SPACING_OPTIONAL_SETUP);
+            GUILayout.Label(OPTIONAL_SETUP, EditorStyles.boldLabel);
 
             GUILayout.BeginVertical(EditorStyles.helpBox);
             GUILayout.Label(SPACE_SETUP, EditorStyles.boldLabel);
@@ -129,12 +122,37 @@ namespace CurvedVRKeyboard {
 
         }
 
+        private void CameraFinder () {
+            if(!isRaycastingSourceSet) {
+                if(GUILayout.Button(FIND_SOURCE_BUTTON)) {//if seach camera button press
+                    SearchForCamera();
+                }
+                if(noCameraFound) { // After button press there is no camera
+                    GUILayout.Label(NO_CAMERA_ERROR);
+                }
+            }
+        }
+
+        private void HandleValuesChanges () {
+            if(GUI.changed) {
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                EditorUtility.SetDirty(keyboardCreator);
+            }
+        }
+
+        private void DisplayWarnings () {
+            if(keyboardCreator.RaycastingSource != null) {
+                GUILayout.Space(SPACING_WARINING);
+                NotifyErrors();
+            }
+        }
+
         /// <summary>
         /// Handles label with error.
         /// </summary>
         private void NotifyErrors () {
             if(errorReporter.ShouldMessageBeDisplayed()) {
-                EditorGUILayout.HelpBox(errorReporter.GetMessage(), MessageType.Warning);
+                EditorGUILayout.HelpBox(errorReporter.GetMessage(), errorReporter.GetMessageType());
             }
         }
 
@@ -163,23 +181,6 @@ namespace CurvedVRKeyboard {
             keyboardScale.x = keyboardScale.z = horiziontalScale;
             keyboardScale.y = y;
             keyboardCreator.transform.localScale = keyboardScale;
-        }
-
-
-    
-
-        /// <summary>
-        /// Draws camera find button
-        /// </summary>
-        private void CameraFinderGui () {
-            bool clicked = GUILayout.Button(FIND_SOURCE_BUTTON);
-            if(clicked) {
-                SearchForCamera();
-            }
-
-            if(noCameraFound) { // After button press there is no camera
-                GUILayout.Label(NO_CAMERA_ERROR);
-            }
         }
 
         /// <summary>

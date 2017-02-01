@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace CurvedVRKeyboard {
 
-
     public class ErrorReporter {
 
         private static ErrorReporter instance;
@@ -13,7 +12,6 @@ namespace CurvedVRKeyboard {
         public enum Status {
             Error, Warning, Info, None
         }
-
 
         private ErrorReporter () { }
 
@@ -72,7 +70,9 @@ namespace CurvedVRKeyboard {
         public bool ShouldMessageBeDisplayed () {
             return currentStatus != Status.None;
         }
+
 #if UNITY_EDITOR
+
         public UnityEditor.MessageType GetMessageType () {
             if(IsErrorPresent()) {
                 return UnityEditor.MessageType.Error;
@@ -82,6 +82,8 @@ namespace CurvedVRKeyboard {
                 return UnityEditor.MessageType.Info;
             }
         }
+
 #endif
+
     }
 }
