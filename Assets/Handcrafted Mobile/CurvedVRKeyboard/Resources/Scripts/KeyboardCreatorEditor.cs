@@ -29,9 +29,9 @@ namespace CurvedVRKeyboard {
         private static GUIContent SELECTED_MATERIAL_CONTENT = new GUIContent("Selected material", "Material used with keys selected state");
         private static GUIContent PRESSED_MATERIAL_CONTENT = new GUIContent("Pressed material", "Material used with keys pressed state");
 
-        private static GUIContent SPACE_9SLICE_CONTENT = new GUIContent("9sliced sprite","If different image for space is required\nor setup 9slice, put here sliced sprite");
+        private static GUIContent SPACE_9SLICE_CONTENT = new GUIContent("9sliced sprite","If different image for space is required\nor current space image is looking bad, put here sliced sprite");
         private static GUIContent SLICE_PROPORTIONS_CONTENT = new GUIContent("Slice proportions", "Change values to adjust proper size of sprite on space");
-        private static GUIContent REFRESH_SPACE_MATERIAL_BUTTON = new GUIContent("Refresh space material","Use this if material colors or other properties were changed");
+        private static GUIContent REFRESH_SPACE_MATERIAL_BUTTON = new GUIContent("Refresh space material","Use this if material colors or other properties were changed as reference to space material can't be maintained");
 
         private const string FIND_SOURCE_BUTTON = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
@@ -50,9 +50,10 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            keyboardCreator.wasStaticOnStart = false;
+            
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
+                keyboardCreator.wasStaticOnStart = false;
                 if(keyboardCreator.RaycastingSource != null) {
                     keyboardCreator.ManageKeys();
                 }
