@@ -241,7 +241,7 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
-                errorReporter.SetMessage("If edits during gameplay are necessary quit gameplay and remove static flag from keyboard and its children." 
+                errorReporter.SetMessage("If editng during gameplay is necessary, quit gameplay and remove static flag from keyboard and its children."
                     + " Reamember to set keyboard to static when building", ErrorReporter.Status.Info);
                 return;
             }
