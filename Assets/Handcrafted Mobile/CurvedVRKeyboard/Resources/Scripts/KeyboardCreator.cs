@@ -73,10 +73,11 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-                if(keys == null) {
+                if(keys == null || KeyboardItem.forceInit) {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
                         allKeys[i].Position = i;
+                        allKeys[i].Init();
                     }
                     space = allKeys[spaceKeyNumber];
                     keys = allKeys.ToArray();
@@ -101,7 +102,6 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void FillAndPlaceKeys () {
             foreach(KeyboardItem key in keys) {
-                key.Init();
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
@@ -232,6 +232,9 @@ namespace CurvedVRKeyboard {
                 errorReporter.SetMessage("Cannot procced. Number of keys is incorrect. Revert your changes to prefab", ErrorReporter.Status.Error);
                 return;
             }
+            if(space == null) { // project improted over older package crashes without this 
+                space = keys[spaceKeyNumber];
+            }
             if(space.GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
                 errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
                 return;
@@ -241,12 +244,18 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
-                errorReporter.SetMessage("Can't edit keyboard during gameplay, Quit gameplay and remove static flag from keyboard and its children",ErrorReporter.Status.Info);
+                errorReporter.SetMessage("If editng during gameplay is necessary, quit gameplay and remove static flag from keyboard and its children."
+                    + " Reamember to set keyboard to static when building", ErrorReporter.Status.Info);
                 return;
             }
             CheckKeyArrays();
         }
 
+        /// <summary>
+        /// When spacebar material is set it is created as a new material so the reference 
+        /// to buttons' material is lost and changing them do not affect spacebar. 
+        /// User has to manualy reload material if he changed them in editor
+        /// </summary>
         public void ReloadSpaceMaterials () {
             space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
             space.ManipulateSpace(this, SpaceSprite);
@@ -330,11 +339,14 @@ namespace CurvedVRKeyboard {
                 return spaceSprite;
             }
             set {
-                if(spaceSprite != value && value == null) { //if new null
+                //if there was a sprite and now it changed to null
+                if(spaceSprite != value && value == null) { 
                     spaceSprite = value;
                     space.ManipulateSpace(this, SpaceSprite);
                     space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-                } else if(value != null) {
+                }
+                //if value has changed and it's not null 
+                else if(value != null) {
                     if(SpaceSprite != value || AreBordersChanged(value)) {//if new or borders changed
                         spaceSprite = value;
                         ChangeBorders(SpaceSprite.border);
@@ -382,7 +394,10 @@ namespace CurvedVRKeyboard {
                 }
             }
         }
-
+        /// <summary>
+        ///  Borders setup changes cannot be automatically detected so we have to do this manually
+        /// </summary>
+        /// <param name="newBorder"></param>
         private bool AreBordersChanged (Sprite newSprite) {
             Vector4 newBorder = newSprite.border;
             if(leftBorder != newBorder.x || bottomBorder != newBorder.y || rightBorder != newBorder.z || topBorder != newBorder.w) {
@@ -391,7 +406,7 @@ namespace CurvedVRKeyboard {
             }
             return false;
         }
-
+        
         private void ChangeBorders ( Vector4 newBorder ) {
             leftBorder = newBorder.x;
             bottomBorder = newBorder.y;

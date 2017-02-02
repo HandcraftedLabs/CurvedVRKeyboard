@@ -1,9 +1,5 @@
 ﻿
-using UnityEditor;
-using UnityEngine;
-
 namespace CurvedVRKeyboard {
-
 
     public class ErrorReporter {
 
@@ -14,7 +10,6 @@ namespace CurvedVRKeyboard {
         public enum Status {
             Error, Warning, Info, None
         }
-
 
         private ErrorReporter () { }
 
@@ -31,9 +26,9 @@ namespace CurvedVRKeyboard {
             currentProblemMessage = message;
             if(state == Status.Error) {
                 TriggerError();
-            } else if(state == Status.Warning){
+            } else if(state == Status.Warning) {
                 TriggerWarning();
-            }else if (state == Status.Info) {
+            } else if(state == Status.Info) {
                 TriggerInfo();
             }
         }
@@ -65,7 +60,7 @@ namespace CurvedVRKeyboard {
         public void TriggerWarning () {
             currentStatus = Status.Warning;
         }
-        
+
         public void TriggerInfo () {
             currentStatus = Status.Info;
         }
@@ -74,15 +69,19 @@ namespace CurvedVRKeyboard {
             return currentStatus != Status.None;
         }
 
-        public MessageType GetMessageType () {
-            if(IsErrorPresent()) {
-                return MessageType.Error;
-            }else if(IsWarningPresent()) {
-                return MessageType.Warning;
-            }else {
-                return MessageType.Info;
-            }
+#if UNITY_EDITOR
 
+        public UnityEditor.MessageType GetMessageType () {
+            if(IsErrorPresent()) {
+                return UnityEditor.MessageType.Error;
+            } else if(IsWarningPresent()) {
+                return UnityEditor.MessageType.Warning;
+            } else {
+                return UnityEditor.MessageType.Info;
+            }
         }
+
+#endif
+
     }
 }
