@@ -4,7 +4,8 @@ using UnityEngine.UI;
 namespace CurvedVRKeyboard {
     public class KeyboardItem : KeyboardComponent {
         private Text letter;
-        
+
+        public static bool forceInit = true;
         private int position;
 
         //------Click-------
@@ -152,6 +153,7 @@ namespace CurvedVRKeyboard {
         /// <param name="materialEnum">state of which material will be changed</param>
         /// <param name="newMaterial">new material</param>
         public void SetMaterial(KeyMaterialEnum materialEnum, Material newMaterial) {
+            Init();
             switch(materialEnum) {
                 case KeyMaterialEnum.Normal:
                     keyNormalMaterial = IfSpaceWithSprite() ?

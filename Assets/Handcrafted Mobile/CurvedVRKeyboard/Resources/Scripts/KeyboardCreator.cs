@@ -73,7 +73,7 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-                if(keys == null) {
+                if(keys == null || KeyboardItem.forceInit) {
                     List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
                     for (int i = 0; i < allKeys.Count;i++) {
                         allKeys[i].Position = i;
@@ -231,6 +231,9 @@ namespace CurvedVRKeyboard {
             if(keys.Length != KEY_NUMBER) {//is there correct number of keys
                 errorReporter.SetMessage("Cannot procced. Number of keys is incorrect. Revert your changes to prefab", ErrorReporter.Status.Error);
                 return;
+            }
+            if(space == null) { // project improted over older package crashes without this 
+                space = keys[spaceKeyNumber];
             }
             if(space.GetMeshName().Equals(MESH_NAME_SEARCHED)) {//are keys positioned corectly
                 errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);

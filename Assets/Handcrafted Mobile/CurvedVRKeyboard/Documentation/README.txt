@@ -14,6 +14,8 @@ Optional setup:
 	- Use "slice proportions" to get desired look (try ranges from 0.01 to 20).
 	- If any visual glitches appear on space button try setting keyboard materials rendering mode to "Fade" and press "Refresh space material" button
 	
+After Update:
+- If any error occurs set raycasting source once more and setup keyboard variables' again 
 
 Changing key colors:
 You can change color or transparency by editing materials in "Handcrafted Mobile/CurvedVRKeyboard/Resources/Materials"
