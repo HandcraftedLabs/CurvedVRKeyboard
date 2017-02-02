@@ -1,21 +1,15 @@
 ﻿
 namespace CurvedVRKeyboard {
 
-
     public class ErrorReporter {
 
         private static ErrorReporter instance;
-
-        //----Comunication-----
-        private bool isErrorPresent = false;
-        private bool isWarningPresent = false;
         private string currentProblemMessage = "";
 
+        public Status currentStatus = Status.None;
         public enum Status {
-            Error, Warning
+            Error, Warning, Info, None
         }
-
-
 
         private ErrorReporter () { }
 
@@ -32,14 +26,15 @@ namespace CurvedVRKeyboard {
             currentProblemMessage = message;
             if(state == Status.Error) {
                 TriggerError();
-            } else {
+            } else if(state == Status.Warning) {
                 TriggerWarning();
+            } else if(state == Status.Info) {
+                TriggerInfo();
             }
         }
 
         public void Reset () {
-            isErrorPresent = false;
-            isWarningPresent = false;
+            currentStatus = Status.None;
         }
 
         public string GetMessage () {
@@ -47,23 +42,46 @@ namespace CurvedVRKeyboard {
         }
 
         public bool IsErrorPresent () {
-            return isErrorPresent;
+            return currentStatus == Status.Error;
         }
 
         public bool IsWarningPresent () {
-            return isWarningPresent;
+            return currentStatus == Status.Warning;
+        }
+
+        public bool IsInfoPresent () {
+            return currentStatus == Status.Info;
         }
 
         public void TriggerError () {
-            isErrorPresent = true;
+            currentStatus = Status.Error;
         }
 
         public void TriggerWarning () {
-            isWarningPresent = true;
+            currentStatus = Status.Warning;
+        }
+
+        public void TriggerInfo () {
+            currentStatus = Status.Info;
         }
 
         public bool ShouldMessageBeDisplayed () {
-            return isErrorPresent || isWarningPresent;
+            return currentStatus != Status.None;
         }
+
+#if UNITY_EDITOR
+
+        public UnityEditor.MessageType GetMessageType () {
+            if(IsErrorPresent()) {
+                return UnityEditor.MessageType.Error;
+            } else if(IsWarningPresent()) {
+                return UnityEditor.MessageType.Warning;
+            } else {
+                return UnityEditor.MessageType.Info;
+            }
+        }
+
+#endif
+
     }
 }

@@ -1,0 +1,17 @@
+Version 1.0.1
+
+- New interface's look and feel
+
+- Added support for static flag on keyboard
+
+- Added option to set different image for space button
+	- Space button image can be 9sliced
+	- User is able to manipulate 9sliced image on space button
+
+- Removed support for back quads on keyboard
+
+- Minor fixes
+	- Sometimes clicking UP or ?!# wasn't changing keyboard display. It required double press
+	- Changing scenes wasn't saving keyboard variables
+	- Visual glitches fixed
+	- key with ?!# displays now 123?!#

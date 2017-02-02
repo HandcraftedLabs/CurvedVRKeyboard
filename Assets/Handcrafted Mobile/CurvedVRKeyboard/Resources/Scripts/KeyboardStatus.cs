@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-namespace CurvedVRKeyboard {
 
+namespace CurvedVRKeyboard {
+    [SelectionBase]
     public class KeyboardStatus: KeyboardComponent {
 
         //------SET IN UNITY-------
@@ -42,10 +43,11 @@ namespace CurvedVRKeyboard {
         /// Displays special signs
         /// </summary>
         private void ChangeSpecialLetters () {
-            areLettersActive = !areLettersActive;
-            string[] ToDisplay = areLettersActive ? allLettersLowercase : allSpecials;
+            KeyLetterEnum ToDisplay = areLettersActive ? KeyLetterEnum.NonLetters : KeyLetterEnum.LowerCase;
+            areLettersActive =!areLettersActive;
+            isLowercase = true;
             for(int i = 0;i < keys.Length;i++) {
-                keys[i].SetKeyText(ToDisplay[i]);
+                keys[i].SetKeyText(ToDisplay);
             }
         }
 
@@ -53,14 +55,10 @@ namespace CurvedVRKeyboard {
         /// Changes between lower and upper keys
         /// </summary>
         private void LowerUpperKeys () {
+            KeyLetterEnum ToDisplay = isLowercase ? KeyLetterEnum.UpperCase : KeyLetterEnum.LowerCase;
             isLowercase = !isLowercase;
-            string[] ToDisplay = isLowercase ? allLettersLowercase : allLettersUppercase;
-            ChangeKeysDisplayed(ToDisplay);
-        }
-
-        private void ChangeKeysDisplayed ( string[] ToDisplay ) {
             for(int i = 0;i < keys.Length;i++) {
-                keys[i].SetKeyText(ToDisplay[i]);
+                keys[i].SetKeyText(ToDisplay);
             }
         }
 
