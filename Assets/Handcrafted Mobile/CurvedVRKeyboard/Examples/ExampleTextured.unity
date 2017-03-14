@@ -201,6 +201,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 235118560}
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!1 &235118562 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1195918805490180, guid: 04c8af38ac70a7242a01cd21aba35d9e,
+    type: 2}
+  m_PrefabInternal: {fileID: 235118560}
 --- !u!1001 &1374280383
 Prefab:
   m_ObjectHideFlags: 0
@@ -273,7 +278,7 @@ Prefab:
     - target: {fileID: 224000013436753632, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -0.0000005066794
+      value: -0.00000027182125
       objectReference: {fileID: 0}
     - target: {fileID: 114000013378196444, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
@@ -303,7 +308,7 @@ Prefab:
     - target: {fileID: 224000011246370088, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -0.00000017885384
+      value: -0.00000042083286
       objectReference: {fileID: 0}
     - target: {fileID: 114000014231391492, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
@@ -993,7 +998,7 @@ Prefab:
     - target: {fileID: 224000011246370088, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.000000028996581
       objectReference: {fileID: 0}
     - target: {fileID: 224000011246370088, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
@@ -1188,8 +1193,8 @@ Prefab:
     - target: {fileID: 114000011334326548, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: output
-      value: 
-      objectReference: {fileID: 235118561}
+      value: handcraftedmobile.com
+      objectReference: {fileID: 0}
     - target: {fileID: 1000010243221896, guid: 0cc5dadcfcab96d4e8836465d4d4535e, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
@@ -1554,6 +1559,16 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011334326548, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
+        type: 2}
+      propertyPath: targetGameobject
+      value: 
+      objectReference: {fileID: 235118562}
+    - target: {fileID: 114000011334326548, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
+        type: 2}
+      propertyPath: typeHolder
+      value: 
+      objectReference: {fileID: 235118561}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0cc5dadcfcab96d4e8836465d4d4535e, type: 2}
   m_IsPrefabParent: 0

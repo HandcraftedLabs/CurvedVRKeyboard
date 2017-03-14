@@ -39,8 +39,7 @@ namespace CurvedVRKeyboard {
         private const string REFRESH_SPACE_UNDO = "Refresh Space";
         #endregion
 
-
-
+        private KeyboardStatusEditor keyboardStatusEditor;
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
@@ -54,7 +53,8 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            
+            keyboardStatusEditor = keyboardCreator.GetComponent<KeyboardStatusEditor>();
+
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 keyboardCreator.wasStaticOnStart = false;

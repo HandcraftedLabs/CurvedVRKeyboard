@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,43 +16,68 @@ namespace CurvedVRKeyboard {
 
 
         private KeyboardStatus keybaordStatus;
-        private GameObject current;
-        private Component[] components;
-        private Component[] componentsWithText;
         private Component[] filtred;
         private string[] scriptsNames;
 
-        private int currentSelected;
-        private int previousSelected = -1;
-        private bool changedTargetGameobject = false;
+        private bool notNulltargetAndChanged;
+        private int currentSelected = 0;
+        private int previousSelected = 0;
+        private ErrorReporter errorRaporter;
+        
+
 
         private static GUIContent OUTPUT = new GUIContent("Gameobject Output", "field receiving input from the keyboard (Text,InputField,TextMeshPro)");
         private static GUIContent OUTPUT_LENGTH = new GUIContent("Output Length", "Maximum output text length");
-        private static string OUTPUT_TYPE = "Choose Output Type";
+        private const string OUTPUT_TYPE = "Choose Output Script Type";
+        private const string TEXT = "text";
+        private const string WARNING = "Gamoeboject Output is not set, or There is no script with text on current gameobject";
 
         private void Awake () {
             keybaordStatus = target as KeyboardStatus;
-            GetComponentsName();
+            EmptyArrays();
+            if(keybaordStatus.targetGameobject != null) {
+                GetComponentsName();
+            }
         }
 
         public override void OnInspectorGUI () {
             keybaordStatus = target as KeyboardStatus;
+            keybaordStatus.maxOutputLength = EditorGUILayout.IntField(OUTPUT_LENGTH, keybaordStatus.maxOutputLength);
             CheckOutputGameboject();
             DrawPopupList();
-            EditorUtility.SetDirty(keybaordStatus);
+            if(!IsReflectionPossible()) {
+                ErrorReporter.Instance.SetMessage(WARNING,ErrorReporter.Status.Warning);
+            }else {
+                //ErrorReporter.Instance.Reset();
+            }
+            HandleValuesChanges();
+        }
+
+        private void GetComponentsName () {
+            filtred = keybaordStatus.targetGameobject.GetComponents<Component>()
+                .Where(x => x.GetType().GetProperty(TEXT) != null).ToArray();
+            scriptsNames = filtred.Select(x => x.GetType().ToString()).ToArray<String>();
+            currentSelected = 0;
+            notNulltargetAndChanged = true;
         }
 
         private void DrawPopupList () {
-            if(filtred.Length > 0) {
-                currentSelected = EditorGUILayout.Popup( previousSelected, scriptsNames);
-                if(( changedTargetGameobject || currentSelected != previousSelected ) && currentSelected != -1) {//if any selected 
-                    previousSelected = currentSelected;
-                    changedTargetGameobject = false;
-                    keybaordStatus.type = filtred[previousSelected];
-                    keybaordStatus.targetGameobject = filtred[previousSelected].gameObject;
-                    keybaordStatus.output = (string)filtred[previousSelected].GetType().GetProperty("text").GetValue(filtred[previousSelected], null);
-                }
+            GUI.enabled = IsReflectionPossible();
+            currentSelected = EditorGUILayout.Popup(OUTPUT_TYPE, currentSelected, scriptsNames);
+
+            if(previousSelected != currentSelected) {//if popup value was chaned 
+                notNulltargetAndChanged = true;
             }
+            previousSelected = currentSelected;
+
+            if(IsReflectionPossible() && notNulltargetAndChanged) {
+                notNulltargetAndChanged = false;
+                keybaordStatus.typeHolder = filtred[currentSelected];
+                keybaordStatus.targetGameobject = filtred[currentSelected].gameObject;
+                keybaordStatus.output = (string)filtred[currentSelected]
+                    .GetType().GetProperty(TEXT).GetValue(filtred[currentSelected], null);
+            }
+
         }
 
         private void CheckOutputGameboject () {
@@ -61,16 +87,24 @@ namespace CurvedVRKeyboard {
                 GetComponentsName();
             }
             if(keybaordStatus.targetGameobject == null && EditorGUI.EndChangeCheck()) {// if set to null and changed
-                filtred = new Component[0];
+                EmptyArrays();
             }
         }
 
-        private void GetComponentsName () {
-            components = keybaordStatus.targetGameobject.GetComponents<Component>();
-            filtred = components.Where(x => x.GetType().GetProperty("text") != null).ToArray();
-            scriptsNames = filtred.Select(x => x.GetType().ToString()).ToArray<String>();
-            changedTargetGameobject = true;
-            previousSelected = -1;
+        private void EmptyArrays () {
+            filtred = new Component[0];
+            scriptsNames = new string[0];
+        }
+
+        public bool IsReflectionPossible () {
+            return keybaordStatus.targetGameobject != null && filtred.Length > 0;
+        }
+
+        private void HandleValuesChanges () {
+            if(GUI.changed) {
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                EditorUtility.SetDirty(keybaordStatus);
+            }
         }
     }
 
