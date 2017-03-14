@@ -1,23 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CurvedVRKeyboard {
+
     [SelectionBase]
     public class KeyboardStatus: KeyboardComponent {
 
         //------SET IN UNITY-------
         [Tooltip("Text field receiving input from the keyboard")]
-        public Text output;
+        [SerializeField]
+        public string  output;
         [Tooltip("Maximum output text length")]
+        [SerializeField]
         public int maxOutputLength;
+        [SerializeField]
+        public GameObject targetGameobject;
+        [SerializeField]
+        public Component type;
 
+   
+
+        //public Type type;
         //----CurrentKeysStatus----
         private KeyboardItem[] keys;
         private bool areLettersActive = true;
         private bool isLowercase = true;
         private static readonly char BLANKSPACE = ' ';
 
+        //[SerializeField]
+        //private 
 
 
 
@@ -64,17 +78,25 @@ namespace CurvedVRKeyboard {
         }
 
         private void BackspaceKey () {
-            if(output.text.Length >= 1)
-                output.text = output.text.Remove(output.text.Length - 1, 1);
+            if(output.Length >= 1)
+                output = output.Remove(output.Length - 1, 1);
         }
 
         private void TypeKey ( char key ) {
-            if(output.text.Length < maxOutputLength)
-                output.text = output.text + key.ToString();
+            if(output.Length < maxOutputLength) {
+                Component q = targetGameobject.GetComponent(type.GetType());
+                q.GetType().GetProperty("text").SetValue(q, output + key.ToString(),null);
+                output = output + key.ToString();
+            }
+                
         }
 
         public void SetKeys ( KeyboardItem[] keys ) {
             this.keys = keys;
+        }
+
+        public void setOutput (ref string stringRef) {
+            output = stringRef;
         }
     }
 }
