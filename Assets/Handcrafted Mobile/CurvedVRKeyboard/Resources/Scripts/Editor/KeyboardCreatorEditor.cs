@@ -53,7 +53,6 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            keyboardStatusEditor = keyboardCreator.GetComponent<KeyboardStatusEditor>();
 
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
@@ -70,6 +69,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator = target as KeyboardCreator;
             keyboardCreator.checkErrors();
             errorReporter = ErrorReporter.Instance;
+
             HandleScaleChange();
 
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing

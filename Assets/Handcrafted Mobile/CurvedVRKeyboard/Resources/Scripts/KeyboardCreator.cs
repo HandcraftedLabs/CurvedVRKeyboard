@@ -239,8 +239,8 @@ namespace CurvedVRKeyboard {
                 errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
                 return;
             }
-            if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-                errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+            if(GetComponent<KeyboardStatus>().typeHolder == null) { // is output text field set
+                errorReporter.SetMessage("Gamoeboject Output is not set, or There is no script with text on current gameobject", ErrorReporter.Status.Warning);
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
