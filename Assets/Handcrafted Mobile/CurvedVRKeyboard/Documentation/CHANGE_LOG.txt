@@ -1,3 +1,20 @@
+Known Issues
+
+- Keyboard can behave not properly if it is children in hierarchy, where any object got scale other than (1,1,1)
+
+
+Version 1.1.1
+
+- Output of keyboard can now be anything with "text" property
+	- This allows to set Input fields. Check example for more, or read readme
+	- Also it was tested with Text Mesh Pro
+
+- Support for interaction on Daydream device was added
+
+- Minor fixes
+	- Few merthods got their name changed
+	- KeyboardStatus class was changed to fit new responsibilities 
+
 Version 1.1.0
 
 - New interface's look and feel

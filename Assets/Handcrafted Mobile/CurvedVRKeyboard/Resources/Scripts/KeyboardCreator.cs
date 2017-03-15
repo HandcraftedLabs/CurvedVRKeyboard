@@ -123,7 +123,7 @@ namespace CurvedVRKeyboard {
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
             Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
-            positionOnCylinder = MoveBackFromCenter(keyTransform, positionOnCylinder);
+            positionOnCylinder = AdjustDistanceFromCenter(keyTransform, positionOnCylinder);
             LookAtTransformation(keyTransform, positionOnCylinder.y);
             RotationTransformation(keyTransform);
         }
@@ -146,7 +146,7 @@ namespace CurvedVRKeyboard {
         private void LookAtTransformation ( Transform keyTransform, float positionY ) {
             float xPos = transform.position.x;
             float yPos = positionY;
-            float zOffset = (  centerPointDistance * transform.localScale.x );
+            float zOffset = centerPointDistance * transform.localScale.x;
             float zPos = transform.position.z - zOffset;
             Vector3 lookAt = new Vector3(xPos, yPos, zPos);
             keyTransform.LookAt(lookAt);
@@ -159,7 +159,7 @@ namespace CurvedVRKeyboard {
         /// <param name="keyTransform">key to transform</param>
         /// <param name="positionOnCylinder">position on cylinder</param>
         /// <returns></returns>
-        private Vector3 MoveBackFromCenter ( Transform keyTransform, Vector3 positionOnCylinder ) {
+        private Vector3 AdjustDistanceFromCenter ( Transform keyTransform, Vector3 positionOnCylinder ) {
             positionOnCylinder += transform.position;
             positionOnCylinder.z -= centerPointDistance;
             float yPositionBackup = positionOnCylinder.y;
@@ -245,7 +245,7 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(!gameObject.GetComponent<KeyboardStatus>().isReflectionPossible) {
-                errorReporter.SetMessage("Gamoeboject Output is not set, or There is no script with text on current gameobject", ErrorReporter.Status.Warning);
+                errorReporter.SetMessage("Gamoeboject Output is not set, or There is no script with \"text\" property on current gameobject", ErrorReporter.Status.Warning);
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
@@ -403,7 +403,7 @@ namespace CurvedVRKeyboard {
         ///  Borders setup changes cannot be automatically detected so we have to do this manually
         /// </summary>
         /// <param name="newBorder"></param>
-        private bool AreBordersChanged ( Sprite newSprite ) {
+        private bool AreBordersChanged (Sprite newSprite) {
             Vector4 newBorder = newSprite.border;
             if(leftBorder != newBorder.x || bottomBorder != newBorder.y || rightBorder != newBorder.z || topBorder != newBorder.w) {
                 ChangeBorders(newBorder);
