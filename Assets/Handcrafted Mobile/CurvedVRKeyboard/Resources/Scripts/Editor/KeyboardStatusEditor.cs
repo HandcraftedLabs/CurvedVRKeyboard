@@ -25,12 +25,10 @@ namespace CurvedVRKeyboard {
         private ErrorReporter errorRaporter;
         
 
-
         private static GUIContent OUTPUT = new GUIContent("Gameobject Output", "field receiving input from the keyboard (Text,InputField,TextMeshPro)");
         private static GUIContent OUTPUT_LENGTH = new GUIContent("Output Length", "Maximum output text length");
         private const string OUTPUT_TYPE = "Choose Output Script Type";
         private const string TEXT = "text";
-        public const string WARNING = "Gamoeboject Output is not set, or There is no script with text on current gameobject";
 
 
         private void Awake () {
@@ -44,8 +42,12 @@ namespace CurvedVRKeyboard {
         public override void OnInspectorGUI () {
             keybaordStatus = target as KeyboardStatus;
             keybaordStatus.maxOutputLength = EditorGUILayout.IntField(OUTPUT_LENGTH, keybaordStatus.maxOutputLength);
+            
             CheckOutputGameboject();
             DrawPopupList();
+
+            keybaordStatus.isReflectionPossible = IsReflectionPossible();
+
             HandleValuesChanges();
         }
 

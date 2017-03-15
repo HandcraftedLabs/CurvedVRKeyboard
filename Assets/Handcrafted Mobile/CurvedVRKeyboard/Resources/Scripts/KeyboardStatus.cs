@@ -17,6 +17,8 @@ namespace CurvedVRKeyboard {
         public GameObject targetGameobject;
         [SerializeField]
         public Component typeHolder;
+        [SerializeField]
+        public bool isReflectionPossible;
 
         private Component textComponent;
    
