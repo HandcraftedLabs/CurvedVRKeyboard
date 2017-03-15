@@ -1,34 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+
 
 namespace CurvedVRKeyboard {
 
     [SelectionBase]
     public class KeyboardStatus: KeyboardComponent {
 
+        //-----------SET IN UNITY --------------
         [SerializeField]
         public string  output;
         [SerializeField]
         public int maxOutputLength;
         [SerializeField]
         public GameObject targetGameobject;
+
+
+        //----CurrentKeysStatus----
         [SerializeField]
         public Component typeHolder;
         [SerializeField]
         public bool isReflectionPossible;
-
-        private Component textComponent;
-   
-        //----CurrentKeysStatus----
         private KeyboardItem[] keys;
         private bool areLettersActive = true;
         private bool isLowercase = true;
         private const char BLANKSPACE = ' ';
         private const string TEXT = "text";
-
+        private Component textComponent;
 
 
         /// <summary>

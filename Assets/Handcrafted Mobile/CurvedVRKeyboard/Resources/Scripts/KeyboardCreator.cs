@@ -123,7 +123,7 @@ namespace CurvedVRKeyboard {
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
             Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
-            positionOnCylinder = AdditionalTransformations(keyTransform, positionOnCylinder);
+            positionOnCylinder = MoveBackFromCenter(keyTransform, positionOnCylinder);
             LookAtTransformation(keyTransform, positionOnCylinder.y);
             RotationTransformation(keyTransform);
         }
@@ -146,7 +146,7 @@ namespace CurvedVRKeyboard {
         private void LookAtTransformation ( Transform keyTransform, float positionY ) {
             float xPos = transform.position.x;
             float yPos = positionY;
-            float zOffset = (  centerPointDistance * transform.lossyScale.x );
+            float zOffset = (  centerPointDistance * transform.localScale.x );
             float zPos = transform.position.z - zOffset;
             Vector3 lookAt = new Vector3(xPos, yPos, zPos);
             keyTransform.LookAt(lookAt);
@@ -154,16 +154,17 @@ namespace CurvedVRKeyboard {
 
         /// <summary>
         /// Applies transformation gameobject(whole keyboard) to each key
+        /// and move it away from canter depending on scale
         /// </summary>
         /// <param name="keyTransform">key to transform</param>
         /// <param name="positionOnCylinder">position on cylinder</param>
         /// <returns></returns>
-        private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 positionOnCylinder ) {
+        private Vector3 MoveBackFromCenter ( Transform keyTransform, Vector3 positionOnCylinder ) {
             positionOnCylinder += transform.position;
             positionOnCylinder.z -= centerPointDistance;
             float yPositionBackup = positionOnCylinder.y;
             Vector3 fromCenterToKey = ( positionOnCylinder - transform.position );
-            float scaleOfX = ( transform.lossyScale.x - 1 );
+            float scaleOfX = ( transform.localScale.x - 1 );
             //we move each key along it backward direction by scale
             positionOnCylinder = positionOnCylinder + fromCenterToKey * scaleOfX;
             //we modified y in upper calculations restore it 
@@ -173,15 +174,13 @@ namespace CurvedVRKeyboard {
         }
 
         /// <summary>
-        /// Calculates position of keyboard key
+        /// Calculates position of keyboard key on circle
         /// </summary>
         /// <param name="rowSize">size of current row</param>
         /// <param name="offset">position of letter in row</param>
         /// <returns>Position of key</returns>
         public Vector3 CalculatePositionOnCylinder ( float rowSize, float offset ) {
-            float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys / 2 - offset * SpacingBetweenKeys );// * 1/transform.lossyScale.x;
-            //if(rowSize == 2)
-            //Debug.Log(degree);
+            float degree = Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys / 2 - offset * SpacingBetweenKeys );
             float x = Mathf.Cos(degree) * centerPointDistance;
             float z = Mathf.Sin(degree) * centerPointDistance;
             float y = -row * RowSpacing;
@@ -286,7 +285,7 @@ namespace CurvedVRKeyboard {
 
         public float SpacingBetweenKeys {
             get {
-                return defaultSpacingColumns / centerPointDistance * transform.lossyScale.x;
+                return defaultSpacingColumns / centerPointDistance;
             }
         }
 
