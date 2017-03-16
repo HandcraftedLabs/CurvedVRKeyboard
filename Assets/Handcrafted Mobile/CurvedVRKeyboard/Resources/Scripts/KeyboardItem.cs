@@ -185,7 +185,7 @@ namespace CurvedVRKeyboard {
             if (!creator.wasStaticOnStart)
             {
                 Init();
-                meshCreator.BuildFace(quadFront, true);
+               // meshCreator.BuildFace(quadFront, true);
             }
         }
 

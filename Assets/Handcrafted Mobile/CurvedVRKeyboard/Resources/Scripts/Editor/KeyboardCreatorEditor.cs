@@ -82,7 +82,6 @@ namespace CurvedVRKeyboard {
 
         private void DrawPrimary () {
             GUILayout.Label(PRIMARY_SETUP, EditorStyles.boldLabel);
-
             keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_CONTENT, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
 
             isRaycastingSourceSet = (keyboardCreator.RaycastingSource != null);
