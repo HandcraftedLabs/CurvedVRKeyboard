@@ -44,7 +44,11 @@ namespace CurvedVRKeyboard {
                 if(focusedKeyItem != null) { // Hit may occur on item without script
                     ChangeCurrentKeyItem(focusedKeyItem);
                     keyItemCurrent.Hovering();
+#if !UNITY_HAS_GOOGLEVR
                     if(Input.GetButtonDown(clickInputName)) {// If key clicked
+#else
+                    if(GvrController.TouchDown) {
+#endif
                         keyItemCurrent.Click();
                         keyboardStatus.HandleClick(keyItemCurrent);
                     }

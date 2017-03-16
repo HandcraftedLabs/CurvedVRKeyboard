@@ -50,6 +50,8 @@ namespace CurvedVRKeyboard {
         private float topBorder;
         private float bottomBorder;
 
+
+
         public void Awake () {
             InitKeys();
             ChangeMaterialOnKeys();
@@ -60,6 +62,8 @@ namespace CurvedVRKeyboard {
             SetComponents();
 
         }
+
+
 
         public void ManageKeys () {
             checkErrors();
@@ -73,16 +77,16 @@ namespace CurvedVRKeyboard {
         }
 
         public void InitKeys () {
-                if(keys == null || KeyboardItem.forceInit) {
-                    List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
-                    for (int i = 0; i < allKeys.Count;i++) {
-                        allKeys[i].Position = i;
-                        allKeys[i].Init();
-                    }
-                    space = allKeys[spaceKeyNumber];
-                    keys = allKeys.ToArray();
+            if(keys == null || KeyboardItem.forceInit) {
+                List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
+                for(int i = 0;i < allKeys.Count;i++) {
+                    allKeys[i].Position = i;
+                    allKeys[i].Init();
                 }
-                space.ManipulateSpace(this,SpaceSprite);      
+                space = allKeys[spaceKeyNumber];
+                keys = allKeys.ToArray();
+            }
+            space.ManipulateSpace(this, SpaceSprite);
         }
 
         /// <summary>
@@ -105,7 +109,7 @@ namespace CurvedVRKeyboard {
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
-            
+
         }
 
         /// <summary>
@@ -113,13 +117,13 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
-        private void PositionSingleLetter ( KeyboardItem key) {
+        private void PositionSingleLetter ( KeyboardItem key ) {
             int iteration = key.Position;
             Transform keyTransform = key.transform;
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
             Vector3 positionOnCylinder = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
-            positionOnCylinder = AdditionalTransformations(keyTransform, positionOnCylinder);
+            positionOnCylinder = AdjustDistanceFromCenter(keyTransform, positionOnCylinder);
             LookAtTransformation(keyTransform, positionOnCylinder.y);
             RotationTransformation(keyTransform);
         }
@@ -142,7 +146,7 @@ namespace CurvedVRKeyboard {
         private void LookAtTransformation ( Transform keyTransform, float positionY ) {
             float xPos = transform.position.x;
             float yPos = positionY;
-            float zOffset = ( centerPointDistance * transform.localScale.x );
+            float zOffset = centerPointDistance * transform.localScale.x;
             float zPos = transform.position.z - zOffset;
             Vector3 lookAt = new Vector3(xPos, yPos, zPos);
             keyTransform.LookAt(lookAt);
@@ -150,11 +154,12 @@ namespace CurvedVRKeyboard {
 
         /// <summary>
         /// Applies transformation gameobject(whole keyboard) to each key
+        /// and move it away from canter depending on scale
         /// </summary>
         /// <param name="keyTransform">key to transform</param>
         /// <param name="positionOnCylinder">position on cylinder</param>
         /// <returns></returns>
-        private Vector3 AdditionalTransformations ( Transform keyTransform, Vector3 positionOnCylinder ) {
+        private Vector3 AdjustDistanceFromCenter ( Transform keyTransform, Vector3 positionOnCylinder ) {
             positionOnCylinder += transform.position;
             positionOnCylinder.z -= centerPointDistance;
             float yPositionBackup = positionOnCylinder.y;
@@ -169,7 +174,7 @@ namespace CurvedVRKeyboard {
         }
 
         /// <summary>
-        /// Calculates position of keyboard key
+        /// Calculates position of keyboard key on circle
         /// </summary>
         /// <param name="rowSize">size of current row</param>
         /// <param name="offset">position of letter in row</param>
@@ -220,9 +225,9 @@ namespace CurvedVRKeyboard {
         /// Changes materials for all keys
         /// </summary>
         public void ChangeMaterialOnKeys () {
-                foreach(KeyboardItem key in keys) {
-                    key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
-               }
+            foreach(KeyboardItem key in keys) {
+                key.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
+            }
         }
 
         public void checkErrors () {
@@ -239,8 +244,8 @@ namespace CurvedVRKeyboard {
                 errorReporter.SetMessage("Cannot  procced. Space key data is incorrect. Revert your changes to prefab or place keys in correct sequence", ErrorReporter.Status.Error);
                 return;
             }
-            if(GetComponent<KeyboardStatus>().output == null) { // is output text field set
-                errorReporter.SetMessage("Please set output Text in Keyboard Status script", ErrorReporter.Status.Warning);
+            if(!gameObject.GetComponent<KeyboardStatus>().isReflectionPossible) {
+                errorReporter.SetMessage("GameObject Output is not set, or there is no script with \"text\" property on current gameobject", ErrorReporter.Status.Warning);
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
@@ -286,7 +291,7 @@ namespace CurvedVRKeyboard {
 
         public float RowSpacing {
             get {
-                return defaultSpacingRows * transform.localScale.y;
+                return defaultSpacingRows * transform.lossyScale.y;
             }
         }
 
@@ -340,7 +345,7 @@ namespace CurvedVRKeyboard {
             }
             set {
                 //if there was a sprite and now it changed to null
-                if(spaceSprite != value && value == null) { 
+                if(spaceSprite != value && value == null) {
                     spaceSprite = value;
                     space.ManipulateSpace(this, SpaceSprite);
                     space.SetMaterials(KeyNormalMaterial, KeySelectedMaterial, KeyPressedMaterial);
@@ -406,14 +411,14 @@ namespace CurvedVRKeyboard {
             }
             return false;
         }
-        
+
         private void ChangeBorders ( Vector4 newBorder ) {
             leftBorder = newBorder.x;
             bottomBorder = newBorder.y;
             rightBorder = newBorder.z;
             topBorder = newBorder.w;
         }
-    } 
+    }
 }
 
 

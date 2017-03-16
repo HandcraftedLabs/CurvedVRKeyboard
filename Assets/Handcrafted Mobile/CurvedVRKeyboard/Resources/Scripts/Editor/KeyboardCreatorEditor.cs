@@ -1,17 +1,18 @@
-﻿
-#if UNITY_EDITOR
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEditor;
+
 namespace CurvedVRKeyboard {
 
     /// <summary>
-    /// Special inspector for Keybaord
+    /// Special inspector for Keyboard
     /// </summary>
     [CustomEditor(typeof(KeyboardCreator))]
     [CanEditMultipleObjects]
     public class KeyboardCreatorEditor: Editor {
 
+
+        #region GUI_STRINGS
         private const string PRIMARY_SETUP = "Primary setup";
         private const string MATERIALS = "Materials";
         private const string OPTIONAL_SETUP = "Optional setup";
@@ -36,6 +37,7 @@ namespace CurvedVRKeyboard {
         private const string FIND_SOURCE_BUTTON = "Raycasting source missing. Press to set default camera";
         private const string NO_CAMERA_ERROR = "Camera was not found. Add a camera to scene";
         private const string REFRESH_SPACE_UNDO = "Refresh Space";
+        #endregion
 
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
@@ -50,7 +52,7 @@ namespace CurvedVRKeyboard {
 
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
-            
+
             style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 keyboardCreator.wasStaticOnStart = false;
@@ -67,7 +69,6 @@ namespace CurvedVRKeyboard {
             keyboardCreator.checkErrors();
             errorReporter = ErrorReporter.Instance;
             HandleScaleChange();
-
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
                 DrawPrimary();
                 DrawMaterials();
@@ -198,4 +199,3 @@ namespace CurvedVRKeyboard {
         }
     }
 }
-#endif

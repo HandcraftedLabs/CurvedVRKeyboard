@@ -1,23 +1,31 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+
 
 namespace CurvedVRKeyboard {
+
     [SelectionBase]
     public class KeyboardStatus: KeyboardComponent {
 
-        //------SET IN UNITY-------
-        [Tooltip("Text field receiving input from the keyboard")]
-        public Text output;
-        [Tooltip("Maximum output text length")]
+        //-----------SET IN UNITY --------------
+        [SerializeField]
+        public string  output;
+        [SerializeField]
         public int maxOutputLength;
+        [SerializeField]
+        public GameObject targetGameObject;
+
 
         //----CurrentKeysStatus----
+        [SerializeField]
+        public Component typeHolder;
+        [SerializeField]
+        public bool isReflectionPossible;
         private KeyboardItem[] keys;
         private bool areLettersActive = true;
         private bool isLowercase = true;
-        private static readonly char BLANKSPACE = ' ';
-
-
+        private const char BLANKSPACE = ' ';
+        private const string TEXT = "text";
+        private Component textComponent;
 
 
         /// <summary>
@@ -63,17 +71,28 @@ namespace CurvedVRKeyboard {
         }
 
         private void BackspaceKey () {
-            if(output.text.Length >= 1)
-                output.text = output.text.Remove(output.text.Length - 1, 1);
+            if(output.Length >= 1) {
+                textComponent = targetGameObject.GetComponent(typeHolder.GetType());
+                textComponent.GetType().GetProperty(TEXT).SetValue(textComponent, output.Remove(output.Length - 1, 1), null);
+                output = output.Remove(output.Length - 1, 1);
+            }
         }
 
         private void TypeKey ( char key ) {
-            if(output.text.Length < maxOutputLength)
-                output.text = output.text + key.ToString();
+            if(output.Length < maxOutputLength) {
+                textComponent = targetGameObject.GetComponent(typeHolder.GetType());
+                textComponent.GetType().GetProperty(TEXT).SetValue(textComponent, output + key.ToString(),null);
+                output = output + key.ToString();
+            }
+                
         }
 
         public void SetKeys ( KeyboardItem[] keys ) {
             this.keys = keys;
+        }
+
+        public void setOutput (ref string stringRef) {
+            output = stringRef;
         }
     }
 }

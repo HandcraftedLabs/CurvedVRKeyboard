@@ -1,3 +1,19 @@
+Known Issues
+
+- Parents in object hierarchy has to have scale equal to (1.0, 1.0, 1.0). Changing parent size is not supported for now.
+
+Version 1.1.1
+
+- Output can now be set to any object with "text" property
+	- This allows to use Input fields. Check example for more, or readme file
+	- Tested with Text Mesh Pro
+
+- Support for interaction on Daydream device
+
+- Minor fixes
+	- Few merthods changed their name
+	- KeyboardStatus class was changed to fit new responsibilities 
+
 Version 1.1.0
 
 - New interface's look and feel
