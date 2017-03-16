@@ -25,20 +25,19 @@ namespace CurvedVRKeyboard {
 
         private const string TEXT = "text";
 
-        private KeyboardStatus keybaordStatus;
+        private KeyboardStatus keyboardStatus;
         private Component[] componentsWithText;
         private string[] scriptsNames;
 
-        private bool notNulltargetAndChanged;
+        private bool notNullTargetAndChanged;
         private int currentSelected = 0;
         private int previousSelected = 0;
-        private ErrorReporter errorRaporter;
        
         private void Awake () {
-            keybaordStatus = target as KeyboardStatus;
+            keyboardStatus = target as KeyboardStatus;
             ClearReflectionData();
 
-            if(keybaordStatus.targetGameobject != null) {
+            if(keyboardStatus.targetGameObject != null) {
                 GetComponentsName();
             }
         }
@@ -48,29 +47,29 @@ namespace CurvedVRKeyboard {
         /// gameobject. Later it changes them to array of string used in popup
         /// </summary>
         private void GetComponentsName () {
-            componentsWithText = keybaordStatus.targetGameobject.GetComponents<Component>()
+            componentsWithText = keyboardStatus.targetGameObject.GetComponents<Component>()
                 .Where(x => x.GetType().GetProperty(TEXT) != null).ToArray();
             scriptsNames = componentsWithText.Select(x => x.GetType().ToString()).ToArray<String>();
             currentSelected = 0;
-            notNulltargetAndChanged = true;
+            notNullTargetAndChanged = true;
         }
 
         public override void OnInspectorGUI () {
-            keybaordStatus = target as KeyboardStatus;
-            keybaordStatus.maxOutputLength = EditorGUILayout.IntField(OUTPUT_LENGTH, keybaordStatus.maxOutputLength);            
-            DrawTargetGameobjectField();
+            keyboardStatus = target as KeyboardStatus;
+            keyboardStatus.maxOutputLength = EditorGUILayout.IntField(OUTPUT_LENGTH, keyboardStatus.maxOutputLength);            
+            DrawTargetGameObjectFields();
             DrawPopupList();
-            keybaordStatus.isReflectionPossible = IsReflectionPossible();
+            keyboardStatus.isReflectionPossible = IsReflectionPossible();
             HandleValuesChanges();
         }
 
-        private void DrawTargetGameobjectField () {
+        private void DrawTargetGameObjectFields () {
             EditorGUI.BeginChangeCheck();
-            keybaordStatus.targetGameobject = EditorGUILayout.ObjectField(OUTPUT, keybaordStatus.targetGameobject, typeof(GameObject), true) as GameObject;
-            if(keybaordStatus.targetGameobject != null && EditorGUI.EndChangeCheck()) { //if not null and changed this frame
+            keyboardStatus.targetGameObject = EditorGUILayout.ObjectField(OUTPUT, keyboardStatus.targetGameObject, typeof(GameObject), true) as GameObject;
+            if(keyboardStatus.targetGameObject != null && EditorGUI.EndChangeCheck()) { //if not null and changed this frame
                 GetComponentsName();
             }
-            if(keybaordStatus.targetGameobject == null && EditorGUI.EndChangeCheck()) {// if set to null on this frame
+            if(keyboardStatus.targetGameObject == null && EditorGUI.EndChangeCheck()) {// if set to null on this frame
                 ClearReflectionData();
             }
         }
@@ -80,21 +79,21 @@ namespace CurvedVRKeyboard {
             currentSelected = EditorGUILayout.Popup(OUTPUT_TYPE, currentSelected, scriptsNames);
 
             if(previousSelected != currentSelected) {//if popup value was changed
-                notNulltargetAndChanged = true;
+                notNullTargetAndChanged = true;
             }
             previousSelected = currentSelected;
 
-            if(IsReflectionPossible() && notNulltargetAndChanged) { //if reflection is posiible and popup value was changed this frame
+            if(IsReflectionPossible() && notNullTargetAndChanged) { //if reflection is possible and popup value was changed this frame
                 GetTextParameterViaReflection();
             }
 
         }
 
         private void GetTextParameterViaReflection () {
-            notNulltargetAndChanged = false;
-            keybaordStatus.typeHolder = componentsWithText[currentSelected];
-            keybaordStatus.targetGameobject = componentsWithText[currentSelected].gameObject;
-            keybaordStatus.output = (string)componentsWithText[currentSelected]
+            notNullTargetAndChanged = false;
+            keyboardStatus.typeHolder = componentsWithText[currentSelected];
+            keyboardStatus.targetGameObject = componentsWithText[currentSelected].gameObject;
+            keyboardStatus.output = (string)componentsWithText[currentSelected]
                 .GetType().GetProperty(TEXT).GetValue(componentsWithText[currentSelected], null);
         }
 
@@ -106,13 +105,13 @@ namespace CurvedVRKeyboard {
         }
 
         public bool IsReflectionPossible () {
-            return keybaordStatus.targetGameobject != null && componentsWithText.Length > 0;
+            return keyboardStatus.targetGameObject != null && componentsWithText.Length > 0;
         }
 
         private void HandleValuesChanges () {
             if(GUI.changed) {
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                EditorUtility.SetDirty(keybaordStatus);
+                EditorUtility.SetDirty(keyboardStatus);
             }
         }
     }

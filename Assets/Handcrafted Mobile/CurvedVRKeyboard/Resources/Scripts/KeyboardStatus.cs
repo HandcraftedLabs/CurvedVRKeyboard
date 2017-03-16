@@ -12,7 +12,7 @@ namespace CurvedVRKeyboard {
         [SerializeField]
         public int maxOutputLength;
         [SerializeField]
-        public GameObject targetGameobject;
+        public GameObject targetGameObject;
 
 
         //----CurrentKeysStatus----
@@ -72,7 +72,7 @@ namespace CurvedVRKeyboard {
 
         private void BackspaceKey () {
             if(output.Length >= 1) {
-                textComponent = targetGameobject.GetComponent(typeHolder.GetType());
+                textComponent = targetGameObject.GetComponent(typeHolder.GetType());
                 textComponent.GetType().GetProperty(TEXT).SetValue(textComponent, output.Remove(output.Length - 1, 1), null);
                 output = output.Remove(output.Length - 1, 1);
             }
@@ -80,7 +80,7 @@ namespace CurvedVRKeyboard {
 
         private void TypeKey ( char key ) {
             if(output.Length < maxOutputLength) {
-                textComponent = targetGameobject.GetComponent(typeHolder.GetType());
+                textComponent = targetGameObject.GetComponent(typeHolder.GetType());
                 textComponent.GetType().GetProperty(TEXT).SetValue(textComponent, output + key.ToString(),null);
                 output = output + key.ToString();
             }

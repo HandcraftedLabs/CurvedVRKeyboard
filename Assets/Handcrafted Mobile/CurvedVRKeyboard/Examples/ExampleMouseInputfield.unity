@@ -148,7 +148,7 @@ Prefab:
     - target: {fileID: 224000011246370088, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -0.00000023665086
+      value: -0.00000011038162
       objectReference: {fileID: 0}
     - target: {fileID: 224000013436753632, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
@@ -158,7 +158,7 @@ Prefab:
     - target: {fileID: 224000013436753632, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -0.0000005644765
+      value: -0.00000043820728
       objectReference: {fileID: 0}
     - target: {fileID: 23000010750108200, guid: 0cc5dadcfcab96d4e8836465d4d4535e,
         type: 2}
@@ -1040,7 +1040,7 @@ Prefab:
     - target: {fileID: 114786044260355262, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
         type: 2}
       propertyPath: m_Text
-      value: handcraftedmobile.com
+      value: handcraftedvr.com
       objectReference: {fileID: 0}
     - target: {fileID: 114330837094311274, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
         type: 2}
@@ -1051,6 +1051,41 @@ Prefab:
         type: 2}
       propertyPath: m_AnchoredPosition.y
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114786044260355262, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 0.17254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 114786044260355262, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.3137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 114786044260355262, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0.36862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 114172588993266944, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114172588993266944, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114172588993266944, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114172588993266944, guid: 524fc2487d5ece74e9c3e2d65ba53b0a,
+        type: 2}
+      propertyPath: m_Text
+      value: handcraftedvr.com
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 524fc2487d5ece74e9c3e2d65ba53b0a, type: 2}

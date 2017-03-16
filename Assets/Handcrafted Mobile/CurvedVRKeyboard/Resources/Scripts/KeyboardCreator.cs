@@ -245,7 +245,7 @@ namespace CurvedVRKeyboard {
                 return;
             }
             if(!gameObject.GetComponent<KeyboardStatus>().isReflectionPossible) {
-                errorReporter.SetMessage("Gamoeboject Output is not set, or There is no script with \"text\" property on current gameobject", ErrorReporter.Status.Warning);
+                errorReporter.SetMessage("GameObject Output is not set, or there is no script with \"text\" property on current gameobject", ErrorReporter.Status.Warning);
                 return;
             }
             if(wasStaticOnStart && Application.isPlaying) {//is playing and was static when play mode started
