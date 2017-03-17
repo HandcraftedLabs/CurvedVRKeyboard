@@ -151,11 +151,11 @@ namespace CurvedVRKeyboard {
         /// <summary>
         /// Applies transformation rotation to key in correct order 
         /// </summary>
-        /// <param name="keyTransform">key to be transformed</param>
-        private void RotationTransformation ( Transform keyTransform ) {
-            keyTransform.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
-            keyTransform.RotateAround(transform.position, Vector3.right, transform.rotation.eulerAngles.x);
-            keyTransform.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
+        /// <param name="key">key to be transformed</param>
+        private void RotationTransformation ( Transform key ) {
+            key.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
+            key.RotateAround(, Vector3.right, transform.rotation.eulerAngles.x);
+            key.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
         }
 
         /// <summary>
@@ -271,12 +271,12 @@ namespace CurvedVRKeyboard {
             }
             set {
                 const float errorThreshold = 0.01f;
-                if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {// Value changed
+                //if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {// Value changed
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
                     space.ManipulateSpace(this, spaceSprite);
-               } 
+               //} 
             }
         }
 
