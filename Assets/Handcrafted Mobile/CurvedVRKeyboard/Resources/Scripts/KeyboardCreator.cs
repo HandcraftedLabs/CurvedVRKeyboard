@@ -153,9 +153,9 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="key">key to be transformed</param>
         private void RotationTransformation ( Transform key ) {
-            key.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
-            key.RotateAround(, Vector3.right, transform.rotation.eulerAngles.x);
-            key.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
+            //key.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
+            //key.RotateAround(, Vector3.right, transform.rotation.eulerAngles.x);
+            //key.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
         }
 
         /// <summary>
