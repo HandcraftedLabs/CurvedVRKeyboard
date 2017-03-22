@@ -125,27 +125,45 @@ namespace CurvedVRKeyboard {
             // Check row and how many keys were palced
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
             float degree = CalculateDeggreOfKey(lettersInRowsCount[row] - 1, iteration - keysPlaced);
-
             
+            Vector3 PlacOnCircle = new Vector3(
+                 Mathf.Cos(degree) * centerPointDistance,
+                 row * -RowSpacing,
+                 Mathf.Sin(degree) * centerPointDistance);
 
-            key.transform.localPosition = new Vector3(
-                Mathf.Cos(degree) * centerPointDistance,
-                row * -RowSpacing,
-                Mathf.Sin(degree) * centerPointDistance);
-         
-            key.transform.LookAt(new Vector3(
-             key.transform.parent.position.x + key.transform.localPosition.x * ( transform.lossyScale.x - 1 ),
-             key.transform.position.y,
-             key.transform.parent.position.z + key.transform.localPosition.z * ( transform.lossyScale.z - 1 )));
+            key.transform.localPosition = PlacOnCircle;
 
-            key.transform.localPosition = new Vector3(
+
+
+
+            key.transform.RotateAround(Vector3.zero, Vector3.right, gameObject.transform.rotation.x);
+
+            Vector3 LookAtTransform = new Vector3(
+             transform.position.x + key.transform.localPosition.x * ( transform.lossyScale.x - 1 ),// - (transform.lossyScale.x  - 1 ) * transform.position.x *2 ,
+             transform.position.y,
+             transform.position.z + key.transform.localPosition.z * ( transform.lossyScale.z - 1 )) ;
+
+            //LookAtTransform = LookAtTransform - transform.position;
+            LookAtTransform = LookAtTransform - transform.position;
+            LookAtTransform = transform.rotation * LookAtTransform;
+            LookAtTransform = LookAtTransform + transform.position;
+
+
+            key.transform.LookAt(LookAtTransform);
+            if(key.gameObject.GetComponent<KeyboardItem>().Position == 15) {
+                GameObject pivot = GameObject.Find("target");
+                pivot.transform.position = LookAtTransform;
+
+            }
+
+            Vector3 MoveBackward = new Vector3(
                 key.transform.localPosition.x,
                 key.transform.localPosition.y,
                 key.transform.localPosition.z - centerPointDistance + radious);
 
-            RotationTransformation(keyTransform);
+            key.transform.localPosition = MoveBackward;
 
-
+            key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
         }
 
         /// <summary>
