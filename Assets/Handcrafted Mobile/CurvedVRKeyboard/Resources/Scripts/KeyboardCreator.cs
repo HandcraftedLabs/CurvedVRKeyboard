@@ -10,7 +10,7 @@ namespace CurvedVRKeyboard {
     /// </summary>
     [System.Serializable]
     [ExecuteInEditMode]
-    public class KeyboardCreator: KeyboardComponent {
+    public class KeyboardCreator : KeyboardComponent {
 
         //-----------SET IN UNITY --------------
         [SerializeField]
@@ -55,10 +55,10 @@ namespace CurvedVRKeyboard {
 
 
 
-        public void Awake () {
+        public void Awake() {
             InitKeys();
             ChangeMaterialOnKeys();
-            if(!Application.isPlaying) {
+            if (!Application.isPlaying) {
                 ManageKeys();
             }
             wasStaticOnStart = gameObject.isStatic;
@@ -66,21 +66,21 @@ namespace CurvedVRKeyboard {
 
         }
 
-        public void ManageKeys () {
+        public void ManageKeys() {
             checkErrors();
 
-            if(!errorReporter.IsErrorPresent()) {
-                if(centerPointDistance == -1f) {
+            if (!errorReporter.IsErrorPresent()) {
+                if (centerPointDistance == -1f) {
                     CurvatureToDistance();
                 }
                 FillAndPlaceKeys();
             }
         }
 
-        public void InitKeys () {
-            if(keys == null || KeyboardItem.forceInit) {
+        public void InitKeys() {
+            if (keys == null || KeyboardItem.forceInit) {
                 List<KeyboardItem> allKeys = new List<KeyboardItem>(GetComponentsInChildren<KeyboardItem>());
-                for(int i = 0;i < allKeys.Count;i++) {
+                for (int i = 0; i < allKeys.Count; i++) {
                     allKeys[i].Position = i;
                     allKeys[i].Init();
                 }
@@ -93,7 +93,7 @@ namespace CurvedVRKeyboard {
         /// <summary>
         /// Sets values for other necessary components
         /// </summary>
-        private void SetComponents () {
+        private void SetComponents() {
             KeyboardRaycaster rayCaster = GetComponent<KeyboardRaycaster>();
             rayCaster.SetRaycastingTransform(RaycastingSource);
             rayCaster.SetClickButton(ClickHandle);
@@ -105,8 +105,8 @@ namespace CurvedVRKeyboard {
         /// <summary>
         /// Fills key with text and calculates position 
         /// </summary>
-        private void FillAndPlaceKeys () {
-            foreach(KeyboardItem key in keys) {
+        private void FillAndPlaceKeys() {
+            foreach (KeyboardItem key in keys) {
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
@@ -120,95 +120,33 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
-        private void PositionSingleLetter ( KeyboardItem key )
+        private void PositionSingleLetter(KeyboardItem key)
         {
             int iteration = key.Position;
             Transform keyTransform = key.transform;
             // Check row and how many keys were placed
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
+            float degree = CalculateRotation(lettersInRowsCount[row] - 1, iteration - keysPlaced);
             //caluclate position on cylinder with circle equation formula
             //http://www.mathopenref.com/coordparamcircle.html
-            key.transform.localPosition = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
+            key.transform.localPosition = CalculatePositionOnCylinder(degree);
             //make each key look at point so they form a nice curvature
-            key.transform.LookAt(LookAtTransformations(key));
+            key.transform.localEulerAngles = new Vector3(0, -degree * Mathf.Rad2Deg - 90f, 0);
+            //key.transform.LookAt(LookAtTransformations(key));
             // keys are moved from center couse of increasing circle radious
             key.transform.localPosition = RestorePosition(key);
             // keys shall only rotate in y axis so x  and y rotation is set to 0
-            key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
+            //key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
         }
 
-        private Vector3 RestorePosition(KeyboardItem key)
+        public float CalculateRotation(float rowsize, float offset)
         {
-            return new Vector3(
-                key.transform.localPosition.x,
-                key.transform.localPosition.y,
-                key.transform.localPosition.z - centerPointDistance + radious);
+            // Calculate degree of key on cricle
+            return Mathf.Deg2Rad * (defaultRotation + rowsize
+                * SpacingBetweenKeys / 2 - offset
+                * SpacingBetweenKeys);
         }
 
-        private Vector3 LookAtTransformations(KeyboardItem key)
-        {
-            //Depending on scale move center for each key a bit on x and z axis
-            Vector3 LookAtTransform = new Vector3(
-            transform.position.x + key.transform.localPosition.x  * (transform.lossyScale.x - 1),
-            transform.position.y,
-            transform.position.z + key.transform.localPosition.z * (transform.lossyScale.z - 1));
-            // rotation around point 
-            //http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix3d/index.htm
-            LookAtTransform = LookAtTransform - transform.position;
-            LookAtTransform = transform.rotation * LookAtTransform;
-            LookAtTransform = LookAtTransform + transform.position;
-            return LookAtTransform;
-        }
-
-        public Vector3 CalculatePositionOnCylinder(float rowSize, float offset)
-        {
-            float degree = Mathf.Deg2Rad * (defaultRotation + rowSize * SpacingBetweenKeys / 2 - offset * SpacingBetweenKeys);
-            float x = Mathf.Cos(degree) * centerPointDistance;
-            float z = Mathf.Sin(degree) * centerPointDistance;
-            float y = -row * RowSpacing;
-            return new Vector3(x, y, z);
-        }
-
-        /// <summary>
-        /// Applies transformation rotation to key in correct order 
-        /// </summary>
-        /// <param name="key">key to be transformed</param>
-        private void RotationTransformation ( Transform key ) {
-            //key.RotateAround(transform.position, Vector3.forward, transform.rotation.eulerAngles.z);
-            //key.RotateAround(, Vector3.right, transform.rotation.eulerAngles.x);
-            //key.RotateAround(transform.position, Vector3.up, transform.rotation.eulerAngles.y);
-        }
-
-        /// <summary>
-        /// Makes key look at cylinder center
-        /// </summary>
-        /// <param name="keyTransform"></param>
-        /// <param name="positionY"></param>
-        private void LookAtTransformation ( Transform keyTransform, Vector3 position ) {
-            float xPos = keyTransform.parent.position.x;
-            float yPos = position.y;
-            float zPos = 3 - centerPointDistance;
-            
-            //Debug.Log(zPos);
-            Vector3 lookAt = new Vector3(xPos, yPos, zPos);
-            
-            keyTransform.LookAt(lookAt);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="rowSize">size of current row</param>
-        /// <param name="offset">position of letter in row</param>
-        /// <returns>deggre of key</returns>
-        public float CalculateDeggreOfKey ( float rowSize, float offset ) {
-            return Mathf.Deg2Rad * ( defaultRotation + rowSize * SpacingBetweenKeys / 2 - offset * SpacingBetweenKeys );
-        }
-
-        /// <summary> 
-        /// Calculates current row and offset of key
-        /// </summary>
-        /// <param name="iteration"></param>
-        /// <returns></returns>
         private float CalculateKeyOffsetAndRow ( int iteration ) {
             float keysPlaced = 0;
             row = 0;
@@ -228,6 +166,39 @@ namespace CurvedVRKeyboard {
             return keysPlaced;
         }
 
+        public Vector3 CalculatePositionOnCylinder(float degree)
+        {
+            return new Vector3(
+                Mathf.Cos(degree) * centerPointDistance,
+                -row * RowSpacing,
+                Mathf.Sin(degree) * centerPointDistance);
+        }
+
+
+
+        private Vector3 LookAtTransformations(KeyboardItem key)
+        {
+            //Depending on scale move center for each key a bit on x and z axis
+            Vector3 LookAtTransform = new Vector3(
+            transform.position.x + key.transform.localPosition.x  * (transform.lossyScale.x - 1),
+            transform.position.y,
+            transform.position.z + key.transform.localPosition.z * (transform.lossyScale.z - 1));
+            // rotation around point 
+            //http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix3d/index.htm
+            LookAtTransform = LookAtTransform - transform.position;
+            LookAtTransform = transform.rotation * LookAtTransform;
+            LookAtTransform = LookAtTransform + transform.position;
+            return LookAtTransform;
+        }
+
+        private Vector3 RestorePosition(KeyboardItem key)
+        {
+            return new Vector3(
+                key.transform.localPosition.x,
+                key.transform.localPosition.y,
+                key.transform.localPosition.z - centerPointDistance + radious);
+        }
+
         /// <summary>
         /// tan (x * 1,57) - tan is in range of <0,3.14>. With
         /// this approach we can scale it to range <0(0),1(close to infinity)>.
@@ -237,7 +208,6 @@ namespace CurvedVRKeyboard {
         /// </summary>
         private void CurvatureToDistance () {
             centerPointDistance = Mathf.Tan((curvature) * 1.57f) + radious;
-           // Debug.Log(centerPointDistance);
         }
 
         /// <summary>

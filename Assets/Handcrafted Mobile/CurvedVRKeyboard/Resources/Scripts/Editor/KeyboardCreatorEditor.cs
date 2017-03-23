@@ -69,8 +69,6 @@ namespace CurvedVRKeyboard {
             keyboardCreator.checkErrors();
             errorReporter = ErrorReporter.Instance;
 
-            //HandleScaleChange();
-
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
                 DrawPrimary();
                 DrawMaterials();
