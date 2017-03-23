@@ -262,12 +262,12 @@ namespace CurvedVRKeyboard {
                 return 1f - curvature;
             }
             set {
-                //if(curvature != ( 1f - value )) {// Value changed
+                if(curvature != ( 1f - value )) {// Value changed
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
                     space.ManipulateSpace(this, spaceSprite);
-                //} 
+                } 
             }
         }
 
