@@ -130,7 +130,7 @@ namespace CurvedVRKeyboard {
             //caluclate position on cylinder with circle equation formula
             //http://www.mathopenref.com/coordparamcircle.html
             key.transform.localPosition = CalculatePositionOnCylinder(degree);
-            //make each key look at point so they form a nice curvature
+            //rote keys by they placement angle
             key.transform.localEulerAngles = new Vector3(0, -degree * Mathf.Rad2Deg - 90f, 0);
             //key.transform.LookAt(LookAtTransformations(key));
             // keys are moved from center couse of increasing circle radious
