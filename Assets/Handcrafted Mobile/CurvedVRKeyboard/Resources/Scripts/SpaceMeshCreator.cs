@@ -115,29 +115,31 @@ namespace CurvedVRKeyboard {
         /// </summary>
         /// <param name="verticiesArray"> Array of verticies</param>
         private void CalculatePosition(List<Vector3> verticiesArray) {
-            //float offset = 0;
-            //for(int i = 0; i < verticiesArray.Count; i += 4) {
-            //    Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
+            float offset = 0;
+            for (int i = 0; i < verticiesArray.Count; i += 4)
+            {
+                Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
 
-            //    if(i + 4 < verticiesArray.Count) {//if there is next value in array
-            //        offset += verticiesArray[i + 4].x - verticiesArray[i].x;
-            //    }
+                if (i + 4 < verticiesArray.Count)
+                {//if there is next value in array
+                    offset += verticiesArray[i + 4].x - verticiesArray[i].x;
+                }
 
-            //    calculatedVertex.z -= creator.centerPointDistance;
+                calculatedVertex.z -= creator.centerPointDistance;
 
-            //    calculatedVertex.y = boundary.y;
-            //    this.verticiesArray[i] = calculatedVertex;
+                calculatedVertex.y = boundary.y;
+                this.verticiesArray[i] = calculatedVertex;
 
-            //    calculatedVertex.y = uvSlicer.objectBorderInUnits.top;
-            //    this.verticiesArray[i + 1] = calculatedVertex;
+                calculatedVertex.y = uvSlicer.objectBorderInUnits.top;
+                this.verticiesArray[i + 1] = calculatedVertex;
 
-            //    calculatedVertex.y = uvSlicer.objectBorderInUnits.bottom;
-            //    this.verticiesArray[i + 2] = calculatedVertex;
+                calculatedVertex.y = uvSlicer.objectBorderInUnits.bottom;
+                this.verticiesArray[i + 2] = calculatedVertex;
 
-            //    calculatedVertex.y = -boundary.y;
-            //    this.verticiesArray[i + 3] = calculatedVertex;
+                calculatedVertex.y = -boundary.y;
+                this.verticiesArray[i + 3] = calculatedVertex;
 
-            //}
+            }
         }
 
         /// <summary>

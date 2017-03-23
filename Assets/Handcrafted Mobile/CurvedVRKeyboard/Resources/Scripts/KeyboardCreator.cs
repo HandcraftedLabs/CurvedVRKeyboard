@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,8 +66,6 @@ namespace CurvedVRKeyboard {
 
         }
 
-
-
         public void ManageKeys () {
             checkErrors();
 
@@ -111,59 +110,63 @@ namespace CurvedVRKeyboard {
                 key.SetKeyText(KeyboardItem.KeyLetterEnum.LowerCase);
                 PositionSingleLetter(key);
             }
-
         }
 
         /// <summary>
         /// Calculates whole transformation for single key
+        /// Whole idea is to create circle and place keys on it
+        /// if keys are in straight line, it means that deegre 
+        /// between step is really low. 
         /// </summary>
         /// <param name="iteration">index of key to be placed</param>
         /// <param name="keyTransform">key transformation</param>
-        private void PositionSingleLetter ( KeyboardItem key ) {
+        private void PositionSingleLetter ( KeyboardItem key )
+        {
             int iteration = key.Position;
             Transform keyTransform = key.transform;
-            // Check row and how many keys were palced
+            // Check row and how many keys were placed
             float keysPlaced = CalculateKeyOffsetAndRow(iteration);
-            float degree = CalculateDeggreOfKey(lettersInRowsCount[row] - 1, iteration - keysPlaced);
-            
-            Vector3 PlacOnCircle = new Vector3(
-                 Mathf.Cos(degree) * centerPointDistance,
-                 row * -RowSpacing,
-                 Mathf.Sin(degree) * centerPointDistance);
+            //caluclate position on cylinder with circle equation formula
+            //http://www.mathopenref.com/coordparamcircle.html
+            key.transform.localPosition = CalculatePositionOnCylinder(lettersInRowsCount[row] - 1, iteration - keysPlaced);
+            //make each key look at point so they form a nice curvature
+            key.transform.LookAt(LookAtTransformations(key));
+            // keys are moved from center couse of increasing circle radious
+            key.transform.localPosition = RestorePosition(key);
+            // keys shall only rotate in y axis so x  and y rotation is set to 0
+            key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
+        }
 
-            key.transform.localPosition = PlacOnCircle;
-
-
-
-
-            key.transform.RotateAround(Vector3.zero, Vector3.right, gameObject.transform.rotation.x);
-
-            Vector3 LookAtTransform = new Vector3(
-             transform.position.x + key.transform.localPosition.x * ( transform.lossyScale.x - 1 ),// - (transform.lossyScale.x  - 1 ) * transform.position.x *2 ,
-             transform.position.y,
-             transform.position.z + key.transform.localPosition.z * ( transform.lossyScale.z - 1 )) ;
-
-            //LookAtTransform = LookAtTransform - transform.position;
-            LookAtTransform = LookAtTransform - transform.position;
-            LookAtTransform = transform.rotation * LookAtTransform;
-            LookAtTransform = LookAtTransform + transform.position;
-
-
-            key.transform.LookAt(LookAtTransform);
-            if(key.gameObject.GetComponent<KeyboardItem>().Position == 15) {
-                GameObject pivot = GameObject.Find("target");
-                pivot.transform.position = LookAtTransform;
-
-            }
-
-            Vector3 MoveBackward = new Vector3(
+        private Vector3 RestorePosition(KeyboardItem key)
+        {
+            return new Vector3(
                 key.transform.localPosition.x,
                 key.transform.localPosition.y,
                 key.transform.localPosition.z - centerPointDistance + radious);
+        }
 
-            key.transform.localPosition = MoveBackward;
+        private Vector3 LookAtTransformations(KeyboardItem key)
+        {
+            //Depending on scale move center for each key a bit on x and z axis
+            Vector3 LookAtTransform = new Vector3(
+            transform.position.x + key.transform.localPosition.x  * (transform.lossyScale.x - 1),
+            transform.position.y,
+            transform.position.z + key.transform.localPosition.z * (transform.lossyScale.z - 1));
+            // rotation around point 
+            //http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix3d/index.htm
+            LookAtTransform = LookAtTransform - transform.position;
+            LookAtTransform = transform.rotation * LookAtTransform;
+            LookAtTransform = LookAtTransform + transform.position;
+            return LookAtTransform;
+        }
 
-            key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
+        public Vector3 CalculatePositionOnCylinder(float rowSize, float offset)
+        {
+            float degree = Mathf.Deg2Rad * (defaultRotation + rowSize * SpacingBetweenKeys / 2 - offset * SpacingBetweenKeys);
+            float x = Mathf.Cos(degree) * centerPointDistance;
+            float z = Mathf.Sin(degree) * centerPointDistance;
+            float y = -row * RowSpacing;
+            return new Vector3(x, y, z);
         }
 
         /// <summary>
@@ -233,7 +236,8 @@ namespace CurvedVRKeyboard {
         /// Higher values make center position further from keys (straight line)
         /// </summary>
         private void CurvatureToDistance () {
-            centerPointDistance = Mathf.Tan(curvature * 1.57f) + radious;
+            centerPointDistance = Mathf.Tan((curvature) * 1.57f) + radious;
+           // Debug.Log(centerPointDistance);
         }
 
         /// <summary>
@@ -288,13 +292,12 @@ namespace CurvedVRKeyboard {
                 return 1f - curvature;
             }
             set {
-                const float errorThreshold = 0.01f;
-                //if(Mathf.Abs(curvature - ( 1f - value )) >= errorThreshold) {// Value changed
+                //if(curvature != ( 1f - value )) {// Value changed
                     curvature = 1f - value;
                     CurvatureToDistance();
                     ManageKeys();
                     space.ManipulateSpace(this, spaceSprite);
-               //} 
+                //} 
             }
         }
 
