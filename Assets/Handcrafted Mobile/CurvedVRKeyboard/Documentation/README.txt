@@ -26,5 +26,9 @@ To change values used on keyboard open
 "Handcrafted Mobile/CurvedVRKeyboard/Resources/Scripts/KeyboardComponent"
 script and edit values you would like to change.
 
+Changing Key Fonts:
+In Hierearchy window type "Value",
+select all found components and check text parameter.
+
 Need more help?
 https://handcraftedmobile.com/ or contact@handcraftedmobile.com

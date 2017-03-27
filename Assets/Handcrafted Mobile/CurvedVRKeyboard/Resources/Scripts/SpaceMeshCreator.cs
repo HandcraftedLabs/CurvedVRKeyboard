@@ -116,10 +116,13 @@ namespace CurvedVRKeyboard {
         /// <param name="verticiesArray"> Array of verticies</param>
         private void CalculatePosition(List<Vector3> verticiesArray) {
             float offset = 0;
-            for(int i = 0; i < verticiesArray.Count; i += 4) {
-                Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(rowSize, offset);
+            for (int i = 0; i < verticiesArray.Count; i += 4)
+            {
+                float degree = creator.CalculateRotation(rowSize, offset);
+                Vector3 calculatedVertex = creator.CalculatePositionOnCylinder(degree);
 
-                if(i + 4 < verticiesArray.Count) {//if there is next value in array
+                if (i + 4 < verticiesArray.Count)
+                {//if there is next value in array
                     offset += verticiesArray[i + 4].x - verticiesArray[i].x;
                 }
 

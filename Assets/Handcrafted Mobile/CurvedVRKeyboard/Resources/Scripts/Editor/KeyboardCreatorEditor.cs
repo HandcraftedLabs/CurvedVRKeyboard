@@ -68,7 +68,7 @@ namespace CurvedVRKeyboard {
             keyboardCreator = target as KeyboardCreator;
             keyboardCreator.checkErrors();
             errorReporter = ErrorReporter.Instance;
-            HandleScaleChange();
+
             if(errorReporter.currentStatus == ErrorReporter.Status.None || !Application.isPlaying) {// (Playing and was static at start) or always when not playing
                 DrawPrimary();
                 DrawMaterials();
@@ -82,15 +82,13 @@ namespace CurvedVRKeyboard {
 
         private void DrawPrimary () {
             GUILayout.Label(PRIMARY_SETUP, EditorStyles.boldLabel);
-
             keyboardCreator.RaycastingSource = EditorGUILayout.ObjectField(RAYCASTING_SOURCE_CONTENT, keyboardCreator.RaycastingSource, typeof(Transform), true) as Transform;
 
             isRaycastingSourceSet = (keyboardCreator.RaycastingSource != null);
             GUI.enabled = isRaycastingSourceSet;
 
-            float curvatureValue = EditorGUILayout.IntSlider(new GUIContent(CURVATURE_CONTENT), (int)( keyboardCreator.Curvature * 100.0f ), 0, 100);
-            float clamped = Mathf.Clamp01((float)curvatureValue / 100.0f);
-            keyboardCreator.Curvature = clamped;
+            keyboardCreator.Curvature = EditorGUILayout.Slider(CURVATURE_CONTENT, keyboardCreator.Curvature, 0f, 1f);
+            
 
             keyboardCreator.ClickHandle = EditorGUILayout.TextField(CLICK_INPUT_COMMAND_CONTENT, keyboardCreator.ClickHandle);
         }

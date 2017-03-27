@@ -14,7 +14,7 @@ namespace CurvedVRKeyboard {
         private Ray ray;
         private RaycastHit hit;
         private LayerMask layer;
-
+        private float minRaylengthMultipler = 1.5f;
         //---interactedKeys---
         private KeyboardStatus keyboardStatus;
         private KeyboardItem keyItemCurrent;
@@ -29,7 +29,9 @@ namespace CurvedVRKeyboard {
         }
 
         void Update () {
-            rayLength = Vector3.Distance(raycastingSource.position, target.transform.position) * 1.1f;
+            // * sum of all scales so keys are never to far
+            rayLength = Vector3.Distance(raycastingSource.position, target.transform.position) * (minRaylengthMultipler + 
+                 (Mathf.Abs(target.transform.lossyScale.x) + Mathf.Abs(target.transform.lossyScale.y) + Mathf.Abs(target.transform.lossyScale.z)));
             RayCastKeyboard();
         }
 
