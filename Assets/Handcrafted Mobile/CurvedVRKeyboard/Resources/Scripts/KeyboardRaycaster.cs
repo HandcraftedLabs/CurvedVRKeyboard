@@ -29,7 +29,9 @@ namespace CurvedVRKeyboard {
         }
 
         void Update () {
-            rayLength = Vector3.Distance(raycastingSource.position, target.transform.position) * 1.1f;
+            // * sum of all scales so keys are never to far
+            rayLength = Vector3.Distance(raycastingSource.position, target.transform.position) 
+                * (target.transform.lossyScale.x + target.transform.lossyScale.y + target.transform.lossyScale.z);
             RayCastKeyboard();
         }
 

@@ -130,18 +130,16 @@ namespace CurvedVRKeyboard {
             //caluclate position on cylinder with circle equation formula
             //http://www.mathopenref.com/coordparamcircle.html
             key.transform.localPosition = CalculatePositionOnCylinder(degree);
-            //rote keys by they placement angle
+            //rotate keys by their placement angle
             key.transform.localEulerAngles = new Vector3(0, -degree * Mathf.Rad2Deg - 90f, 0);
-            //key.transform.LookAt(LookAtTransformations(key));
-            // keys are moved from center couse of increasing circle radious
+            // keys are moved from center couse of increasing circle radious,
+            // so position must be restored to radious
             key.transform.localPosition = RestorePosition(key);
-            // keys shall only rotate in y axis so x  and y rotation is set to 0
-            //key.transform.localEulerAngles = new Vector3(0, key.transform.localEulerAngles.y, 0);
         }
 
         public float CalculateRotation(float rowsize, float offset)
         {
-            // Calculate degree of key on cricle
+            // Calculate degree of single key on cricle
             return Mathf.Deg2Rad * (defaultRotation + rowsize
                 * SpacingBetweenKeys / 2 - offset
                 * SpacingBetweenKeys);
@@ -174,23 +172,6 @@ namespace CurvedVRKeyboard {
                 Mathf.Sin(degree) * centerPointDistance);
         }
 
-
-
-        private Vector3 LookAtTransformations(KeyboardItem key)
-        {
-            //Depending on scale move center for each key a bit on x and z axis
-            Vector3 LookAtTransform = new Vector3(
-            transform.position.x + key.transform.localPosition.x  * (transform.lossyScale.x - 1),
-            transform.position.y,
-            transform.position.z + key.transform.localPosition.z * (transform.lossyScale.z - 1));
-            // rotation around point 
-            //http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix3d/index.htm
-            LookAtTransform = LookAtTransform - transform.position;
-            LookAtTransform = transform.rotation * LookAtTransform;
-            LookAtTransform = LookAtTransform + transform.position;
-            return LookAtTransform;
-        }
-
         private Vector3 RestorePosition(KeyboardItem key)
         {
             return new Vector3(
@@ -203,7 +184,7 @@ namespace CurvedVRKeyboard {
         /// tan (x * 1,57) - tan is in range of <0,3.14>. With
         /// this approach we can scale it to range <0(0),1(close to infinity)>.
         /// Why + radious = 3?? because virtual radious of our circle is 3 
-        /// google (tan(x*1.57) + 3)
+        /// google (tan(x*1.57) + 3) for visualization
         /// Higher values make center position further from keys (straight line)
         /// </summary>
         private void CurvatureToDistance () {

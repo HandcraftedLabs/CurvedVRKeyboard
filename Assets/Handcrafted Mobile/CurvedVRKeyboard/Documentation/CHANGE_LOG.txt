@@ -1,8 +1,10 @@
-Known Issues
-
-- Parents in object hierarchy has to have scale equal to (1.0, 1.0, 1.0). Changing parent size is not supported for now.
 
 Version 1.1.1
+
+- Parenting and scaling problems solved
+	- Scale of keyboard in x and z axis is no longer bound together
+	- Solved problem when after changing parent scale focusing on keyboard would yield unexpected graphical results
+	- Solved other minor problems with parenting
 
 - Output can now be set to any object with "text" property
 	- This allows to use Input fields. Check example for more, or readme file
@@ -13,6 +15,7 @@ Version 1.1.1
 - Minor fixes
 	- Few merthods changed their name
 	- KeyboardStatus class was changed to fit new responsibilities 
+	- Changed way of positioning and rotating single key
 
 Version 1.1.0
 
