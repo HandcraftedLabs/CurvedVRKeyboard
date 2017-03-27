@@ -45,7 +45,7 @@ namespace CurvedVRKeyboard {
         private const string MESH_NAME_SEARCHED = "Quad";
         public bool wasStaticOnStart;
         private const int spaceKeyNumber = 28;
-        private const float radious = 3;
+        private const float radius = 3;
 
         //--------------borders of sprite  -----
         private float leftBorder;
@@ -132,15 +132,15 @@ namespace CurvedVRKeyboard {
             key.transform.localPosition = CalculatePositionOnCylinder(degree);
             //rotate keys by their placement angle
             key.transform.localEulerAngles = new Vector3(0, -degree * Mathf.Rad2Deg - 90f, 0);
-            // keys are moved from center couse of increasing circle radious,
-            // so position must be restored to radious
+            // keys are moved from center couse of increasing circle radius,
+            // so position must be restored to radius
             key.transform.localPosition = RestorePosition(key);
         }
 
-        public float CalculateRotation(float rowsize, float offset)
+        public float CalculateRotation(float rowSize, float offset)
         {
             // Calculate degree of single key on cricle
-            return Mathf.Deg2Rad * (defaultRotation + rowsize
+            return Mathf.Deg2Rad * (defaultRotation + rowSize
                 * SpacingBetweenKeys / 2 - offset
                 * SpacingBetweenKeys);
         }
@@ -177,18 +177,18 @@ namespace CurvedVRKeyboard {
             return new Vector3(
                 key.transform.localPosition.x,
                 key.transform.localPosition.y,
-                key.transform.localPosition.z - centerPointDistance + radious);
+                key.transform.localPosition.z - centerPointDistance + radius);
         }
 
         /// <summary>
         /// tan (x * 1,57) - tan is in range of <0,3.14>. With
         /// this approach we can scale it to range <0(0),1(close to infinity)>.
-        /// Why + radious = 3?? because virtual radious of our circle is 3 
+        /// Why + radious = 3?? because virtual radius of our circle is 3 
         /// google (tan(x*1.57) + 3) for visualization
         /// Higher values make center position further from keys (straight line)
         /// </summary>
         private void CurvatureToDistance () {
-            centerPointDistance = Mathf.Tan((curvature) * 1.57f) + radious;
+            centerPointDistance = Mathf.Tan((curvature) * 1.57f) + radius;
         }
 
         /// <summary>

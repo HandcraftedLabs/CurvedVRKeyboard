@@ -3,8 +3,10 @@ Version 1.1.1
 
 - Parenting and scaling problems solved
 	- Scale of keyboard in x and z axis is no longer bound together
+	- Minus scale is now supported
 	- Solved problem when after changing parent scale focusing on keyboard would yield unexpected graphical results
-	- Solved other minor problems with parenting
+
+- Curvature parameter range changed from <0,100> to <0,1.00>
 
 - Output can now be set to any object with "text" property
 	- This allows to use Input fields. Check example for more, or readme file
