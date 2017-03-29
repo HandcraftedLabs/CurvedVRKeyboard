@@ -15,7 +15,7 @@ Optional setup:
 	- If any visual glitches appear on space button try setting keyboard materials rendering mode to "Fade" and press "Refresh space material" button
 
 After Update:
-- If any error occurs set raycasting source once more and setup keyboard variables' again 
+	- If any error occurs set raycasting source once more and setup keyboard variables' again 
 
 Changing key colors:
 You can change color or transparency by editing materials in "Handcrafted Mobile/CurvedVRKeyboard/Resources/Materials"
@@ -30,5 +30,12 @@ Changing Key Fonts:
 In Hierearchy window type "Value",
 select all found components and check text parameter.
 
-Need more help?
+Known Issues:
+	- 2 keyboards on same scene aren't supported
+
+In case of errors:
+Please write e-mail with error description and project with reproduced error.
+We would like to further improve our product.
+
+Need more help? Found some bugs?
 https://handcraftedmobile.com/ or contact@handcraftedmobile.com
