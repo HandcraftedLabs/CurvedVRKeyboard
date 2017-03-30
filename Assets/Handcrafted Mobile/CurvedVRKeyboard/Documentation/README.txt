@@ -33,9 +33,6 @@ select all found components and check text parameter.
 Known Issues:
 	- 2 keyboards on same scene aren't supported
 
-In case of errors:
-Please write e-mail with error description and project with reproduced error.
-We would like to further improve our product.
 
 Need more help? Found some bugs?
 https://handcraftedmobile.com/ or contact@handcraftedmobile.com

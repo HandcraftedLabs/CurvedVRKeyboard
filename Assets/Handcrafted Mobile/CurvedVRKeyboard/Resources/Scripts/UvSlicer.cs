@@ -29,7 +29,6 @@ namespace CurvedVRKeyboard {
         public Vector3 verticalVector { get; private set; }
 
         public float referencedPixels = 10f;
-        private Sprite spaceSprite;
 
         public Border objectBorderInUnits = new Border(-2f, 2f, 0.5f, -0.5f);
         public Border uvBorderInPercent = new Border(-2f, 2f, 0.5f, -0.5f);
@@ -38,7 +37,6 @@ namespace CurvedVRKeyboard {
 
 
         public void ChangeSprite(Sprite spaceSprite) {
-            this.spaceSprite = spaceSprite;
             CalculateBordersAndSize(spaceSprite);
         }
 
@@ -105,7 +103,6 @@ namespace CurvedVRKeyboard {
         }
 
         public Vector2[] BuildUV(List<Vector3> verticiesArray, Vector2 boundary) {
-            float xRange = boundary.x * 2f;
             float leftSize = Mathf.Abs(objectBorderInUnits.left - (-boundary.x)) + Mathf.Epsilon;
             float rightSize = Mathf.Abs(boundary.x - objectBorderInUnits.right) + Mathf.Epsilon;
             float midSize = boundary.x * 2 - leftSize - rightSize;

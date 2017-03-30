@@ -42,9 +42,7 @@ namespace CurvedVRKeyboard {
         private KeyboardCreator keyboardCreator;
         private ErrorReporter errorReporter;
         private Vector3 keyboardScale;
-        private GUIStyle style;
 
-        private bool foldoutVisible = true;
         private bool noCameraFound = false;
         private bool isRaycastingSourceSet = false;
 
@@ -53,7 +51,6 @@ namespace CurvedVRKeyboard {
         private void Awake () {
             keyboardCreator = target as KeyboardCreator;
 
-            style = new GUIStyle(EditorStyles.textField);
             if(!Application.isPlaying || !keyboardCreator.gameObject.isStatic) {// Always when not playing or (playing and keyboard is not static)
                 keyboardCreator.wasStaticOnStart = false;
                 KeyboardItem.forceInit = true;
